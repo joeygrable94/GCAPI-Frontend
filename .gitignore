@@ -25,6 +25,3 @@ Thumbs.db
 
 # nginx
 nginx*.conf
-
-# backend api
-src/api/**
