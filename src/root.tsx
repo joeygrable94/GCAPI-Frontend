@@ -27,16 +27,17 @@ export default function Root() {
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Body>
-        <Suspense>
-          <ErrorBoundary>
+        <ErrorBoundary>
+          <Suspense fallback={<div>Loading</div>}>
             <StoreProvider>
               <Navigation />
               <Routes>
                 <FileRoutes />
               </Routes>
+              <Footer />
             </StoreProvider>
-          </ErrorBoundary>
-        </Suspense>
+          </Suspense>
+        </ErrorBoundary>
         <Scripts />
       </Body>
     </Html>

@@ -52,7 +52,7 @@ export default function createCommonService(actions: any, state: any, setState: 
       else g.localStorage.removeItem("csrf")
     })
 
-    // check state token 
+    // check state token
     if (!state.token) actions.setLoadState(true)
     else {
       // fetch current user
@@ -67,7 +67,7 @@ export default function createCommonService(actions: any, state: any, setState: 
 
   // common shutdown actions
   onCleanup(() => {
-    
+
     // resset api url
     actions.setApiUrl("")
 

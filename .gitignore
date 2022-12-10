@@ -1,10 +1,12 @@
-
-dist
+# undesirables
+.DS_Store
+.env
 .solid
 .output
 .vercel
 .netlify
 netlify
+dist
 
 # dependencies
 /node_modules
