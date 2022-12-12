@@ -32,3 +32,6 @@ Thumbs.db
 
 # nginx
 nginx*.conf
+
+# vs code
+*.code*
