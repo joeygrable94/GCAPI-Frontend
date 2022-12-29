@@ -9,3 +9,4 @@ export type UserUpdate = {
   is_superuser?: boolean;
   is_verified?: boolean;
 };
+

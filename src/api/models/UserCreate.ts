@@ -9,3 +9,4 @@ export type UserCreate = {
   is_superuser?: boolean;
   is_verified?: boolean;
 };
+

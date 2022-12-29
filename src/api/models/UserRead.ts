@@ -11,3 +11,4 @@ export type UserRead = {
   is_superuser: boolean;
   is_verified: boolean;
 };
+

@@ -5,3 +5,4 @@
 export type ErrorModel = {
   detail: (string | Record<string, string>);
 };
+
