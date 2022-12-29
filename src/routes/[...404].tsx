@@ -1,7 +1,16 @@
+import { Title } from "solid-start";
+import { HttpStatusCode } from "solid-start/server";
+import Navigation from "~/components/Navigation";
+
 export default function NotFound() {
   return (
-    <main class="w-full p-4 space-y-2">
-      <h1 class="font-bold text-xl">Page Not Found</h1>
-    </main>
+    <>
+      <Navigation />
+      <main>
+        <Title>Not Found</Title>
+        <HttpStatusCode code={404} />
+        <h1>Page Not Found</h1>
+      </main>
+    </>
   );
 }

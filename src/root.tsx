@@ -1,5 +1,5 @@
 // @refresh reload
-import { onMount, Suspense } from "solid-js";
+import { Suspense } from "solid-js";
 import {
   Body,
   ErrorBoundary,
@@ -11,31 +11,28 @@ import {
   Scripts,
   Title,
 } from "solid-start";
-import { OpenAPI } from "~/api";
-import { API_URL_BASE } from "~/context/utils";
+import StoreProvider from "~/context";
 import "./root.css";
 
 export default function Root() {
 
-  onMount(() => {
-    OpenAPI.BASE = API_URL_BASE
-  });
-
   return (
     <Html lang="en">
       <Head>
-        <Title>GCAPI - SolidStart</Title>
+        <Title>SolidStart - Bare</Title>
         <Meta charset="utf-8" />
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Body>
-        <ErrorBoundary>
-          <Suspense fallback={<div>Loading</div>}>
-            <Routes>
-              <FileRoutes />
-            </Routes>
-          </Suspense>
-        </ErrorBoundary>
+        <Suspense>
+          <ErrorBoundary>
+            <StoreProvider>
+              <Routes>
+                <FileRoutes />
+              </Routes>
+            </StoreProvider>
+          </ErrorBoundary>
+        </Suspense>
         <Scripts />
       </Body>
     </Html>
