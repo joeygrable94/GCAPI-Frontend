@@ -6,20 +6,20 @@ export const $UserCreate = {
     email: {
       type: 'string',
       isRequired: true,
-      format: 'email'
+      format: 'email',
     },
     password: {
       type: 'string',
-      isRequired: true
+      isRequired: true,
     },
     is_active: {
-      type: 'boolean'
+      type: 'boolean',
     },
     is_superuser: {
-      type: 'boolean'
+      type: 'boolean',
     },
     is_verified: {
-      type: 'boolean'
-    }
-  }
+      type: 'boolean',
+    },
+  },
 } as const;

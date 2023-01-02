@@ -9,6 +9,7 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
 export class UsersService {
+
   /**
    * Users:Current User
    * Allows current-active-verified-users to fetch the details on their account.
@@ -21,8 +22,8 @@ export class UsersService {
       url: '/api/v1/users/me',
       errors: {
         401: `Unauthorized`,
-        404: `Not Found`
-      }
+        404: `Not Found`,
+      },
     });
   }
 
@@ -33,9 +34,9 @@ export class UsersService {
    * @throws ApiError
    */
   public static usersPatchCurrentUserApiV1UsersMePatch({
-    requestBody
+    requestBody,
   }: {
-    requestBody: UserUpdate;
+    requestBody: UserUpdate,
   }): CancelablePromise<UserRead> {
     return __request(OpenAPI, {
       method: 'PATCH',
@@ -46,8 +47,8 @@ export class UsersService {
         400: `Bad Request`,
         401: `Unauthorized`,
         404: `Not Found`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -61,22 +62,22 @@ export class UsersService {
    * @throws ApiError
    */
   public static usersListUsersApiV1UsersGet({
-    page = 1
+    page = 1,
   }: {
-    page?: number;
-  }): CancelablePromise<Array<UserRead> | Array<null>> {
+    page?: number,
+  }): CancelablePromise<(Array<UserRead> | Array<null>)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/',
       query: {
-        page: page
+        'page': page,
       },
       errors: {
         401: `Unauthorized`,
         403: `Forbidden`,
         404: `Not Found`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -91,22 +92,22 @@ export class UsersService {
    * @throws ApiError
    */
   public static usersUserApiV1UsersIdGet({
-    id
+    id,
   }: {
-    id: any;
+    id: any,
   }): CancelablePromise<UserRead> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/{id}',
       path: {
-        id: id
+        'id': id,
       },
       errors: {
         401: `Unauthorized`,
         403: `Forbidden`,
         404: `Not Found`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -118,22 +119,22 @@ export class UsersService {
    * @throws ApiError
    */
   public static usersDeleteUserApiV1UsersIdDelete({
-    id
+    id,
   }: {
-    id: any;
+    id: any,
   }): CancelablePromise<void> {
     return __request(OpenAPI, {
       method: 'DELETE',
       url: '/api/v1/users/{id}',
       path: {
-        id: id
+        'id': id,
       },
       errors: {
         401: `Unauthorized`,
         403: `Forbidden`,
         404: `Not Found`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -146,16 +147,16 @@ export class UsersService {
    */
   public static usersPatchUserApiV1UsersIdPatch({
     id,
-    requestBody
+    requestBody,
   }: {
-    id: any;
-    requestBody: UserUpdate;
+    id: any,
+    requestBody: UserUpdate,
   }): CancelablePromise<UserRead> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/{id}',
       path: {
-        id: id
+        'id': id,
       },
       body: requestBody,
       mediaType: 'application/json',
@@ -164,8 +165,9 @@ export class UsersService {
         401: `Unauthorized`,
         403: `Forbidden`,
         404: `Not Found`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
+
 }

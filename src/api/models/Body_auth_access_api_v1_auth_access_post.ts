@@ -10,3 +10,4 @@ export type Body_auth_access_api_v1_auth_access_post = {
   client_id?: string;
   client_secret?: string;
 };
+

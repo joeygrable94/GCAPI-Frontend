@@ -14,6 +14,7 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
 export class AuthService {
+
   /**
    * Auth:Register
    * Registers a new user, then creates an email verification token
@@ -22,9 +23,9 @@ export class AuthService {
    * @throws ApiError
    */
   public static authRegisterApiV1AuthRegisterPost({
-    requestBody
+    requestBody,
   }: {
-    requestBody: UserCreate;
+    requestBody: UserCreate,
   }): CancelablePromise<UserRead> {
     return __request(OpenAPI, {
       method: 'POST',
@@ -33,8 +34,8 @@ export class AuthService {
       mediaType: 'application/json',
       errors: {
         400: `Bad Request`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -45,9 +46,9 @@ export class AuthService {
    * @throws ApiError
    */
   public static authVerificationApiV1AuthVerificationPost({
-    requestBody
+    requestBody,
   }: {
-    requestBody: Body_auth_verification_api_v1_auth_verification_post;
+    requestBody: Body_auth_verification_api_v1_auth_verification_post,
   }): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: 'POST',
@@ -58,8 +59,8 @@ export class AuthService {
         400: `Bad Request`,
         401: `Unauthorized`,
         404: `Not Found`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -72,25 +73,25 @@ export class AuthService {
    */
   public static authConfirmationApiV1AuthConfirmationGet({
     token,
-    csrf
+    csrf,
   }: {
-    token: string;
-    csrf: string;
+    token: string,
+    csrf: string,
   }): CancelablePromise<void> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/auth/confirmation',
       query: {
-        token: token,
-        csrf: csrf
+        'token': token,
+        'csrf': csrf,
       },
       errors: {
         300: `Successful Response`,
         400: `Bad Request`,
         401: `Unauthorized`,
         404: `Not Found`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -101,9 +102,9 @@ export class AuthService {
    * @throws ApiError
    */
   public static authForgotPasswordApiV1AuthForgotPasswordPost({
-    requestBody
+    requestBody,
   }: {
-    requestBody: Body_auth_forgot_password_api_v1_auth_forgot_password_post;
+    requestBody: Body_auth_forgot_password_api_v1_auth_forgot_password_post,
   }): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: 'POST',
@@ -113,8 +114,8 @@ export class AuthService {
       errors: {
         401: `Unauthorized`,
         404: `Not Found`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -125,9 +126,9 @@ export class AuthService {
    * @throws ApiError
    */
   public static authResetPasswordApiV1AuthResetPasswordPost({
-    requestBody
+    requestBody,
   }: {
-    requestBody: Body_auth_reset_password_api_v1_auth_reset_password_post;
+    requestBody: Body_auth_reset_password_api_v1_auth_reset_password_post,
   }): CancelablePromise<UserRead> {
     return __request(OpenAPI, {
       method: 'POST',
@@ -138,8 +139,8 @@ export class AuthService {
         400: `Bad Request`,
         401: `Unauthorized`,
         404: `Not Found`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -150,9 +151,9 @@ export class AuthService {
    * @throws ApiError
    */
   public static authAccessApiV1AuthAccessPost({
-    formData
+    formData,
   }: {
-    formData: Body_auth_access_api_v1_auth_access_post;
+    formData: Body_auth_access_api_v1_auth_access_post,
   }): CancelablePromise<BearerResponse> {
     return __request(OpenAPI, {
       method: 'POST',
@@ -162,8 +163,8 @@ export class AuthService {
       errors: {
         400: `Bad Request`,
         401: `Unauthorized`,
-        422: `Validation Error`
-      }
+        422: `Validation Error`,
+      },
     });
   }
 
@@ -179,8 +180,8 @@ export class AuthService {
       url: '/api/v1/auth/refresh',
       errors: {
         401: `Unauthorized`,
-        404: `Not Found`
-      }
+        404: `Not Found`,
+      },
     });
   }
 
@@ -193,7 +194,7 @@ export class AuthService {
   public static authRevokeApiV1AuthRevokeDelete(): CancelablePromise<BearerResponse> {
     return __request(OpenAPI, {
       method: 'DELETE',
-      url: '/api/v1/auth/revoke'
+      url: '/api/v1/auth/revoke',
     });
   }
 
@@ -209,8 +210,9 @@ export class AuthService {
       url: '/api/v1/auth/logout',
       errors: {
         401: `Unauthorized`,
-        404: `Not Found`
-      }
+        404: `Not Found`,
+      },
     });
   }
+
 }

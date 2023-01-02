@@ -6,8 +6,8 @@ export const $HTTPValidationError = {
     detail: {
       type: 'array',
       contains: {
-        type: 'ValidationError'
-      }
-    }
-  }
+        type: 'ValidationError',
+      },
+    },
+  },
 } as const;

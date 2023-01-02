@@ -6,34 +6,34 @@ export const $UserRead = {
     id: {
       type: 'string',
       isRequired: true,
-      format: 'uuid4'
+      format: 'uuid4',
     },
     created_on: {
       type: 'string',
       isRequired: true,
-      format: 'date-time'
+      format: 'date-time',
     },
     updated_on: {
       type: 'string',
       isRequired: true,
-      format: 'date-time'
+      format: 'date-time',
     },
     email: {
       type: 'string',
       isRequired: true,
-      format: 'email'
+      format: 'email',
     },
     is_active: {
       type: 'boolean',
-      isRequired: true
+      isRequired: true,
     },
     is_superuser: {
       type: 'boolean',
-      isRequired: true
+      isRequired: true,
     },
     is_verified: {
       type: 'boolean',
-      isRequired: true
-    }
-  }
+      isRequired: true,
+    },
+  },
 } as const;
