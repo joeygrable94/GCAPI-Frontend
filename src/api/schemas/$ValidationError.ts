@@ -7,21 +7,24 @@ export const $ValidationError = {
       type: 'array',
       contains: {
         type: 'any-of',
-        contains: [{
-          type: 'string',
-        }, {
-          type: 'number',
-        }],
+        contains: [
+          {
+            type: 'string'
+          },
+          {
+            type: 'number'
+          }
+        ]
       },
-      isRequired: true,
+      isRequired: true
     },
     msg: {
       type: 'string',
-      isRequired: true,
+      isRequired: true
     },
     type: {
       type: 'string',
-      isRequired: true,
-    },
-  },
+      isRequired: true
+    }
+  }
 } as const;

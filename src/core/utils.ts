@@ -5,40 +5,40 @@ export const log = console.log.bind(console);
 const once = <ArgumentsType extends unknown[], ReturnType>(
   fn: (...args: ArgumentsType) => ReturnType
 ) => {
-  let called = false
-  let result: ReturnType
+  let called = false;
+  let result: ReturnType;
 
   return function func(...args: ArgumentsType) {
     if (called) {
-      return result
+      return result;
     }
-    called = true
-    result = fn(...args)
-    return result
-  }
-}
+    called = true;
+    result = fn(...args);
+    return result;
+  };
+};
 
 // get global object
 const getGlobal = () => {
   if (typeof self !== 'undefined') {
-    return self
+    return self;
   }
   if (typeof window !== 'undefined') {
-    return window
+    return window;
   }
   if (typeof global !== 'undefined') {
-    return global
+    return global;
   }
-  throw new Error('unable to locate global object')
-}
+  throw new Error('unable to locate global object');
+};
 
 // global
-export const g = once(() => getGlobal())()
+export const g = once(() => getGlobal())();
 
 // url requests
 export const encode = encodeURIComponent;
 
 // api paths
-export const API_HOST = "localhost:8888";
-export const API_VERSION = "v1";
+export const API_HOST = 'localhost:8888';
+export const API_VERSION = 'v1';
 export const API_URL_BASE = `http://${API_HOST}`;

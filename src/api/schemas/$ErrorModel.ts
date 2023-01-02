@@ -5,15 +5,18 @@ export const $ErrorModel = {
   properties: {
     detail: {
       type: 'any-of',
-      contains: [{
-        type: 'string',
-      }, {
-        type: 'dictionary',
-        contains: {
-          type: 'string',
+      contains: [
+        {
+          type: 'string'
         },
-      }],
-      isRequired: true,
-    },
-  },
+        {
+          type: 'dictionary',
+          contains: {
+            type: 'string'
+          }
+        }
+      ],
+      isRequired: true
+    }
+  }
 } as const;

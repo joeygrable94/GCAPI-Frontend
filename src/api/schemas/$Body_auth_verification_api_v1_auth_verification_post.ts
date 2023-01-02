@@ -6,7 +6,7 @@ export const $Body_auth_verification_api_v1_auth_verification_post = {
     email: {
       type: 'string',
       isRequired: true,
-      format: 'email',
-    },
-  },
+      format: 'email'
+    }
+  }
 } as const;

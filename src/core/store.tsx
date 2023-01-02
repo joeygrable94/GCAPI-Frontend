@@ -1,5 +1,6 @@
 import { createContext, createSignal, useContext } from "solid-js"
-import { createStore } from "solid-js/store"
+import { createStore, Store } from "solid-js/store"
+import createCommonService from "~/core/serviceCommon"
 
 const StoreContext = createContext()
 
@@ -27,6 +28,9 @@ export default function StoreProvider(props: any) {
 
   // state proxy
   const store: any = [state, actions]
+
+  // services
+  createCommonService(actions, state, setState)
 
   return (
     <StoreContext.Provider value={store}>

@@ -2,13 +2,15 @@
   "name": "app",
   "scripts": {
     "generate-client": "openapi --input http://localhost:8888/api/v1/docs/openapi.json --output ./src/api --useOptions --useUnionTypes --exportSchemas true --indent 2",
+    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "dev": "solid-start dev",
-    "build": "solid-start build",
+    "build": "npm run format && solid-start build",
     "start": "solid-start start"
   },
   "type": "module",
   "devDependencies": {
     "openapi-typescript-codegen": "^0.23.0",
+    "prettier": "^2.8.1",
     "solid-start-node": "^0.2.0",
     "typescript": "^4.8.4",
     "vite": "^3.1.8"

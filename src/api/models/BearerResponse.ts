@@ -9,4 +9,3 @@ export type BearerResponse = {
   refresh_token?: string;
   refresh_token_csrf?: string;
 };
-

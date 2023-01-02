@@ -5,4 +5,3 @@
 export type Body_auth_verification_api_v1_auth_verification_post = {
   email: string;
 };
-

@@ -5,6 +5,7 @@
 .output
 .vercel
 .netlify
+.prettier*
 netlify
 dist
 

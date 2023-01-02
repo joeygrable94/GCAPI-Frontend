@@ -5,19 +5,19 @@ export const $UserUpdate = {
   properties: {
     email: {
       type: 'string',
-      format: 'email',
+      format: 'email'
     },
     password: {
-      type: 'string',
+      type: 'string'
     },
     is_active: {
-      type: 'boolean',
+      type: 'boolean'
     },
     is_superuser: {
-      type: 'boolean',
+      type: 'boolean'
     },
     is_verified: {
-      type: 'boolean',
-    },
-  },
+      type: 'boolean'
+    }
+  }
 } as const;

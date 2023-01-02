@@ -5,24 +5,24 @@ export const $Body_auth_access_api_v1_auth_access_post = {
   properties: {
     grant_type: {
       type: 'string',
-      pattern: 'password',
+      pattern: 'password'
     },
     username: {
       type: 'string',
-      isRequired: true,
+      isRequired: true
     },
     password: {
       type: 'string',
-      isRequired: true,
+      isRequired: true
     },
     scope: {
-      type: 'string',
+      type: 'string'
     },
     client_id: {
-      type: 'string',
+      type: 'string'
     },
     client_secret: {
-      type: 'string',
-    },
-  },
+      type: 'string'
+    }
+  }
 } as const;

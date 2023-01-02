@@ -4,19 +4,19 @@
 export const $BearerResponse = {
   properties: {
     token_type: {
-      type: 'string',
+      type: 'string'
     },
     access_token: {
-      type: 'string',
+      type: 'string'
     },
     access_token_csrf: {
-      type: 'string',
+      type: 'string'
     },
     refresh_token: {
-      type: 'string',
+      type: 'string'
     },
     refresh_token_csrf: {
-      type: 'string',
-    },
-  },
+      type: 'string'
+    }
+  }
 } as const;

@@ -7,4 +7,3 @@ export type Body_auth_reset_password_api_v1_auth_reset_password_post = {
   token: string;
   csrf: string;
 };
-

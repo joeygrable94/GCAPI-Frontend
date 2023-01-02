@@ -19,7 +19,7 @@ export type OpenAPIConfig = {
 };
 
 export const OpenAPI: OpenAPIConfig = {
-  BASE: 'http://0.0.0.0:8888',
+  BASE: '',
   VERSION: '0.0.1',
   WITH_CREDENTIALS: false,
   CREDENTIALS: 'include',
@@ -27,5 +27,5 @@ export const OpenAPI: OpenAPIConfig = {
   USERNAME: undefined,
   PASSWORD: undefined,
   HEADERS: undefined,
-  ENCODE_PATH: undefined,
+  ENCODE_PATH: undefined
 };

@@ -6,7 +6,7 @@ export const $Body_auth_forgot_password_api_v1_auth_forgot_password_post = {
     email: {
       type: 'string',
       isRequired: true,
-      format: 'email',
-    },
-  },
+      format: 'email'
+    }
+  }
 } as const;
