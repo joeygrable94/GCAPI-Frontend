@@ -1,32 +1,26 @@
-import { Resource, Show } from 'solid-js';
+import { Show } from 'solid-js';
 import { Title, useRouteData } from 'solid-start';
-import { createServerData$, redirect } from 'solid-start/server';
-import { UserRead } from '~/api';
+import { createServerData$ } from 'solid-start/server';
 import Counter from '~/components/Counter';
 import Navigation from '~/components/Navigation';
-import { getUser } from '~/core/session';
+import { checkUserPermissionsOrRedirect } from '~/core/session';
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {
-    const user = await getUser(request);
-
-    if (!user) {
-      throw redirect('/login');
-    }
-
-    return user;
+    const user = await checkUserPermissionsOrRedirect(request);
+    return { user };
   });
 }
 
 export default function Home() {
-  const user: any = useRouteData<typeof routeData>();
+  const data: any = useRouteData<typeof routeData>();
 
   return (
     <>
-      <Navigation currentUser={user} />
+      <Navigation />
       <main>
         <Show
-          when={user()?.id}
+          when={data()?.user.id}
           fallback={
             <>
               <Title>Hello World</Title>
@@ -35,8 +29,8 @@ export default function Home() {
           }
         >
           <>
-            <Title>Hello {user()?.email}</Title>
-            <h1>Hello, {user()?.email}!</h1>
+            <Title>Hello {data()?.user.email}</Title>
+            <h1>Hello, {data()?.user.email}!</h1>
           </>
         </Show>
         <h2>Welcome to GCAPI.</h2>

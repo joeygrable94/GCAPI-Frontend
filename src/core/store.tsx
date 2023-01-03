@@ -1,44 +1,36 @@
-import { createContext, createSignal, useContext } from "solid-js"
-import { createStore, Store } from "solid-js/store"
-import createCommonService from "~/core/serviceCommon"
+import { createContext, createSignal, useContext } from 'solid-js';
+import { createStore } from 'solid-js/store';
 
-const StoreContext = createContext()
+const StoreContext = createContext();
 
 export default function StoreProvider(props: any) {
-
   // app services
-  const [appLoaded, setAppLoaded] = createSignal(false)
+  const [appLoaded, setAppLoaded] = createSignal(false);
 
   // state manager
   const [state, setState] = createStore({
     get loadState() {
-      return appLoaded()
+      return appLoaded();
     },
     appName: 'GCAPI',
-    base: '',
-    token: '',
-    csrf: '',
-    page: '',
-  })
+    page: ''
+  });
 
   // state actions
   const actions: any = {
-    setLoadState: (s: boolean) => setAppLoaded(s),
-  }
+    setLoadState: (s: boolean) => setAppLoaded(s)
+  };
 
   // state proxy
-  const store: any = [state, actions]
-
-  // services
-  createCommonService(actions, state, setState)
+  const store: any = [state, actions];
 
   return (
     <StoreContext.Provider value={store}>
       {props.children}
     </StoreContext.Provider>
-  )
+  );
 }
 
 export function useStore() {
-  return useContext(StoreContext)
+  return useContext(StoreContext);
 }

@@ -1,8 +1,18 @@
-import { Title } from "solid-start";
-import { HttpStatusCode } from "solid-start/server";
-import Navigation from "~/components/Navigation";
+import { Title, useRouteData } from 'solid-start';
+import { createServerData$, HttpStatusCode } from 'solid-start/server';
+import Navigation from '~/components/Navigation';
+import { checkUserPermissionsOrRedirect } from '~/core/session';
+
+export function routeData() {
+  return createServerData$(async (_, { request }) => {
+    const user = await checkUserPermissionsOrRedirect(request);
+    return { user };
+  });
+}
 
 export default function NotFound() {
+  const data: any = useRouteData<typeof routeData>();
+
   return (
     <>
       <Navigation />

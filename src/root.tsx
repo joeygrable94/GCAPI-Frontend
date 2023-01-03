@@ -12,12 +12,7 @@ import {
   Title
 } from 'solid-start';
 import StoreProvider from '~/core/store';
-import { OpenAPI } from './api';
-import { API_URL_BASE } from '~/core/utils';
 import './root.css';
-
-// set open api settings
-OpenAPI.BASE = API_URL_BASE;
 
 export default function Root() {
   return (
