@@ -1,7 +1,7 @@
 import { useParams, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
-import Navigation from '~/components/Navigation';
-import { belongsToUserOrIsSuperUserOrRedirect } from '~/core/session';
+import Navigation from '~/lib/components/Navigation';
+import { belongsToUserOrIsSuperUserOrRedirect } from '~/lib/db/session';
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {

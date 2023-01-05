@@ -1,7 +1,8 @@
 import { Show } from 'solid-js';
 import { A, useRouteData } from 'solid-start';
 import { createServerAction$, createServerData$ } from 'solid-start/server';
-import { checkUserPermissionsOrRedirect, logoutUser } from '~/core/session';
+import { logoutUser } from '~/lib/db/session';
+import { checkUserPermissionsOrRedirect } from '~/lib/db/useUser';
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {

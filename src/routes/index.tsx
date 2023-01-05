@@ -1,9 +1,9 @@
 import { Show } from 'solid-js';
 import { Title, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
-import Counter from '~/components/Counter';
-import Navigation from '~/components/Navigation';
-import { checkUserPermissionsOrRedirect } from '~/core/session';
+import Counter from '~/lib/components/Counter';
+import Navigation from '~/lib/components/Navigation';
+import { checkUserPermissionsOrRedirect } from '~/lib/db/useUser';
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {

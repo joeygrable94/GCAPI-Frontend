@@ -1,7 +1,7 @@
 import { Title, useRouteData } from 'solid-start';
 import { createServerData$, HttpStatusCode } from 'solid-start/server';
-import Navigation from '~/components/Navigation';
-import { checkUserPermissionsOrRedirect } from '~/core/session';
+import Navigation from '~/lib/components/Navigation';
+import { checkUserPermissionsOrRedirect } from '~/lib/db/useUser';
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {
