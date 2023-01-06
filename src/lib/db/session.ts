@@ -67,39 +67,17 @@ export async function createUserSession(
   // set access token + csrf
   if (bearer.access_token) session.set('accessToken', bearer.access_token);
   if (bearer.access_token_csrf)
-  session.set('accessTokenCSRF', bearer.access_token_csrf);
+    session.set('accessTokenCSRF', bearer.access_token_csrf);
   // set refresh token + csrf
   if (bearer.refresh_token) session.set('refreshToken', bearer.refresh_token);
   if (bearer.refresh_token_csrf)
-  session.set('refreshTokenCSRF', bearer.refresh_token_csrf);
+    session.set('refreshTokenCSRF', bearer.refresh_token_csrf);
   // return redirect with current user cookie set
   return redirect(redirectTo, {
     headers: {
       'Set-Cookie': await storage.commitSession(session)
     }
   });
-}
-
-export async function getUser(request: Request) {
-  // get current user access via cookie session
-  const authAccess = await getUserAccessToken(request);
-  // verify access type
-  if (
-    typeof authAccess?.token !== 'string' ||
-    typeof authAccess?.csrf !== 'string'
-  ) {
-    return null;
-  }
-  // fetch current user
-  try {
-    OpenAPI.TOKEN = authAccess?.token;
-    const user: UserRead = await UsersService.usersCurrentUserApiV1UsersMeGet();
-    return user;
-  } catch (err: any) {
-    log('Error Getting User:', err?.body?.detail);
-    await logoutUser(request);
-    return null;
-  }
 }
 
 export async function loginUser(form: FormData) {
@@ -147,7 +125,7 @@ export async function loginUser(form: FormData) {
   return createUserSession(access_token, redirectTo);
 }
 
-export async function logoutUser(request: Request) {
+export async function logoutUser(request: Request, redirectTo: string = '/login') {
   // get cookie session data
   const session = await storage.getSession(request.headers.get('Cookie'));
   // logout user from api auth service
@@ -159,9 +137,30 @@ export async function logoutUser(request: Request) {
   // reset OpenAPI token
   OpenAPI.TOKEN = '';
   // redirect to login page
-  return redirect('/login', {
+  return redirect(redirectTo, {
     headers: {
       'Set-Cookie': await storage.destroySession(session)
     }
   });
+}
+
+export async function getUser(request: Request) {
+  // get current user access via cookie session
+  const authAccess = await getUserAccessToken(request);
+  // verify access type
+  if (
+    typeof authAccess?.token !== 'string' ||
+    typeof authAccess?.csrf !== 'string'
+  ) {
+    return null;
+  }
+  // fetch current user
+  try {
+    OpenAPI.TOKEN = authAccess?.token;
+    const user: UserRead = await UsersService.usersCurrentUserApiV1UsersMeGet()
+    return user;
+  } catch (err: any) {
+    log('Error Fetching Current User:', err?.body?.detail);
+    return null;
+  }
 }

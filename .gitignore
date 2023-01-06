@@ -9,6 +9,10 @@
 netlify
 dist
 
+# archives
+_archive
+_notes
+
 # dependencies
 /node_modules
 

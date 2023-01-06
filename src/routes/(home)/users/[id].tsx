@@ -1,29 +1,31 @@
 import { useParams, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
-import Navigation from '~/lib/components/Navigation';
 import { useStore } from '~/lib/core/store';
-import { checkSuperUserPermissionsOrRedirect } from '~/lib/db/useUser';
 import { log } from '~/lib/core/utils';
+import { belongsToUserOrIsSuperUserOrRedirect } from '~/lib/db/useUser';
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {
-    const user = await checkSuperUserPermissionsOrRedirect(request);
+    const params: any = useParams();
+    const user: any = await belongsToUserOrIsSuperUserOrRedirect(
+      request,
+      params.id
+    );
     return { user };
   });
 }
 
-export default function Users() {
+export default function UsersMe() {
   const data: any = useRouteData<typeof routeData>();
   const params: any = useParams();
   const [state, actions]: any = useStore();
-  log(state);
-  log(params.page);
+  log(`User ID: ${params.id}`);
 
   return (
     <>
-      <Navigation />
       <main>
-        <p>Users</p>
+        <h1>User By ID</h1>
+        <p>Fetch User {params.id}</p>
       </main>
     </>
   );

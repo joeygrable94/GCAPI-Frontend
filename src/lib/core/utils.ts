@@ -1,4 +1,4 @@
-import { OpenAPI } from "~/api";
+import { OpenAPI } from '~/api';
 
 // logger
 export const log = console.log.bind(console);
@@ -41,9 +41,12 @@ export const g = once(() => getGlobal())();
 export const encode = encodeURIComponent;
 
 // OpenAPI settings
-export const API_PROTOCOL: string = import.meta.env.VITE_TLS_ACTIVE === "true" ? 'https' : 'http'
-export const API_HOST: string = import.meta.env.DEV ? import.meta.env.VITE_API_BASE_URL_DEV : import.meta.env.VITE_API_BASE_URL_LIVE
+export const API_PROTOCOL: string =
+  import.meta.env.VITE_TLS_ACTIVE === 'true' ? 'https' : 'http';
+export const API_HOST: string = import.meta.env.DEV
+  ? import.meta.env.VITE_API_BASE_URL_DEV
+  : import.meta.env.VITE_API_BASE_URL_LIVE;
 export const API_URL_BASE = `${API_PROTOCOL}://${API_HOST}`;
 
 // set OpenAPI Base URL
-once(() => OpenAPI.BASE = API_URL_BASE)
+OpenAPI.BASE = API_URL_BASE

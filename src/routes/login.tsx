@@ -1,5 +1,5 @@
 import { Show } from 'solid-js';
-import { useParams, useRouteData } from 'solid-start';
+import { Title, useParams, useRouteData } from 'solid-start';
 import {
   createServerAction$,
   createServerData$,
@@ -17,7 +17,7 @@ export function routeData() {
   });
 }
 
-export default function Login() {
+export default function LoginMain() {
   const data: any = useRouteData<typeof routeData>();
   const params: any = useParams();
 
@@ -27,6 +27,7 @@ export default function Login() {
 
   return (
     <>
+      <Title>Log In</Title>
       <Navigation />
       <main>
         <h1>Login</h1>

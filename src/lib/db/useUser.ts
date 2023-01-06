@@ -1,31 +1,23 @@
-import { redirect } from "solid-start";
-import { getUser } from "./session";
+import { redirect } from 'solid-start';
+import { getUser, logoutUser } from './session';
 
-export async function checkUserPermissionsOrRedirect(request: Request) {
+export async function getCurrentUser(request: Request, redirectTo: string = '/login') {
   // fetch user
   const user: any = await getUser(request);
-  // if no current user
+  // if no current user, logout + redirect
   if (!user) {
-    throw redirect('/login');
+    await logoutUser(request, redirectTo);
   }
   // return current user
   return user;
 }
 
-export async function checkSuperUserPermissionsOrRedirect(request: Request) {
+export async function belongsToUserOrIsSuperUserOrRedirect(
+  request: Request,
+  request_user_id: string
+) {
   // fetch user
-  const user: any = await checkUserPermissionsOrRedirect(request);
-  // if the current user NOT is a super user
-  if (!user.is_superuser) {
-    throw redirect('/');
-  }
-  // return current user
-  return user;
-}
-
-export async function belongsToUserOrIsSuperUserOrRedirect(request: Request, request_user_id: string) {
-  // fetch user
-  const user: any = await checkUserPermissionsOrRedirect(request);
+  const user: any = await getCurrentUser(request);
   // if the current user is NOT a super user and is NOT viewing their own id
   if (!user.is_superuser && user.id !== request_user_id) {
     throw redirect('/');

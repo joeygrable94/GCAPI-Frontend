@@ -1,4 +1,10 @@
-import { createContext, createSignal, useContext } from 'solid-js';
+import {
+  createComputed,
+  createContext,
+  createSignal,
+  onMount,
+  useContext
+} from 'solid-js';
 import { createStore } from 'solid-js/store';
 
 const StoreContext = createContext();
@@ -13,7 +19,9 @@ export default function StoreProvider(props: any) {
       return appLoaded();
     },
     appName: 'GCAPI',
-    page: ''
+    page: '',
+    token: '',
+    csrf: ''
   });
 
   // state actions
@@ -23,6 +31,14 @@ export default function StoreProvider(props: any) {
 
   // state proxy
   const store: any = [state, actions];
+
+  onMount(() => {
+    if (!state.token) {
+      actions.setLoadState(true);
+    } else {
+      createComputed(() => actions.setLoadState(true));
+    }
+  });
 
   return (
     <StoreContext.Provider value={store}>
