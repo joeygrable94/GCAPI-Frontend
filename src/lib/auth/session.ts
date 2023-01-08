@@ -10,7 +10,7 @@ import {
   UserRead,
   UsersService
 } from '~/api';
-import { validatePassword, validateUsername } from '~/lib/db/validators';
+import { validatePassword, validateUsername } from '~/lib/auth/validators';
 import { log } from '~/lib/core/utils';
 
 const sessionSecret = import.meta.env.VITE_SESSION_SECRET;
@@ -28,6 +28,12 @@ const storage = createCookieSessionStorage({
     httpOnly: true
   }
 });
+
+export type Authorized = {
+  readonly user: UserRead;
+  readonly token: string;
+  readonly csrf: string;
+};
 
 export function getUserSession(request: Request) {
   // return cookie session
@@ -113,7 +119,7 @@ export async function loginUser(form: FormData) {
       } as Body_auth_access_api_v1_auth_access_post
     });
   } catch (err: any) {
-    log('Error Logging In:', err?.body?.detail);
+    if (import.meta.env.DEV) log('Error Logging In:', err?.body?.detail);
   }
   // verify access token received
   if (!access_token) {
@@ -125,42 +131,47 @@ export async function loginUser(form: FormData) {
   return createUserSession(access_token, redirectTo);
 }
 
-export async function logoutUser(request: Request, redirectTo: string = '/login') {
+export async function logoutUser(request: Request) {
   // get cookie session data
   const session = await storage.getSession(request.headers.get('Cookie'));
+  // fetch access token
+  let access_token: BearerResponse | undefined = undefined;
   // logout user from api auth service
   try {
-    await AuthService.authLogoutApiV1AuthLogoutDelete();
+    access_token = await AuthService.authLogoutApiV1AuthLogoutDelete();
   } catch (err: ApiError | any) {
-    log('Error Logging Out:', err?.body?.detail);
+    if (import.meta.env.DEV) log('Error Logging Out:', err?.body?.detail);
   }
   // reset OpenAPI token
   OpenAPI.TOKEN = '';
   // redirect to login page
-  return redirect(redirectTo, {
+  return redirect('/login', {
     headers: {
       'Set-Cookie': await storage.destroySession(session)
     }
   });
 }
 
-export async function getUser(request: Request) {
+export async function getUser(request: Request): Promise<Authorized | null> {
   // get current user access via cookie session
-  const authAccess = await getUserAccessToken(request);
+  const authorized = await getUserAccessToken(request)
   // verify access type
   if (
-    typeof authAccess?.token !== 'string' ||
-    typeof authAccess?.csrf !== 'string'
+    typeof authorized?.token !== 'string' ||
+    typeof authorized?.csrf !== 'string'
   ) {
     return null;
   }
+  const token = authorized?.token || ""
+  const csrf = authorized?.csrf || ""
+  // set OpenAPI token
+  OpenAPI.TOKEN = token;
   // fetch current user
   try {
-    OpenAPI.TOKEN = authAccess?.token;
-    const user: UserRead = await UsersService.usersCurrentUserApiV1UsersMeGet()
-    return user;
+    const user: UserRead = await UsersService.usersAuthorizedApiV1UsersMeGet()
+    return { user, token, csrf } as Authorized;
   } catch (err: any) {
-    log('Error Fetching Current User:', err?.body?.detail);
+    if (import.meta.env.DEV) log('Error Fetching Current User:', err?.body?.detail);
     return null;
   }
 }

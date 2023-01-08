@@ -11,7 +11,7 @@ import {
   Scripts,
   Title
 } from 'solid-start';
-import StoreProvider from '~/lib/core/store';
+import StoreProvider from '~/lib/core/state';
 import './root.css';
 
 export default function Root() {

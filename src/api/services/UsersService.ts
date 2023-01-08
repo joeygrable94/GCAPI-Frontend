@@ -16,7 +16,7 @@ export class UsersService {
    * @returns UserRead Successful Response
    * @throws ApiError
    */
-  public static usersCurrentUserApiV1UsersMeGet(): CancelablePromise<UserRead> {
+  public static usersAuthorizedApiV1UsersMeGet(): CancelablePromise<UserRead> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/me',
@@ -33,7 +33,7 @@ export class UsersService {
    * @returns UserRead Successful Response
    * @throws ApiError
    */
-  public static usersPatchCurrentUserApiV1UsersMePatch({
+  public static usersPatchAuthorizedApiV1UsersMePatch({
     requestBody,
   }: {
     requestBody: UserUpdate,

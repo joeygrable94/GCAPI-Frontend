@@ -1,11 +1,23 @@
-import { createSignal } from 'solid-js';
+import { useStore } from '~/lib/core/state';
 import './Counter.css';
 
 export default function Counter() {
-  const [count, setCount] = createSignal(0);
+  const [state, actions]: any = useStore();
   return (
-    <button class="increment" onClick={() => setCount(count() + 1)}>
-      Clicks: {count()}
-    </button>
+    <>
+      <h2>Clicks: {state.count}</h2>
+      <button
+        class="btn increment"
+        onClick={() => actions.setCount(state.count + 1)}
+      >
+        +
+      </button>
+      <button
+        class="btn decrement"
+        onClick={() => actions.setCount(state.count - 1)}
+      >
+        -
+      </button>
+    </>
   );
 }

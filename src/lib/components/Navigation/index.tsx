@@ -5,19 +5,21 @@ import {
   createServerData$,
   redirect
 } from 'solid-start/server';
-import { getUser, logoutUser } from '~/lib/db/session';
+import { Authorized, getUser, logoutUser } from '~/lib/auth/session';
+import { useStore } from '~/lib/core/state';
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {
-    const user = await getUser(request);
-    if (!user) throw redirect('/login');
-    return { user };
+    const authorized: Authorized | null = await getUser(request);
+    if (!authorized) throw redirect('/login');
+    return authorized;
   });
 }
 
 export default function Navigation(props: any) {
   const data = useRouteData<typeof routeData>();
-  const [, { Form }] = createServerAction$(
+  const [state, actions]: any = useStore();
+  const [loggingOut, logout] = createServerAction$(
     async (f: FormData, { request }) => await logoutUser(request)
   );
 
@@ -29,11 +31,11 @@ export default function Navigation(props: any) {
         <Show when={data()?.user?.is_superuser}>
           <A href="/users">Users</A>
         </Show>
-        <Form>
+        <logout.Form>
           <button name="logout" type="submit">
             Logout
           </button>
-        </Form>
+        </logout.Form>
       </Show>
     </nav>
   );

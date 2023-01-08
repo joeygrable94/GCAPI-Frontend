@@ -1,11 +1,6 @@
-import {
-  createComputed,
-  createContext,
-  createSignal,
-  onMount,
-  useContext
-} from 'solid-js';
+import { createContext, createSignal, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
+import createCommonService from '~/lib/core/common';
 
 const StoreContext = createContext();
 
@@ -13,13 +8,19 @@ export default function StoreProvider(props: any) {
   // app services
   const [appLoaded, setAppLoaded] = createSignal(false);
 
+  // auth service
+  // let currentUser: any;
+
   // state manager
   const [state, setState] = createStore({
     get loadState() {
       return appLoaded();
     },
+    // get currentUser() {
+    //   return currentUser();
+    // },
     appName: 'GCAPI',
-    page: '',
+    count: 0,
     token: '',
     csrf: ''
   });
@@ -32,13 +33,11 @@ export default function StoreProvider(props: any) {
   // state proxy
   const store: any = [state, actions];
 
-  onMount(() => {
-    if (!state.token) {
-      actions.setLoadState(true);
-    } else {
-      createComputed(() => actions.setLoadState(true));
-    }
-  });
+  // common services [mount/cleanup]
+  createCommonService(actions, state, setState);
+
+  // auth services
+  // createAuthService(actions);
 
   return (
     <StoreContext.Provider value={store}>

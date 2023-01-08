@@ -1,7 +1,9 @@
 import { Title } from 'solid-start';
 import Counter from '~/lib/components/Counter';
+import { log } from '~/lib/core/utils';
 
 export default function HomeMain(props: any) {
+  if (import.meta.env.DEV && !import.meta.env.SSR) log('<UserProfileMain>');
   return (
     <>
       <Title>Home Page</Title>

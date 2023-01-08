@@ -5,26 +5,26 @@ import {
   createServerData$,
   redirect
 } from 'solid-start/server';
+import { Authorized, getUser, loginUser } from '~/lib/auth/session';
 import Navigation from '~/lib/components/Navigation';
-import { getUser, loginUser } from '~/lib/db/session';
+import { log } from '~/lib/core/utils';
 
 export function routeData() {
   return createServerData$(async (_, { request }) => {
-    if (await getUser(request)) {
-      throw redirect('/');
-    }
+    const authorized: Authorized | null = await getUser(request);
+    if (authorized) throw redirect('/');
     return {};
   });
 }
 
-export default function LoginMain() {
+export default function LoginPage() {
   const data: any = useRouteData<typeof routeData>();
   const params: any = useParams();
-
   const [loggingIn, { Form }]: any = createServerAction$(
     async (form: FormData) => await loginUser(form)
   );
 
+  if (import.meta.env.DEV && !import.meta.env.SSR) log('<LoginPage>');
   return (
     <>
       <Title>Log In</Title>

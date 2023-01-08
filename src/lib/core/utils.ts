@@ -37,6 +37,12 @@ const getGlobal = () => {
 // global
 export const g = once(() => getGlobal())();
 
+// simple glob matching
+export const glob = function(pattern: string, input: string): boolean {
+  var re = new RegExp(pattern.replace(/([.?+^$[\]\\(){}|\/-])/g, "\\$1").replace(/\*/g, '.*'));
+  return re.test(input);
+}
+
 // url requests
 export const encode = encodeURIComponent;
 
