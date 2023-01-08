@@ -1,12 +1,8 @@
-import { batch, createEffect, onMount } from 'solid-js';
+import { batch, createComputed, createEffect, onMount } from 'solid-js';
 import { OpenAPI } from '~/api';
 import { g, log } from './utils';
 
-export default function createCommonService(
-  actions: any,
-  state: any,
-  setState: any
-) {
+export default function createCommonService(actions: any, state: any, setState: any) {
   // assign common service actions
   Object.assign(actions, {
     // count setter
@@ -31,8 +27,7 @@ export default function createCommonService(
   });
 
   onMount(() => {
-    if (g.localStorage.count)
-      setState('count', JSON.parse(g.localStorage.count));
+    if (g.localStorage.count) setState('count', JSON.parse(g.localStorage.count));
     if (g.localStorage.jwt) setState('token', JSON.parse(g.localStorage.jwt));
     if (g.localStorage.csrf) setState('csrf', JSON.parse(g.localStorage.csrf));
 
@@ -46,5 +41,14 @@ export default function createCommonService(
       if (import.meta.env.DEV && import.meta.env.SSR)
         log(`${state.appName} Common Service State Changed`);
     });
+
+    // check state token
+    if (!state.token) actions.setLoadState(true);
+    else {
+      // fetch current user
+      actions.pullUser();
+      // createComputed(() => state.currentUser && actions.setLoadState(true));
+      createComputed(() => actions.setLoadState(true));
+    }
   });
 }

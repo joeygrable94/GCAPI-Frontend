@@ -1,6 +1,7 @@
 import { createContext, createSignal, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import createCommonService from '~/lib/core/common';
+import createAuthService from './auth';
 
 const StoreContext = createContext();
 
@@ -37,13 +38,9 @@ export default function StoreProvider(props: any) {
   createCommonService(actions, state, setState);
 
   // auth services
-  // createAuthService(actions);
+  createAuthService(actions);
 
-  return (
-    <StoreContext.Provider value={store}>
-      {props.children}
-    </StoreContext.Provider>
-  );
+  return <StoreContext.Provider value={store}>{props.children}</StoreContext.Provider>;
 }
 
 export function useStore() {

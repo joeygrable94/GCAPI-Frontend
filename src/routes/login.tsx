@@ -1,24 +1,26 @@
-import { Show } from 'solid-js';
+import { Resource, Show } from 'solid-js';
 import { Title, useParams, useRouteData } from 'solid-start';
-import {
-  createServerAction$,
-  createServerData$,
-  redirect
-} from 'solid-start/server';
-import { Authorized, getUser, loginUser } from '~/lib/auth/session';
+import { createServerAction$, createServerData$, redirect } from 'solid-start/server';
+import { Authorized, getCurrentUser, loginUser } from '~/lib/auth/session';
 import Navigation from '~/lib/components/Navigation';
 import { log } from '~/lib/core/utils';
 
 export function routeData() {
-  return createServerData$(async (_, { request }) => {
-    const authorized: Authorized | null = await getUser(request);
-    if (authorized) throw redirect('/');
-    return {};
-  });
+  const authorized: Resource<object | null> = createServerData$(
+    async (_, { request }) => {
+      const authorized: Authorized | null = await getCurrentUser(request);
+      if (authorized) throw redirect('/');
+      return {};
+    },
+    {
+      initialValue: null
+    }
+  );
+  return { authorized };
 }
 
 export default function LoginPage() {
-  const data: any = useRouteData<typeof routeData>();
+  const { authorized }: any = useRouteData<typeof routeData>();
   const params: any = useParams();
   const [loggingIn, { Form }]: any = createServerAction$(
     async (form: FormData) => await loginUser(form)
@@ -32,11 +34,7 @@ export default function LoginPage() {
       <main>
         <h1>Login</h1>
         <Form>
-          <input
-            type="hidden"
-            name="redirectTo"
-            value={params.redirectTo ?? '/'}
-          />
+          <input type="hidden" name="redirectTo" value={params.redirectTo ?? '/'} />
           <div>
             <label for="username-input">Username</label>
             <input name="username" placeholder="username" />

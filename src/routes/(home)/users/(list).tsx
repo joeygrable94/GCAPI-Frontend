@@ -1,17 +1,22 @@
 import { createMemo, For, Resource } from 'solid-js';
-import { A, RouteDataArgs, useParams, useRouteData } from 'solid-start';
+import { A, RouteDataArgs, Title, useParams, useRouteData } from 'solid-start';
 import { createServerData$, redirect } from 'solid-start/server';
 import { ApiError, UserRead, UsersService } from '~/api';
 import { Authorized } from '~/lib/auth/session';
-import { getSuperUser } from '~/lib/auth/useUser';
+import { getAuthorizedSuperUser } from '~/lib/auth/useUser';
 import { log } from '~/lib/core/utils';
 
 export function routeData({ params }: RouteDataArgs) {
-  const authorized = createServerData$(async (_, { request }) => {
-    const authorized: Authorized | null = await getSuperUser(request);
-    if (!authorized?.user.is_superuser) throw redirect('/');
-    return authorized;
-  });
+  const authorized: Resource<Authorized | null> = createServerData$(
+    async (_, { request }) => {
+      const authorized: Authorized | null = await getAuthorizedSuperUser(request);
+      if (!authorized?.user.is_superuser) throw redirect('/');
+      return authorized;
+    },
+    {
+      initialValue: null
+    }
+  );
   const page: number = parseInt(params.page) > 0 ? parseInt(params.page) : 1;
   const users: Resource<UserRead[] | null[]> = createServerData$(
     async (key) => {
@@ -39,6 +44,7 @@ export default function UsersIndex() {
   if (import.meta.env.DEV && !import.meta.env.SSR) log('<UsersIndex>');
   return (
     <>
+      <Title>Users</Title>
       <main>
         <h1>All Users</h1>
         <p>Index: list all users</p>

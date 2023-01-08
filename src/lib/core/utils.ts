@@ -38,10 +38,12 @@ const getGlobal = () => {
 export const g = once(() => getGlobal())();
 
 // simple glob matching
-export const glob = function(pattern: string, input: string): boolean {
-  var re = new RegExp(pattern.replace(/([.?+^$[\]\\(){}|\/-])/g, "\\$1").replace(/\*/g, '.*'));
+export const globMatch = function (pattern: string, input: string): boolean {
+  var re = new RegExp(
+    pattern.replace(/([.?+^$[\]\\(){}|\/-])/g, '\\$1').replace(/\*/g, '.*')
+  );
   return re.test(input);
-}
+};
 
 // url requests
 export const encode = encodeURIComponent;
@@ -55,4 +57,4 @@ export const API_HOST: string = import.meta.env.DEV
 export const API_URL_BASE = `${API_PROTOCOL}://${API_HOST}`;
 
 // set OpenAPI Base URL
-OpenAPI.BASE = API_URL_BASE
+OpenAPI.BASE = API_URL_BASE;
