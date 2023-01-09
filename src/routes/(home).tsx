@@ -1,4 +1,4 @@
-import { onMount, Resource } from 'solid-js';
+import { onMount, Resource, Show } from 'solid-js';
 import { Outlet, useRouteData } from 'solid-start';
 import { createServerData$, redirect } from 'solid-start/server';
 import { Authorized } from '~/lib/auth/session';
@@ -35,7 +35,9 @@ export default function HomeLayout(props: any) {
   if (import.meta.env.DEV && !import.meta.env.SSR) log('<HomeLayout>');
   return (
     <>
-      <Navigation />
+      <Show when={authorized()} fallback={<Navigation />}>
+        <Navigation user={authorized()?.user} />
+      </Show>
       <Outlet />
     </>
   );

@@ -3,6 +3,10 @@ import { createSignal } from 'solid-js';
 export default function createAuthService(actions: any) {
   // auth login signal
   const [loggedIn, setLoggedIn] = createSignal(false);
+  let currentUser: any = async () => {
+    await null;
+    return { hello: 'world' };
+  };
 
   // assign auth service actions
   Object.assign(actions, {
@@ -10,4 +14,6 @@ export default function createAuthService(actions: any) {
     pullUser: () => setLoggedIn(true),
     isLoggedIn: () => loggedIn()
   });
+
+  return currentUser;
 }

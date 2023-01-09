@@ -3,7 +3,7 @@ import { createHandler, renderAsync, StartServer } from 'solid-start/entry-serve
 import { Authorized, getCurrentUser, resetUserHeaders } from '~/lib/auth/session';
 import { globMatch, log } from './lib/core/utils';
 
-const protectedPaths: string[] = ['users'];
+const protectedPaths: string[] = ['users', 'users/*-*-*-*-*'];
 const belongsToOrSuperUser: string[] = ['users/*-*-*-*-*'];
 
 export default createHandler(
@@ -28,15 +28,24 @@ export default createHandler(
           return redirect('/login', await resetUserHeaders(event.request));
         }
       }
-      // authorized superusers or belongs to user
-      for (let path of belongsToOrSuperUser) {
+      // authorized superusers
+      for (let path of protectedPaths) {
         if (globMatch(path, checkPath)) {
-          log('verify user is superuser or belongs to user');
-          if (!authorized?.user.is_superuser && authorized?.user.id !== reqPath[1]) {
-            return redirect('/');
+          if (!authorized?.user.is_superuser) {
+            return redirect('/login', await resetUserHeaders(event.request));
           }
         }
       }
+      // TODO: edit the backend to allow returning different data based on user scopes
+      // authorized superusers or belongs to user
+      // for (let path of belongsToOrSuperUser) {
+      //   if (globMatch(path, checkPath)) {
+      //     log('verify user is superuser or belongs to user');
+      //     if (!authorized?.user.is_superuser && authorized?.user.id !== reqPath[1]) {
+      //       return redirect('/');
+      //     }
+      //   }
+      // }
       // debug
       if (import.meta.env.DEV) log('authorized user', authorized?.user.email);
       // continue request

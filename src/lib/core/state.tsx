@@ -10,16 +10,16 @@ export default function StoreProvider(props: any) {
   const [appLoaded, setAppLoaded] = createSignal(false);
 
   // auth service
-  // let currentUser: any;
+  let currentUser: any;
 
   // state manager
   const [state, setState] = createStore({
     get loadState() {
       return appLoaded();
     },
-    // get currentUser() {
-    //   return currentUser();
-    // },
+    get currentUser() {
+      return currentUser();
+    },
     appName: 'GCAPI',
     count: 0,
     token: '',
@@ -38,7 +38,7 @@ export default function StoreProvider(props: any) {
   createCommonService(actions, state, setState);
 
   // auth services
-  createAuthService(actions);
+  currentUser = createAuthService(actions);
 
   return <StoreContext.Provider value={store}>{props.children}</StoreContext.Provider>;
 }
