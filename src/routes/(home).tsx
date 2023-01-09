@@ -1,4 +1,4 @@
-import { onMount, Resource, Show } from 'solid-js';
+import { createComputed, onMount, Resource, Show } from 'solid-js';
 import { Outlet, useRouteData } from 'solid-start';
 import { createServerData$, redirect } from 'solid-start/server';
 import { Authorized } from '~/lib/auth/session';
@@ -23,12 +23,20 @@ export function routeData() {
 
 export default function HomeLayout(props: any) {
   const { authorized }: any = useRouteData<typeof routeData>();
-  const [, { setToken, setTokenCSRF }]: any = useStore();
+  const [state, actions]: any = useStore();
   onMount(() => {
+    log('Mounted Home Layout');
     // load authorized user token + csrf
     if (authorized()?.access) {
-      setToken(authorized()?.token);
-      setTokenCSRF(authorized()?.csrf);
+      log('Set token from Home Route Data', authorized()?.access.csrf);
+      actions.setToken(authorized()?.access.token, authorized()?.access.csrf);
+    }
+    // check state token
+    if (!state.token) actions.setLoadState(true);
+    else {
+      // fetch current user
+      actions.pullUser();
+      createComputed(() => state.currentUser && actions.setLoadState(true));
     }
   });
 

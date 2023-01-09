@@ -38,7 +38,7 @@ export default function StoreProvider(props: any) {
   createCommonService(actions, state, setState);
 
   // auth services
-  currentUser = createAuthService(actions);
+  currentUser = createAuthService(actions, state);
 
   return <StoreContext.Provider value={store}>{props.children}</StoreContext.Provider>;
 }
