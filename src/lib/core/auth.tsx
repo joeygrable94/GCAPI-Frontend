@@ -1,4 +1,11 @@
-import { batch, createEffect, createResource, createSignal, onMount } from 'solid-js';
+import {
+  batch,
+  createComputed,
+  createEffect,
+  createResource,
+  createSignal,
+  onMount
+} from 'solid-js';
 import { useNavigate } from 'solid-start';
 import {
   AuthService,
@@ -96,6 +103,15 @@ export default function createAuthService(actions: any, state: any) {
 
     log('State Token:', state.token.split('.')[0]);
     log('State CSRF:', state.csrf);
+    log('State User:', state.currentUser);
+
+    // check state token
+    if (!state.token) actions.setLoadState(true);
+    else {
+      // fetch current user
+      actions.pullUser();
+      createComputed(() => state.currentUser && actions.setLoadState(true));
+    }
   });
 
   // return the fetchable resource
