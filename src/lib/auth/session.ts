@@ -89,6 +89,7 @@ export async function createUserSession(
   if (bearer.access_token) session.set('accessToken', bearer.access_token);
   if (bearer.access_token_csrf)
     session.set('accessTokenCSRF', bearer.access_token_csrf);
+  44;
   // set refresh token + csrf
   if (bearer.refresh_token) session.set('refreshToken', bearer.refresh_token);
   if (bearer.refresh_token_csrf)

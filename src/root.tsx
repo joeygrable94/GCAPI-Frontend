@@ -1,6 +1,12 @@
 // @refresh reload
-import { ColorModeScript, HopeProvider, injectCriticalStyle } from '@hope-ui/core';
+import {
+  ColorModeScript,
+  cookieStorageManagerSSR,
+  HopeProvider,
+  injectCriticalStyle
+} from '@hope-ui/core';
 import { Suspense, useContext } from 'solid-js';
+import { isServer } from 'solid-js/web';
 import {
   Body,
   ErrorBoundary,
@@ -19,9 +25,9 @@ import './root.css';
 
 export default function Root() {
   const event: any = useContext(ServerContext);
-  // const themeStorage = cookieStorageManagerSSR(
-  //   isServer ? event.request.headers.get('cookie') ?? '' : document.cookie
-  // );
+  const themeStorage = cookieStorageManagerSSR(
+    isServer ? event.request.headers.get('cookie') ?? '' : document.cookie
+  );
 
   injectCriticalStyle();
 
