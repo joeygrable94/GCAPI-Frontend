@@ -2,30 +2,32 @@ import { Resource, Show } from 'solid-js';
 import { RouteDataArgs, Title, useParams, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
 import { UserRead, UsersService } from '~/api';
-import { Authorized } from '~/lib/auth/session';
-import { getAuthorizedSuperUserOrBelongsToUser } from '~/lib/auth/useUser';
+import { CheckAuthorized } from '~/lib/auth/types';
+import { getAuthorizedSuperUserOrBelongsToUser } from '~/lib/auth/useAuth';
 import ProfileInfo from '~/lib/components/Profile';
 
 import { log } from '~/lib/core/utils';
 
 export function routeData({ params }: RouteDataArgs) {
-  const authorized: Resource<Authorized | null> = createServerData$(
+  const authorized: Resource<CheckAuthorized> = createServerData$(
     async (key, { request }) => {
       try {
-        const authorized: Authorized | null =
-          await getAuthorizedSuperUserOrBelongsToUser(request, key[0]);
+        const authorized: CheckAuthorized = await getAuthorizedSuperUserOrBelongsToUser(
+          request,
+          key[0]
+        );
         return authorized;
       } catch (error: any) {
         if (import.meta.env.DEV) log(error?.body);
-        return null;
       }
+      return { user: false, access: false } as CheckAuthorized;
     },
     {
       key: () => [params.id],
-      initialValue: null
+      initialValue: { user: false, access: false }
     }
   );
-  const user: Resource<UserRead | undefined> = createServerData$(
+  const user: Resource<UserRead | boolean> = createServerData$(
     async (key) => {
       try {
         const found: UserRead = await UsersService.usersUserApiV1UsersIdGet({
@@ -35,10 +37,11 @@ export function routeData({ params }: RouteDataArgs) {
       } catch (error: any) {
         if (import.meta.env.DEV) log(error?.body);
       }
+      return false;
     },
     {
       key: () => [params.id],
-      initialValue: undefined
+      initialValue: false
     }
   );
   return { authorized, user };

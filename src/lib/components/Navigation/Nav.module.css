@@ -1,0 +1,12 @@
+.navLink {
+    width: 100%;
+    padding: var(--hope-sizes-3) var(--hope-sizes-2);
+}
+
+.navLogoutForm {
+    width: 100%;
+}
+
+.navLogoutFormBtn {
+    padding: var(--hope-sizes-3) var(--hope-sizes-2);
+}

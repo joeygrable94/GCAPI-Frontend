@@ -1,36 +1,19 @@
-import { Resource, Show } from 'solid-js';
-import { Title, useParams, useRouteData } from 'solid-start';
-import { createServerAction$, createServerData$, redirect } from 'solid-start/server';
-import { Authorized, getCurrentUser, loginUser } from '~/lib/auth/session';
-import Navigation from '~/lib/components/Navigation';
+import { Show } from 'solid-js';
+import { Title, useParams } from 'solid-start';
+import { createServerAction$ } from 'solid-start/server';
+import { authenticate } from '~/lib/auth/utilities';
 import { log } from '~/lib/core/utils';
 
-export function routeData() {
-  const authorized: Resource<object | null> = createServerData$(
-    async (_, { request }) => {
-      const authorized: Authorized | null = await getCurrentUser(request);
-      if (authorized) throw redirect('/');
-      return {};
-    },
-    {
-      initialValue: null
-    }
-  );
-  return { authorized };
-}
-
 export default function LoginPage() {
-  const { authorized }: any = useRouteData<typeof routeData>();
   const params: any = useParams();
   const [loggingIn, { Form }]: any = createServerAction$(
-    async (form: FormData) => await loginUser(form)
+    async (form: FormData) => await authenticate(form)
   );
 
   if (import.meta.env.DEV && !import.meta.env.SSR) log('<LoginPage>');
   return (
     <>
       <Title>Log In</Title>
-      <Navigation />
       <main>
         <h1>Login</h1>
         <Form>

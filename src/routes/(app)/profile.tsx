@@ -1,20 +1,20 @@
 import { Resource, Show } from 'solid-js';
 import { Title, useRouteData } from 'solid-start';
 import { createServerData$, redirect } from 'solid-start/server';
-import { Authorized } from '~/lib/auth/session';
-import { getAuthorized } from '~/lib/auth/useUser';
+import { CheckAuthorized } from '~/lib/auth/types';
+import { getAuthorized } from '~/lib/auth/useAuth';
 import ProfileInfo from '~/lib/components/Profile';
 import { log } from '~/lib/core/utils';
 
 export function routeData() {
-  const authorized: Resource<Authorized | null> = createServerData$(
+  const authorized: Resource<CheckAuthorized> = createServerData$(
     async (_, { request }) => {
-      const authorized: Authorized | null = await getAuthorized(request);
-      if (!authorized) throw redirect('/login');
+      const authorized: CheckAuthorized = await getAuthorized(request);
+      if (!authorized?.user) throw redirect('/login');
       return authorized;
     },
     {
-      initialValue: null
+      initialValue: { user: false, access: false }
     }
   );
   return { authorized };

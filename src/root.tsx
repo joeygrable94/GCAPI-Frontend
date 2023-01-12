@@ -19,7 +19,7 @@ import {
   ServerContext,
   Title
 } from 'solid-start';
-import StoreProvider from '~/lib/core/state';
+import AppProvider from '~/lib/core/state';
 import { theme } from '~/lib/theme';
 import './root.css';
 
@@ -41,7 +41,7 @@ export default function Root() {
       <Body>
         <ColorModeScript initialColorMode="light" storageType="cookie" />
         <HopeProvider initialColorMode="light" theme={theme}>
-          <StoreProvider>
+          <AppProvider>
             <Suspense>
               <ErrorBoundary>
                 <Routes>
@@ -49,7 +49,7 @@ export default function Root() {
                 </Routes>
               </ErrorBoundary>
             </Suspense>
-          </StoreProvider>
+          </AppProvider>
         </HopeProvider>
         <Scripts />
       </Body>
