@@ -2,7 +2,7 @@ import { Title } from 'solid-start';
 import Counter from '~/lib/components/Counter';
 import { log } from '~/lib/core/utils';
 
-export default function HomeMain() {
+export default function HomePage() {
   if (import.meta.env.DEV && !import.meta.env.SSR) log('<UserProfileMain>');
   return (
     <>

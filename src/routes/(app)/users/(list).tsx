@@ -2,19 +2,21 @@ import { createMemo, For, Resource } from 'solid-js';
 import { A, RouteDataArgs, Title, useParams, useRouteData } from 'solid-start';
 import { createServerData$, redirect } from 'solid-start/server';
 import { ApiError, UserRead, UsersService } from '~/api';
-import { Authorized } from '~/lib/auth/session';
-import { getAuthorizedSuperUser } from '~/lib/auth/useUser';
+import { CheckAuthorized } from '~/lib/auth/types';
+import { getAuthorizedSuperUser } from '~/lib/auth/useAuth';
+import { isAuthorized } from '~/lib/auth/utilities';
 import { log } from '~/lib/core/utils';
 
 export function routeData({ params }: RouteDataArgs) {
-  const authorized: Resource<Authorized | null> = createServerData$(
+  const authorized: Resource<CheckAuthorized> = createServerData$(
     async (_, { request }) => {
-      const authorized: Authorized | null = await getAuthorizedSuperUser(request);
-      if (!authorized?.user.is_superuser) throw redirect('/');
+      const authorized: CheckAuthorized = await getAuthorizedSuperUser(request);
+      if (isAuthorized(authorized) && !authorized?.user.is_superuser)
+        throw redirect('/');
       return authorized;
     },
     {
-      initialValue: null
+      initialValue: { user: false, access: false }
     }
   );
   const page: number = parseInt(params.page) > 0 ? parseInt(params.page) : 1;

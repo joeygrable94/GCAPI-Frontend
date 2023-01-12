@@ -1,9 +1,9 @@
 import { createMemo, createSignal, onMount } from 'solid-js';
-import { useStore } from '~/lib/core/state';
+import { useAppStore } from '~/lib/core/state';
 import './Counter.css';
 
 export default function Counter() {
-  const [state, actions]: any = useStore();
+  const [state, actions]: any = useAppStore();
   const [count, setCount]: any = createSignal(0);
   // view current count + state
   const currentClickCount = createMemo(() => `Clicks: ${count()} [${state.count}]`);

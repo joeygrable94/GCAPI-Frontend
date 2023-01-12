@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserRead = {
+export const $UserReadSafe = {
   properties: {
     id: {
       type: 'string',
@@ -33,13 +33,6 @@ export const $UserRead = {
     },
     is_verified: {
       type: 'boolean',
-      isRequired: true,
-    },
-    scopes: {
-      type: 'array',
-      contains: {
-        type: 'string',
-      },
       isRequired: true,
     },
   },
