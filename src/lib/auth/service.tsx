@@ -27,8 +27,8 @@ export default function createAuthService(actions: any, state: any, setState: an
         return me;
       } catch (err: any) {
         if (import.meta.env.DEV) log('Error actions.fetchMe()', err);
-        actions.resetToken();
-        navigate('/login');
+        // actions.resetToken();
+        // navigate('/login');
       }
       return false;
     }
