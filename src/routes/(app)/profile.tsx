@@ -1,27 +1,26 @@
 import { Resource, Show } from 'solid-js';
 import { Title, useRouteData } from 'solid-start';
-import { createServerData$, redirect } from 'solid-start/server';
-import { Authorized } from '~/lib/auth/session';
-import { getAuthorized } from '~/lib/auth/useUser';
+import { createServerData$ } from 'solid-start/server';
+import { useAuthorizedContext } from '~/lib/auth/context';
+import { CheckAuthorized } from '~/lib/auth/types';
+import {
+  initialRouteAuthState,
+  returnAuthorizedUserOrRedirect
+} from '~/lib/auth/useAuth';
 import ProfileInfo from '~/lib/components/Profile';
 import { log } from '~/lib/core/utils';
 
 export function routeData() {
-  const authorized: Resource<Authorized | null> = createServerData$(
-    async (_, { request }) => {
-      const authorized: Authorized | null = await getAuthorized(request);
-      if (!authorized) throw redirect('/login');
-      return authorized;
-    },
-    {
-      initialValue: null
-    }
+  const authorized: Resource<CheckAuthorized> = createServerData$(
+    returnAuthorizedUserOrRedirect,
+    { initialValue: initialRouteAuthState }
   );
   return { authorized };
 }
 
 export default function UserProfileMain() {
   const { authorized }: any = useRouteData<typeof routeData>();
+  const [auth, _] = useAuthorizedContext();
 
   if (import.meta.env.DEV && !import.meta.env.SSR) log('<UserProfileMain>');
   return (
@@ -29,7 +28,7 @@ export default function UserProfileMain() {
       <Title>User Profile</Title>
       <main>
         <h1>Current User Profile</h1>
-        <Show when={authorized()?.user}>
+        <Show when={authorized().user}>
           <ProfileInfo user={authorized().user} />
         </Show>
       </main>

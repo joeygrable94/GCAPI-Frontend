@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserRead = {
+export type UserReadSafe = {
   id: string;
   created_on: string;
   updated_on: string;
@@ -10,6 +10,5 @@ export type UserRead = {
   is_active: boolean;
   is_superuser: boolean;
   is_verified: boolean;
-  scopes: Array<string>;
 };
 
