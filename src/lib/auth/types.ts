@@ -1,8 +1,8 @@
 import { UserReadSafe } from '~/api';
 
 export type AuthBearer = {
-  readonly token: string | boolean;
-  readonly csrf: string | boolean;
+  readonly token: string;
+  readonly csrf: string;
 };
 
 export type Cookie = {
@@ -14,8 +14,8 @@ export type AuthorizedHeader = {
 };
 
 export type Unauthorized = {
-  readonly user: boolean;
-  readonly access: boolean;
+  readonly user: false;
+  readonly access: AuthBearer;
 };
 
 export type Authorized = {
@@ -26,12 +26,14 @@ export type Authorized = {
 export type CheckAuthorized = Authorized | Unauthorized;
 
 export type AuthorizedState = {
+  readonly authLoadState: any;
   readonly currentUser: any;
   readonly token: string;
   readonly csrf: string;
 };
 
 export type AuthorizedActions = {
+  setApiBaseUrl: (s: string) => any;
   setAuthLoad: (s: boolean) => any;
   setToken: (token: string, csrf: string) => any;
   resetToken: () => any;

@@ -1,36 +1,23 @@
 import { createMemo, For, Resource } from 'solid-js';
 import { A, RouteDataArgs, Title, useParams, useRouteData } from 'solid-start';
-import { createServerData$, redirect } from 'solid-start/server';
-import { ApiError, UserRead, UsersService } from '~/api';
+import { createServerData$ } from 'solid-start/server';
+import { UserRead } from '~/api';
 import { CheckAuthorized } from '~/lib/auth/types';
-import { getAuthorizedSuperUser } from '~/lib/auth/useAuth';
-import { isAuthorized } from '~/lib/auth/utilities';
+import {
+  initialRouteAuthState,
+  returnAuthorizedSuperUserOrRedirect,
+  returnFetchUsersListByKey
+} from '~/lib/auth/useAuth';
 import { log } from '~/lib/core/utils';
 
 export function routeData({ params }: RouteDataArgs) {
   const authorized: Resource<CheckAuthorized> = createServerData$(
-    async (_, { request }) => {
-      const authorized: CheckAuthorized = await getAuthorizedSuperUser(request);
-      if (isAuthorized(authorized) && !authorized?.user.is_superuser)
-        throw redirect('/');
-      return authorized;
-    },
-    {
-      initialValue: { user: false, access: false }
-    }
+    returnAuthorizedSuperUserOrRedirect,
+    { initialValue: initialRouteAuthState }
   );
   const page: number = parseInt(params.page) > 0 ? parseInt(params.page) : 1;
   const users: Resource<UserRead[] | null[]> = createServerData$(
-    async (key) => {
-      try {
-        const users: UserRead[] | null[] =
-          await UsersService.usersListUsersApiV1UsersGet({ page: key[0] });
-        return users;
-      } catch (error: ApiError | any) {
-        log(error?.body);
-        return [];
-      }
-    },
+    returnFetchUsersListByKey,
     {
       key: () => [page],
       initialValue: []

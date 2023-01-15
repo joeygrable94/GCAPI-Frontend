@@ -15,6 +15,7 @@ import {
   Authorized,
   AuthorizedHeader,
   CheckAuthorized,
+  Cookie,
   Unauthorized
 } from '~/lib/auth/types';
 import { validatePassword, validateUsername } from '~/lib/auth/validators';
@@ -24,7 +25,7 @@ export const isAuthorized = (tbd: any): tbd is Authorized => true;
 export const isUnauthorized = (tbd: any): tbd is Unauthorized => true;
 
 export function determineAuthorized(tbd: CheckAuthorized): boolean {
-  if ((tbd as Authorized).access) {
+  if ((tbd as Authorized).access?.token.length > 0) {
     return true;
   }
   return false;
@@ -53,7 +54,7 @@ export async function createAuthorizedSession(
   return {
     headers: {
       'Set-Cookie': await authorizedCookieStorage.commitSession(session)
-    }
+    } as Cookie
   } as AuthorizedHeader;
 }
 
@@ -78,7 +79,7 @@ export async function destroyAuthorizedSession(
   return {
     headers: {
       'Set-Cookie': await authorizedCookieStorage.destroySession(session)
-    }
+    } as Cookie
   } as AuthorizedHeader;
 }
 
@@ -90,7 +91,7 @@ export async function getAuthorizedAccessToken(request: Request): Promise<AuthBe
   const csrf: string | null = session.get('accessTokenCSRF');
   // return token + csrf or null
   if (!token || typeof token !== 'string' || !csrf || typeof csrf !== 'string')
-    return { token: false, csrf: false } as AuthBearer;
+    return { token: '', csrf: '' } as AuthBearer;
   return { token, csrf } as AuthBearer;
 }
 
@@ -98,8 +99,11 @@ export async function getCheckAuthorized(request: Request): Promise<CheckAuthori
   // get current user access via cookie session
   const authorized: AuthBearer = await getAuthorizedAccessToken(request);
   // verify access type
-  if (typeof authorized?.token !== 'string' || typeof authorized?.csrf !== 'string') {
-    return { user: false, access: false } as CheckAuthorized;
+  if (authorized?.token.length <= 0 || authorized?.csrf.length <= 0) {
+    return {
+      user: false,
+      access: { token: '', csrf: '' } as AuthBearer
+    } as CheckAuthorized;
   }
   // set OpenAPI token
   OpenAPI.TOKEN = authorized?.token || '';
@@ -110,7 +114,10 @@ export async function getCheckAuthorized(request: Request): Promise<CheckAuthori
   } catch (err: any) {
     if (import.meta.env.DEV) log('Error Fetching Current User:', err?.body?.detail);
   }
-  return { user: false, access: false } as CheckAuthorized;
+  return {
+    user: false,
+    access: { token: '', csrf: '' } as AuthBearer
+  } as CheckAuthorized;
 }
 
 export async function authenticate(form: FormData): Promise<Response> {

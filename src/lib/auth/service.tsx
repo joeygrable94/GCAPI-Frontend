@@ -1,4 +1,11 @@
-import { batch, createResource, createSignal, onMount } from 'solid-js';
+import {
+  batch,
+  createComputed,
+  createEffect,
+  createResource,
+  createSignal,
+  onMount
+} from 'solid-js';
 import { useNavigate } from 'solid-start';
 import { OpenAPI, UserReadSafe, UsersService } from '~/api';
 
@@ -11,15 +18,6 @@ export default function createAuthService(actions: any, state: any, setState: an
 
   // assign auth service actions
   Object.assign(actions, {
-    setApiBaseUrl: (s: string = API_URL_BASE) => (OpenAPI.BASE = s),
-    setToken: (token: string, csrf: string) => {
-      setState('token', token);
-      setState('csrf', csrf);
-      OpenAPI.TOKEN = token;
-    },
-    resetToken: () => {
-      batch(actions.setToken('', ''));
-    },
     // signal to fetch current user
     pullUser: () => setLoggedIn(true),
     // get the current user
@@ -28,9 +26,9 @@ export default function createAuthService(actions: any, state: any, setState: an
         const me: UserReadSafe = await UsersService.usersCurrentUserApiV1UsersMeGet();
         return me;
       } catch (err: any) {
-        log('Error actions.fetchMe()', err);
-        // actions.resetToken();
-        // navigate('/login');
+        if (import.meta.env.DEV) log('Error actions.fetchMe()', err);
+        actions.resetToken();
+        navigate('/login');
       }
       return false;
     }
@@ -45,6 +43,18 @@ export default function createAuthService(actions: any, state: any, setState: an
   onMount(() => {
     // set initial state
     actions.setApiBaseUrl(API_URL_BASE);
+  });
+
+  // watch auth state changes
+  createEffect(() => {
+    // check state token
+    if (!state.token) actions.setAuthLoad(true);
+    else {
+      OpenAPI.TOKEN = state.token;
+      // fetch current user
+      actions.pullUser();
+      createComputed(() => state.currentUser && actions.setAuthLoad(true));
+    }
   });
 
   // return the fetchable resource
