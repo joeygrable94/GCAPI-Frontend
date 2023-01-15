@@ -1,10 +1,19 @@
-import { Show } from 'solid-js';
-import { Title, useParams } from 'solid-start';
-import { createServerAction$ } from 'solid-start/server';
+import { Resource, Show } from 'solid-js';
+import { Title, useParams, useRouteData } from 'solid-start';
+import { createServerAction$, createServerData$ } from 'solid-start/server';
+import { initialRouteAuthState, redirectAuthorizedUser } from '~/lib/auth/useAuth';
 import { authenticate } from '~/lib/auth/utilities';
 import { log } from '~/lib/core/utils';
 
+export function routeData() {
+  const authorized: Resource<object> = createServerData$(redirectAuthorizedUser, {
+    initialValue: initialRouteAuthState
+  });
+  return { authorized };
+}
+
 export default function LoginPage() {
+  const { authorized }: any = useRouteData<typeof routeData>();
   const params: any = useParams();
   const [loggingIn, { Form }]: any = createServerAction$(
     async (form: FormData) => await authenticate(form)
