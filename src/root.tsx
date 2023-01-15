@@ -1,6 +1,12 @@
 // @refresh reload
-import { ColorModeScript, HopeProvider, injectCriticalStyle } from '@hope-ui/core';
-import { Suspense } from 'solid-js';
+import {
+  ColorModeScript,
+  cookieStorageManagerSSR,
+  HopeProvider,
+  injectCriticalStyle
+} from '@hope-ui/core';
+import { Suspense, useContext } from 'solid-js';
+import { isServer } from 'solid-js/web';
 import {
   Body,
   ErrorBoundary,
@@ -10,12 +16,19 @@ import {
   Meta,
   Routes,
   Scripts,
+  ServerContext,
   Title
 } from 'solid-start';
-import StoreProvider from '~/lib/core/state';
+import AppProvider from '~/lib/core/state';
+import { theme } from '~/lib/theme';
 import './root.css';
 
 export default function Root() {
+  const event: any = useContext(ServerContext);
+  const themeStorage = cookieStorageManagerSSR(
+    isServer ? event.request.headers.get('cookie') ?? '' : document.cookie
+  );
+
   injectCriticalStyle();
 
   return (
@@ -26,9 +39,9 @@ export default function Root() {
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Body>
-        <StoreProvider>
-          <ColorModeScript />
-          <HopeProvider>
+        <ColorModeScript initialColorMode="light" storageType="cookie" />
+        <HopeProvider initialColorMode="light" theme={theme}>
+          <AppProvider>
             <Suspense>
               <ErrorBoundary>
                 <Routes>
@@ -36,8 +49,8 @@ export default function Root() {
                 </Routes>
               </ErrorBoundary>
             </Suspense>
-          </HopeProvider>
-        </StoreProvider>
+          </AppProvider>
+        </HopeProvider>
         <Scripts />
       </Body>
     </Html>

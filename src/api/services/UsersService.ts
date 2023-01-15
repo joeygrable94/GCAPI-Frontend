@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { UserRead } from '../models/UserRead';
+import type { UserReadSafe } from '../models/UserReadSafe';
 import type { UserUpdate } from '../models/UserUpdate';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -13,10 +14,10 @@ export class UsersService {
   /**
    * Users:Current User
    * Allows current-active-verified-users to fetch the details on their account.
-   * @returns UserRead Successful Response
+   * @returns UserReadSafe Successful Response
    * @throws ApiError
    */
-  public static usersAuthorizedApiV1UsersMeGet(): CancelablePromise<UserRead> {
+  public static usersCurrentUserApiV1UsersMeGet(): CancelablePromise<UserReadSafe> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/me',
@@ -30,14 +31,14 @@ export class UsersService {
   /**
    * Users:Patch Current User
    * Allows current-active-verified-users to update their account.
-   * @returns UserRead Successful Response
+   * @returns UserReadSafe Successful Response
    * @throws ApiError
    */
-  public static usersPatchAuthorizedApiV1UsersMePatch({
+  public static usersPatchCurrentUserApiV1UsersMePatch({
     requestBody,
   }: {
     requestBody: UserUpdate,
-  }): CancelablePromise<UserRead> {
+  }): CancelablePromise<UserReadSafe> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/me',
