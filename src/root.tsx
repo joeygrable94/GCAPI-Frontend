@@ -21,7 +21,7 @@ import {
 } from 'solid-start';
 import AppProvider from '~/lib/core/state';
 import { theme } from '~/lib/theme';
-import './root.css';
+import './root.scss';
 
 export default function Root() {
   const event: any = useContext(ServerContext);
