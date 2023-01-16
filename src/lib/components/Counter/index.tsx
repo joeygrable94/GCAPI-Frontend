@@ -1,6 +1,6 @@
 import { createMemo, createSignal, onMount } from 'solid-js';
 import { useAppStore } from '~/lib/core/state';
-import './Counter.css';
+import './Counter.scss';
 
 export default function Counter() {
   const [state, actions]: any = useAppStore();

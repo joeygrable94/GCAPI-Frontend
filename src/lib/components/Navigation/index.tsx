@@ -1,12 +1,11 @@
 import { Anchor, Box, Button, Drawer, HStack, VStack } from '@hope-ui/core';
 import { VsMenu } from 'solid-icons/vs';
-import { createEffect, createSignal, onMount, Show } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import { A } from 'solid-start';
 import { createServerAction$ } from 'solid-start/server';
 import { useAuthorizedContext } from '~/lib/auth/context';
 import { deauthenticate } from '~/lib/auth/utilities';
-import { log } from '~/lib/core/utils';
-import styles from './Nav.module.css';
+import styles from './Nav.module.scss';
 
 export default function Navigation(props: any) {
   const [auth, _] = useAuthorizedContext();
@@ -31,7 +30,7 @@ export default function Navigation(props: any) {
           <VStack justify="flex-start" textAlign="left">
             {/* Authorized Users */}
             <Show
-              when={auth.currentUser()}
+              when={props?.user}
               fallback={
                 <>
                   {/* Login */}
@@ -56,7 +55,7 @@ export default function Navigation(props: any) {
               </Anchor>
               {/* Regular Users */}
               <Show
-                when={auth.currentUser()?.is_superuser}
+                when={props?.user?.is_superuser}
                 fallback={
                   <>
                     <Anchor
@@ -84,7 +83,7 @@ export default function Navigation(props: any) {
           </VStack>
           {/* Bottom Section */}
           {/* Authorized Users */}
-          <Show when={auth.currentUser()}>
+          <Show when={props?.user}>
             <HStack justify="space-between" mb={4}>
               {/* All Users */}
               <Anchor

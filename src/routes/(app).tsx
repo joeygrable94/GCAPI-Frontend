@@ -1,8 +1,8 @@
 import { Container } from '@hope-ui/core';
-import { createComputed, createEffect, Resource } from 'solid-js';
+import { Resource } from 'solid-js';
 import { Outlet, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
-import { AuthorizedProvider, useAuthorizedContext } from '~/lib/auth/context';
+import { AuthorizedProvider } from '~/lib/auth/context';
 import { CheckAuthorized } from '~/lib/auth/types';
 import { initialRouteAuthState, returnAuthorizedUser } from '~/lib/auth/useAuth';
 import Navigation from '~/lib/components/Navigation';
@@ -24,7 +24,7 @@ export default function HomeLayout(props: any) {
         token={authorized()?.access?.token}
         csrf={authorized()?.access?.csrf}
       >
-        <Navigation />
+        <Navigation user={authorized()?.user} />
         <Container>
           <Outlet />
         </Container>
