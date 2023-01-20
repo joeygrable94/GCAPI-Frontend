@@ -3,12 +3,12 @@ import { VsMenu } from 'solid-icons/vs';
 import { createSignal, Show } from 'solid-js';
 import { A } from 'solid-start';
 import { createServerAction$ } from 'solid-start/server';
-import { useAuthorizedContext } from '~/lib/auth/context';
+import { useAuthorizedContext } from '~/lib/auth';
 import { deauthenticate } from '~/lib/auth/utilities';
 import styles from './Nav.module.scss';
 
 export default function Navigation(props: any) {
-  const [auth, _] = useAuthorizedContext();
+  const [auth, actions] = useAuthorizedContext();
   const [isOpen, setIsOpen] = createSignal(false);
   const [loggingOut, logout] = createServerAction$(
     async (f: FormData, { request }) => await deauthenticate(request)
@@ -28,12 +28,10 @@ export default function Navigation(props: any) {
             <Drawer.CloseButton />
           </HStack>
           <VStack justify="flex-start" textAlign="left">
-            {/* Authorized Users */}
             <Show
               when={props?.user}
               fallback={
                 <>
-                  {/* Login */}
                   <Anchor
                     as={A}
                     href="/login"
@@ -53,7 +51,6 @@ export default function Navigation(props: any) {
               >
                 Home
               </Anchor>
-              {/* Regular Users */}
               <Show
                 when={props?.user?.is_superuser}
                 fallback={
@@ -69,7 +66,6 @@ export default function Navigation(props: any) {
                   </>
                 }
               >
-                {/* Super Users */}
                 <Anchor
                   as={A}
                   href="/users"
@@ -81,11 +77,8 @@ export default function Navigation(props: any) {
               </Show>
             </Show>
           </VStack>
-          {/* Bottom Section */}
-          {/* Authorized Users */}
           <Show when={props?.user}>
             <HStack justify="space-between" mb={4}>
-              {/* All Users */}
               <Anchor
                 as={A}
                 href="/profile"
@@ -94,7 +87,6 @@ export default function Navigation(props: any) {
               >
                 My Account
               </Anchor>
-              {/* Logout Link */}
               <logout.Form class={styles.navLogoutForm}>
                 <Button
                   type="submit"

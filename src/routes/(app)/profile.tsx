@@ -1,7 +1,7 @@
 import { Resource, Show } from 'solid-js';
 import { Title, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
-import { useAuthorizedContext } from '~/lib/auth/context';
+import { useAuthorizedContext } from '~/lib/auth';
 import { CheckAuthorized } from '~/lib/auth/types';
 import {
   initialRouteAuthState,

@@ -28,8 +28,8 @@ export type CheckAuthorized = Authorized | Unauthorized;
 export type AuthorizedState = {
   readonly authLoadState: any;
   readonly currentUser: any;
-  readonly token: string;
-  readonly csrf: string;
+  token: string;
+  csrf: string;
 };
 
 export type AuthorizedActions = {

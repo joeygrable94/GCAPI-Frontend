@@ -2,14 +2,14 @@ import { Container } from '@hope-ui/core';
 import { Resource } from 'solid-js';
 import { Outlet, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
-import { AuthorizedProvider } from '~/lib/auth/context';
+import { AuthorizedProvider } from '~/lib/auth';
 import { CheckAuthorized } from '~/lib/auth/types';
 import { initialRouteAuthState, returnAuthorizedUser } from '~/lib/auth/useAuth';
 import Navigation from '~/lib/components/Navigation';
 import { log } from '~/lib/core/utils';
 
 export function routeData() {
-  return createServerData$(returnAuthorizedUser, {
+  return createServerData$<CheckAuthorized>(returnAuthorizedUser, {
     initialValue: initialRouteAuthState
   });
 }

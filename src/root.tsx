@@ -19,7 +19,7 @@ import {
   ServerContext,
   Title
 } from 'solid-start';
-import AppProvider from '~/lib/core/state';
+import AppProvider from '~/lib/core';
 import { theme } from '~/lib/theme';
 import './root.scss';
 

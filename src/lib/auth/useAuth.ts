@@ -1,6 +1,11 @@
 import { redirect } from 'solid-start';
 import { ApiError, UserRead, UsersService } from '~/api';
-import { AuthBearer, Authorized, CheckAuthorized } from '~/lib/auth/types';
+import {
+  AuthBearer,
+  Authorized,
+  CheckAuthorized,
+  Unauthorized
+} from '~/lib/auth/types';
 import {
   deauthenticate,
   determineAuthorized,
@@ -30,7 +35,6 @@ export async function getAuthorizedSuperUserOrBelongsToUser(
   request_user_id: string
 ): Promise<CheckAuthorized> {
   const authorized: CheckAuthorized = await getAuthorized(request);
-  // if the current user is NOT a super user and is NOT viewing their own id
   if (
     isAuthorized(authorized) &&
     !authorized?.user.is_superuser &&
@@ -47,7 +51,7 @@ export const initialRouteAuthState = {
     token: '',
     csrf: ''
   } as AuthBearer
-} as CheckAuthorized;
+} as Unauthorized;
 
 export async function redirectAuthorizedUser(
   _: any,
@@ -118,7 +122,9 @@ export async function returnFetchUserByKey(key: any): Promise<false | UserRead> 
   return false;
 }
 
-export async function returnFetchUsersListByKey(key: any) {
+export async function returnFetchUsersListByKey(
+  key: any
+): Promise<UserRead[] | null[]> {
   try {
     const users: UserRead[] | null[] = await UsersService.usersListUsersApiV1UsersGet({
       page: key[0]
