@@ -6,7 +6,8 @@ import {
   BearerResponse,
   Body_auth_access_api_v1_auth_access_post,
   OpenAPI,
-  UserReadSafe,
+  UserRead,
+  UserReadAdmin,
   UsersService
 } from '~/api';
 import { authorizedCookieStorage } from '~/lib/auth/session';
@@ -91,10 +92,11 @@ export async function getCheckAuthorized(request: Request): Promise<CheckAuthori
   }
   OpenAPI.TOKEN = authorized?.token || '';
   try {
-    const user: UserReadSafe = await UsersService.usersCurrentUserApiV1UsersMeGet();
+    const user: UserReadAdmin | UserRead =
+      await UsersService.usersCurrentUserApiV1UsersMeGet();
     return { user, access: authorized } as Authorized;
-  } catch (err: any) {
-    if (import.meta.env.DEV) log('Error Fetching Current User:', err?.body?.detail);
+  } catch (error: ApiError | any) {
+    if (import.meta.env.DEV) log('Error Fetching Current User:', error?.body?.detail);
   }
   return {
     user: false,
@@ -129,8 +131,8 @@ export async function authenticate(form: FormData): Promise<Response> {
         password: password
       } as Body_auth_access_api_v1_auth_access_post
     });
-  } catch (err: any) {
-    if (import.meta.env.DEV) log('Error Logging In:', err?.body?.detail);
+  } catch (error: ApiError | any) {
+    if (import.meta.env.DEV) log('Error Logging In:', error?.body?.detail);
   }
   if (!access_token) {
     throw new FormError(`Username/Password combination is incorrect`, {

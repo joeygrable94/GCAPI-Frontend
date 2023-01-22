@@ -5,26 +5,26 @@ import {
   createSignal,
   onMount
 } from 'solid-js';
-import { OpenAPI, UserReadSafe, UsersService } from '~/api';
+import { ApiError, OpenAPI, UserRead, UserReadAdmin, UsersService } from '~/api';
 
 import { API_URL_BASE, log } from '~/lib/core/utils';
 
 export default function createAuthService(actions: any, state: any, setState: any) {
   const [loggedIn, setLoggedIn] = createSignal(false);
 
-  const [currentUser, { mutate, refetch }] = createResource<boolean | UserReadSafe>(
-    loggedIn,
-    actions.fetchMe
-  );
+  const [currentUser, { mutate, refetch }] = createResource<
+    boolean | UserReadAdmin | UserRead
+  >(loggedIn, actions.fetchMe);
 
   Object.assign(actions, {
     pullUser: () => setLoggedIn(true),
-    async fetchMe(d: any): Promise<boolean | UserReadSafe> {
+    async fetchMe(d: any): Promise<boolean | UserReadAdmin | UserRead> {
       try {
-        const me: UserReadSafe = await UsersService.usersCurrentUserApiV1UsersMeGet();
+        const me: UserReadAdmin | UserRead =
+          await UsersService.usersCurrentUserApiV1UsersMeGet();
         return me;
-      } catch (err: any) {
-        if (import.meta.env.DEV) log('Error actions.fetchMe()', err);
+      } catch (error: ApiError | any) {
+        if (import.meta.env.DEV) log('Error actions.fetchMe()', error);
       }
       return false;
     }

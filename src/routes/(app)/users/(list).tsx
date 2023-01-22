@@ -1,3 +1,4 @@
+import { Box } from '@hope-ui/core';
 import {
   ColumnDef,
   createSolidTable,
@@ -9,7 +10,7 @@ import {
 import { createSignal, For, Resource, Show } from 'solid-js';
 import { RouteDataArgs, Title, useParams, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
-import { UserRead } from '~/api';
+import { UserRead, UserReadAdmin } from '~/api';
 import { CheckAuthorized } from '~/lib/auth/types';
 import {
   initialRouteAuthState,
@@ -40,12 +41,11 @@ export default function UsersIndex() {
   const { authorized, users }: any = useRouteData<typeof routeData>();
   const [state, actions]: AppStoreContextValue = useAppStore();
   const params: any = useParams();
-  let serverUsers: Map<string, UserRead> = actions.mapUsers(users());
-  const [data, setData] = createSignal(serverUsers);
+  const [data, setData] = createSignal<UserReadAdmin[] | UserRead[] | null[]>(users());
   const [sorting, setSorting] = createSignal<SortingState>([]);
   const refreshData = () => setData(state.users);
 
-  const columns: ColumnDef<UserRead>[] = [
+  const columns: ColumnDef<UserRead | UserReadAdmin>[] = [
     {
       header: 'Info',
       footer: (props: any) => props.column.id,
@@ -87,11 +87,16 @@ export default function UsersIndex() {
         {
           accessorFn: (row: any) => {
             let output = '';
-            for (let scope of row.scopes) output += '\n' + scope;
+            let pcount = row.principals.length;
+            for (let i = 0; i < pcount; i++) {
+              const perm = row.principals[i];
+              if (i < pcount - 1) output += perm + ',\n';
+              else output += perm;
+            }
             return output;
           },
-          id: 'scopes',
-          header: () => <span>Scope</span>,
+          id: 'principals',
+          header: () => <span>Permissions</span>,
           footer: (props: any) => props.column.id
         }
       ]
@@ -100,7 +105,7 @@ export default function UsersIndex() {
 
   const table = createSolidTable({
     get data() {
-      return actions.listUsers(data());
+      return data();
     },
     columns,
     state: {
@@ -121,16 +126,17 @@ export default function UsersIndex() {
       <main>
         <h1>All Users</h1>
         <p>Index: list all users</p>
-        <table>
-          <thead>
+        <Box as="table">
+          <Box as="thead">
             <For each={table.getHeaderGroups()}>
               {(headerGroup) => (
-                <tr>
+                <Box as="tr">
                   <For each={headerGroup.headers}>
                     {(header) => (
-                      <th colSpan={header.colSpan}>
+                      <Box as="th" colSpan={header.colSpan}>
                         <Show when={!header.isPlaceholder}>
-                          <div
+                          <Box
+                            as="div"
                             class={
                               header.column.getCanSort()
                                 ? 'cursor-pointer select-none'
@@ -146,31 +152,31 @@ export default function UsersIndex() {
                               asc: ' 🔼',
                               desc: ' 🔽'
                             }[header.column.getIsSorted() as string] ?? null}
-                          </div>
+                          </Box>
                         </Show>
-                      </th>
+                      </Box>
                     )}
                   </For>
-                </tr>
+                </Box>
               )}
             </For>
-          </thead>
-          <tbody>
+          </Box>
+          <Box as="tbody">
             <For each={table.getRowModel().rows.slice(0, 10)}>
               {(row) => (
-                <tr>
+                <Box as="tr">
                   <For each={row.getVisibleCells()}>
                     {(cell) => (
-                      <td>
+                      <Box as="td">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
+                      </Box>
                     )}
                   </For>
-                </tr>
+                </Box>
               )}
             </For>
-          </tbody>
-        </table>
+          </Box>
+        </Box>
         <div>{table.getRowModel().rows.length} Rows</div>
         <div>
           <button onClick={() => refreshData()}>Refresh Data</button>

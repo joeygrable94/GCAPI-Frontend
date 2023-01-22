@@ -7,8 +7,8 @@ import {
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { OpenAPI, UserReadSafe } from '~/api';
-import createAuthService from '~/lib/auth/service';
+import { OpenAPI, UserRead, UserReadAdmin } from '~/api';
+import createAuthService from '~/lib/auth/serviceAuth';
 import {
   AuthorizedActions,
   AuthorizedContextValue,
@@ -46,7 +46,7 @@ export const AuthorizedProvider: ParentComponent<{
 
   const [authLoaded, setAuthLoaded] = createSignal<boolean>(false);
 
-  let currentUser: InitializedResource<boolean | UserReadSafe>;
+  let currentUser: InitializedResource<boolean | UserReadAdmin | UserRead>;
 
   const [state, setState] = createStore<AuthorizedState>({
     get authLoadState() {

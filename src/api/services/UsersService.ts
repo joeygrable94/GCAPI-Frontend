@@ -1,8 +1,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { UserCreate } from '../models/UserCreate';
 import type { UserRead } from '../models/UserRead';
-import type { UserReadSafe } from '../models/UserReadSafe';
+import type { UserReadAdmin } from '../models/UserReadAdmin';
 import type { UserUpdate } from '../models/UserUpdate';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -14,10 +15,10 @@ export class UsersService {
   /**
    * Users:Current User
    * Allows current-active-verified-users to fetch the details on their account.
-   * @returns UserReadSafe Successful Response
+   * @returns any Successful Response
    * @throws ApiError
    */
-  public static usersCurrentUserApiV1UsersMeGet(): CancelablePromise<UserReadSafe> {
+  public static usersCurrentUserApiV1UsersMeGet(): CancelablePromise<(UserReadAdmin | UserRead)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/me',
@@ -31,14 +32,14 @@ export class UsersService {
   /**
    * Users:Patch Current User
    * Allows current-active-verified-users to update their account.
-   * @returns UserReadSafe Successful Response
+   * @returns any Successful Response
    * @throws ApiError
    */
   public static usersPatchCurrentUserApiV1UsersMePatch({
     requestBody,
   }: {
     requestBody: UserUpdate,
-  }): CancelablePromise<UserReadSafe> {
+  }): CancelablePromise<(UserReadAdmin | UserRead)> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/me',
@@ -66,7 +67,7 @@ export class UsersService {
     page = 1,
   }: {
     page?: number,
-  }): CancelablePromise<(Array<UserRead> | Array<null>)> {
+  }): CancelablePromise<(Array<UserReadAdmin> | Array<UserRead> | Array<null>)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/',
@@ -83,20 +84,42 @@ export class UsersService {
   }
 
   /**
+   * Users:Create User
+   * Creates a new user, un-verified by default.
+   * @returns any Successful Response
+   * @throws ApiError
+   */
+  public static usersCreateUserApiV1UsersPost({
+    requestBody,
+  }: {
+    requestBody: UserCreate,
+  }): CancelablePromise<(UserReadAdmin | UserRead)> {
+    return __request(OpenAPI, {
+      method: 'POST',
+      url: '/api/v1/users/',
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
+
+  /**
    * Users:User
    * Allows current-active-verified-superusers may fetch a spectific user
    * by their ID/UUID attribute.
    *
    * We do not want to be sending sending requests with user emails,
    * leaving them potential at risk of being exposed to the public.
-   * @returns UserRead Successful Response
+   * @returns any Successful Response
    * @throws ApiError
    */
   public static usersUserApiV1UsersIdGet({
     id,
   }: {
     id: any,
-  }): CancelablePromise<UserRead> {
+  }): CancelablePromise<(UserReadAdmin | UserRead)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/{id}',
@@ -143,7 +166,7 @@ export class UsersService {
    * Users:Patch User
    * Allows current-active-verified-superusers to request to update a user
    * by their ID/UUID attribute.
-   * @returns UserRead Successful Response
+   * @returns any Successful Response
    * @throws ApiError
    */
   public static usersPatchUserApiV1UsersIdPatch({
@@ -152,7 +175,7 @@ export class UsersService {
   }: {
     id: any,
     requestBody: UserUpdate,
-  }): CancelablePromise<UserRead> {
+  }): CancelablePromise<(UserReadAdmin | UserRead)> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/{id}',

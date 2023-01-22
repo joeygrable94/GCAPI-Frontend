@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserReadSafe = {
+export type UserReadAdmin = {
   id: string;
   created_on: string;
   updated_on: string;
@@ -10,5 +10,6 @@ export type UserReadSafe = {
   is_active: boolean;
   is_superuser: boolean;
   is_verified: boolean;
+  principals: Array<string>;
 };
 

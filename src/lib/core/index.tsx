@@ -1,11 +1,12 @@
 import { createContext, createSignal, useContext } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { UserCreate, UserRead, UserUpdate } from '~/api';
+import { UserCreate, UserUpdate } from '~/api';
 import createCommonService from '~/lib/core/serviceCommon';
 import createAgentService from './serviceAgent';
 import createUsersService from './serviceUsers';
 import {
   AppStoreActions,
+  AppStoreContextInitial,
   AppStoreContextValue,
   AppStoreState,
   IAppAgent
@@ -19,18 +20,17 @@ const defaultAppStoreState: AppStoreState = {
   page: 1
 };
 
-const defaultAppStoreActions: AppStoreActions = {
+const defaultAppStoreActions: object = {
   setCount: (n: number) => undefined,
   setPage: (page: number) => undefined,
   loadUser: (user_id: string) => undefined,
   loadUsers: (predicate: string) => undefined,
-  mapUsers: (users: UserRead[] | null[]) => undefined,
   createUser: (data: UserCreate) => undefined,
   updateUser: (user_id: string, data: UserUpdate) => undefined,
   deleteUser: (user_id: string) => undefined
 };
 
-const AppContext = createContext<AppStoreContextValue>([
+const AppContext = createContext<AppStoreContextInitial | AppStoreContextValue>([
   defaultAppStoreState,
   defaultAppStoreActions
 ]);
@@ -52,7 +52,9 @@ export default function AppProvider(props: any) {
     page: 1
   });
 
-  const actions: object = {};
+  const actions: object = {
+    setLoadState: (s: boolean): boolean => setAppLoaded(s)
+  };
 
   const agent: IAppAgent = createAgentService(actions, state);
 
@@ -66,5 +68,5 @@ export default function AppProvider(props: any) {
 }
 
 export function useAppStore() {
-  return useContext(AppContext);
+  return useContext(AppContext) as AppStoreContextValue;
 }

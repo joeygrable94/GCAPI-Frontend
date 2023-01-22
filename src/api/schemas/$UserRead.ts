@@ -35,12 +35,5 @@ export const $UserRead = {
       type: 'boolean',
       isRequired: true,
     },
-    scopes: {
-      type: 'array',
-      contains: {
-        type: 'string',
-      },
-      isRequired: true,
-    },
   },
 } as const;
