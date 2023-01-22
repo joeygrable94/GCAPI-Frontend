@@ -7,7 +7,7 @@ import type { Body_auth_forgot_password_api_v1_auth_forgot_password_post } from 
 import type { Body_auth_reset_password_api_v1_auth_reset_password_post } from '../models/Body_auth_reset_password_api_v1_auth_reset_password_post';
 import type { Body_auth_verification_api_v1_auth_verification_post } from '../models/Body_auth_verification_api_v1_auth_verification_post';
 import type { UserCreate } from '../models/UserCreate';
-import type { UserReadSafe } from '../models/UserReadSafe';
+import type { UserRead } from '../models/UserRead';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -19,14 +19,14 @@ export class AuthService {
    * Auth:Register
    * Registers a new user, then creates an email verification token
    * and sends the new user an email verification link to click.
-   * @returns UserReadSafe Successful Response
+   * @returns UserRead Successful Response
    * @throws ApiError
    */
   public static authRegisterApiV1AuthRegisterPost({
     requestBody,
   }: {
     requestBody: UserCreate,
-  }): CancelablePromise<UserReadSafe> {
+  }): CancelablePromise<UserRead> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/api/v1/auth/register',
@@ -122,14 +122,14 @@ export class AuthService {
   /**
    * Auth:Reset Password
    * Updates the user password for the subject in the request token.
-   * @returns UserReadSafe Successful Response
+   * @returns UserRead Successful Response
    * @throws ApiError
    */
   public static authResetPasswordApiV1AuthResetPasswordPost({
     requestBody,
   }: {
     requestBody: Body_auth_reset_password_api_v1_auth_reset_password_post,
-  }): CancelablePromise<UserReadSafe> {
+  }): CancelablePromise<UserRead> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/api/v1/auth/reset-password',

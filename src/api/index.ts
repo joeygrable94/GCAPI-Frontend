@@ -15,7 +15,7 @@ export type { ErrorModel } from './models/ErrorModel';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { UserCreate } from './models/UserCreate';
 export type { UserRead } from './models/UserRead';
-export type { UserReadSafe } from './models/UserReadSafe';
+export type { UserReadAdmin } from './models/UserReadAdmin';
 export type { UserUpdate } from './models/UserUpdate';
 export type { ValidationError } from './models/ValidationError';
 
@@ -28,7 +28,7 @@ export { $ErrorModel } from './schemas/$ErrorModel';
 export { $HTTPValidationError } from './schemas/$HTTPValidationError';
 export { $UserCreate } from './schemas/$UserCreate';
 export { $UserRead } from './schemas/$UserRead';
-export { $UserReadSafe } from './schemas/$UserReadSafe';
+export { $UserReadAdmin } from './schemas/$UserReadAdmin';
 export { $UserUpdate } from './schemas/$UserUpdate';
 export { $ValidationError } from './schemas/$ValidationError';
 
