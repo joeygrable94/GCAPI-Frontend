@@ -1,4 +1,4 @@
-import { UserRead, UserReadAdmin } from '~/api';
+import { UserAdmin, UserRead } from '~/api';
 
 export type AuthBearer = {
   readonly token: string;
@@ -19,7 +19,7 @@ export type Unauthorized = {
 };
 
 export type Authorized = {
-  readonly user: UserReadAdmin | UserRead;
+  readonly user: UserAdmin | UserRead;
   readonly access: AuthBearer;
 };
 
