@@ -1,5 +1,5 @@
 import { createResource, createSignal } from 'solid-js';
-import { UserCreate, UserRead, UserReadAdmin, UserUpdate } from '~/api';
+import { UserAdmin, UserCreate, UserRead, UserUpdate } from '~/api';
 import { IAppAgent } from './types';
 
 export default function createUsersService(
@@ -19,7 +19,7 @@ export default function createUsersService(
     loadUser(user_id: string): void {
       setUsersSource(['user', user_id]);
     },
-    async createUser(data: UserCreate): Promise<UserReadAdmin | UserRead | boolean> {
+    async createUser(data: UserCreate): Promise<UserAdmin | UserRead | boolean> {
       return await agent.Auth.register(data);
     },
     async updateUser(user_id: string, data: UserUpdate): Promise<UserRead | boolean> {
@@ -30,29 +30,27 @@ export default function createUsersService(
     }
   });
 
-  function $req(predicate: string): Promise<UserReadAdmin[] | UserRead[] | null[]> {
+  function $req(predicate: string): Promise<UserAdmin[] | UserRead[] | null[]> {
     // if (predicate.tag) return agent.Articles.byTag(predicate.tag, state.page, LIMIT);
     return agent.Users.list(state.page);
   }
 
-  const [users] = createResource<UserReadAdmin[] | UserRead[] | null[]>(
+  const [users] = createResource<UserAdmin[] | UserRead[] | null[]>(
     userSource,
     (args: any, { value }) => {
       if (args[0] === 'users') {
-        return $req(args[1]).then((userList: UserReadAdmin[] | UserRead[] | null[]) => {
+        return $req(args[1]).then((userList: UserAdmin[] | UserRead[] | null[]) => {
           return userList;
         });
       }
-      const user: UserReadAdmin | UserRead = state.users.filter(
-        (r: UserReadAdmin | UserRead) => r.id === args[1]
+      const user: UserAdmin | UserRead = state.users.filter(
+        (r: UserAdmin | UserRead) => r.id === args[1]
       );
       if (user) return value;
-      return agent.Users.read(args[1]).then(
-        (user: UserReadAdmin | UserRead | boolean) => {
-          if (!user) return [];
-          return [user as UserRead];
-        }
-      );
+      return agent.Users.read(args[1]).then((user: UserAdmin | UserRead | boolean) => {
+        if (!user) return [];
+        return [user as UserRead];
+      });
     },
     { initialValue: [] }
   );

@@ -6,8 +6,8 @@ import {
   BearerResponse,
   Body_auth_access_api_v1_auth_access_post,
   OpenAPI,
+  UserAdmin,
   UserRead,
-  UserReadAdmin,
   UsersService
 } from '~/api';
 import { authorizedCookieStorage } from '~/lib/auth/session';
@@ -92,7 +92,7 @@ export async function getCheckAuthorized(request: Request): Promise<CheckAuthori
   }
   OpenAPI.TOKEN = authorized?.token || '';
   try {
-    const user: UserReadAdmin | UserRead =
+    const user: UserAdmin | UserRead =
       await UsersService.usersCurrentUserApiV1UsersMeGet();
     return { user, access: authorized } as Authorized;
   } catch (error: ApiError | any) {

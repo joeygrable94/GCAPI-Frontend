@@ -5,7 +5,7 @@ import {
   createSignal,
   onMount
 } from 'solid-js';
-import { ApiError, OpenAPI, UserRead, UserReadAdmin, UsersService } from '~/api';
+import { ApiError, OpenAPI, UserAdmin, UserRead, UsersService } from '~/api';
 
 import { API_URL_BASE, log } from '~/lib/core/utils';
 
@@ -13,14 +13,14 @@ export default function createAuthService(actions: any, state: any, setState: an
   const [loggedIn, setLoggedIn] = createSignal(false);
 
   const [currentUser, { mutate, refetch }] = createResource<
-    boolean | UserReadAdmin | UserRead
+    boolean | UserAdmin | UserRead
   >(loggedIn, actions.fetchMe);
 
   Object.assign(actions, {
     pullUser: () => setLoggedIn(true),
-    async fetchMe(d: any): Promise<boolean | UserReadAdmin | UserRead> {
+    async fetchMe(d: any): Promise<boolean | UserAdmin | UserRead> {
       try {
-        const me: UserReadAdmin | UserRead =
+        const me: UserAdmin | UserRead =
           await UsersService.usersCurrentUserApiV1UsersMeGet();
         return me;
       } catch (error: ApiError | any) {

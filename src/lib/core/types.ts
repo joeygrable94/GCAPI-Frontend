@@ -1,4 +1,4 @@
-import { UserCreate, UserRead, UserReadAdmin, UserUpdate } from '~/api';
+import { UserAdmin, UserCreate, UserRead, UserUpdate } from '~/api';
 
 export type AppStoreState = {
   readonly appLoaded: any;
@@ -14,16 +14,12 @@ export type AppStoreActions = {
   loadUser: (user_id: string) => void;
   loadUsers: (predicate: string) => void;
   findUserById: (
-    users: UserReadAdmin[] | UserRead[] | null[],
+    users: UserAdmin[] | UserRead[] | null[],
     user_id: string
-  ) => UserReadAdmin | UserRead | null;
-  mapUsers: (
-    users: UserReadAdmin[] | UserRead[]
-  ) => Map<string, UserReadAdmin | UserRead>;
-  listUsers: (
-    user_map: Map<string, UserReadAdmin | UserRead>
-  ) => UserReadAdmin[] | UserRead[];
-  createUser: (data: UserCreate) => Promise<UserReadAdmin | UserRead | boolean>;
+  ) => UserAdmin | UserRead | null;
+  mapUsers: (users: UserAdmin[] | UserRead[]) => Map<string, UserAdmin | UserRead>;
+  listUsers: (user_map: Map<string, UserAdmin | UserRead>) => UserAdmin[] | UserRead[];
+  createUser: (data: UserCreate) => Promise<UserAdmin | UserRead | boolean>;
   updateUser: (user_id: string, data: UserUpdate) => Promise<UserRead | boolean>;
   deleteUser: (user_id: string) => Promise<boolean>;
 };
@@ -37,10 +33,7 @@ export interface IAppAgent {
 }
 
 export interface IAuthAgent {
-  login: (
-    email: string,
-    password: string
-  ) => Promise<UserReadAdmin | UserRead | boolean>;
+  login: (email: string, password: string) => Promise<UserAdmin | UserRead | boolean>;
   logout: () => Promise<boolean>;
   register: (data: UserCreate) => Promise<UserRead | boolean>;
   verify: (email: string) => Promise<boolean>;
@@ -54,9 +47,9 @@ export interface IAuthAgent {
 }
 
 export interface IUserAgent {
-  list: (page: number) => Promise<UserReadAdmin[] | UserRead[] | null[]>;
-  create: (data: UserCreate) => Promise<UserReadAdmin | UserRead | boolean>;
-  read: (id: string) => Promise<UserReadAdmin | UserRead | boolean>;
-  update: (id: string, data: UserUpdate) => Promise<UserReadAdmin | UserRead | boolean>;
+  list: (page: number) => Promise<UserAdmin[] | UserRead[] | null[]>;
+  create: (data: UserCreate) => Promise<UserAdmin | UserRead | boolean>;
+  read: (id: string) => Promise<UserAdmin | UserRead | boolean>;
+  update: (id: string, data: UserUpdate) => Promise<UserAdmin | UserRead | boolean>;
   delete: (id: string) => Promise<boolean>;
 }

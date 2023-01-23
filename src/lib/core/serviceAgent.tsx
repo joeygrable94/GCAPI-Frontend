@@ -4,9 +4,9 @@ import {
   BearerResponse,
   Body_auth_access_api_v1_auth_access_post,
   OpenAPI,
+  UserAdmin,
   UserCreate,
   UserRead,
-  UserReadAdmin,
   UsersService,
   UserUpdate
 } from '~/api';
@@ -21,7 +21,7 @@ export default function createAgentService(
     login: async (
       email: string,
       password: string
-    ): Promise<UserReadAdmin | UserRead | boolean> => {
+    ): Promise<UserAdmin | UserRead | boolean> => {
       try {
         let access: BearerResponse = await AuthService.authAccessApiV1AuthAccessPost({
           formData: {
@@ -30,7 +30,7 @@ export default function createAgentService(
           } as Body_auth_access_api_v1_auth_access_post
         });
         OpenAPI.TOKEN = access?.access_token;
-        let user: UserReadAdmin | UserRead =
+        let user: UserAdmin | UserRead =
           await UsersService.usersCurrentUserApiV1UsersMeGet();
         return user;
       } catch (error: ApiError | any) {
@@ -115,10 +115,10 @@ export default function createAgentService(
     }
   };
   const Users: IUserAgent = {
-    list: async (page: number): Promise<UserReadAdmin[] | UserRead[] | null[]> => {
+    list: async (page: number): Promise<UserAdmin[] | UserRead[] | null[]> => {
       try {
         if (page <= 0) page = 1;
-        let users: UserReadAdmin[] | UserRead[] | null[] =
+        let users: UserAdmin[] | UserRead[] | null[] =
           await UsersService.usersListUsersApiV1UsersGet({ page: page });
         return users;
       } catch (error: ApiError | any) {
@@ -126,9 +126,9 @@ export default function createAgentService(
         return [];
       }
     },
-    create: async (data: UserCreate): Promise<UserReadAdmin | UserRead | boolean> => {
+    create: async (data: UserCreate): Promise<UserAdmin | UserRead | boolean> => {
       try {
-        let user: UserReadAdmin | UserRead =
+        let user: UserAdmin | UserRead =
           await UsersService.usersCreateUserApiV1UsersPost({
             requestBody: data
           });
@@ -138,10 +138,11 @@ export default function createAgentService(
         return false;
       }
     },
-    read: async (id: any): Promise<UserReadAdmin | UserRead | boolean> => {
+    read: async (id: any): Promise<UserAdmin | UserRead | boolean> => {
       try {
-        let user: UserReadAdmin | UserRead =
-          await UsersService.usersUserApiV1UsersIdGet({ id: id });
+        let user: UserAdmin | UserRead = await UsersService.usersUserApiV1UsersIdGet({
+          id: id
+        });
         return user;
       } catch (error: ApiError | any) {
         log(error?.body?.detail);
@@ -151,9 +152,9 @@ export default function createAgentService(
     update: async (
       id: any,
       data: UserUpdate
-    ): Promise<UserReadAdmin | UserRead | boolean> => {
+    ): Promise<UserAdmin | UserRead | boolean> => {
       try {
-        let user: UserReadAdmin | UserRead =
+        let user: UserAdmin | UserRead =
           await UsersService.usersPatchUserApiV1UsersIdPatch({
             id: id,
             requestBody: data

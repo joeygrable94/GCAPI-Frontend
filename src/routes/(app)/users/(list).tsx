@@ -10,7 +10,7 @@ import {
 import { createSignal, For, Resource, Show } from 'solid-js';
 import { RouteDataArgs, Title, useParams, useRouteData } from 'solid-start';
 import { createServerData$ } from 'solid-start/server';
-import { UserRead, UserReadAdmin } from '~/api';
+import { UserAdmin, UserRead } from '~/api';
 import { CheckAuthorized } from '~/lib/auth/types';
 import {
   initialRouteAuthState,
@@ -41,11 +41,11 @@ export default function UsersIndex() {
   const { authorized, users }: any = useRouteData<typeof routeData>();
   const [state, actions]: AppStoreContextValue = useAppStore();
   const params: any = useParams();
-  const [data, setData] = createSignal<UserReadAdmin[] | UserRead[] | null[]>(users());
+  const [data, setData] = createSignal<UserAdmin[] | UserRead[] | null[]>(users());
   const [sorting, setSorting] = createSignal<SortingState>([]);
   const refreshData = () => setData(state.users);
 
-  const columns: ColumnDef<UserRead | UserReadAdmin>[] = [
+  const columns: ColumnDef<UserRead | UserAdmin>[] = [
     {
       header: 'Info',
       footer: (props: any) => props.column.id,
