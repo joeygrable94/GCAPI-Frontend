@@ -1,13 +1,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserRead = {
+export const $WebsiteRead = {
   properties: {
-    email: {
-      type: 'string',
-      isRequired: true,
-      format: 'email',
-    },
     id: {
       type: 'string',
       isRequired: true,
@@ -23,17 +18,12 @@ export const $UserRead = {
       isRequired: true,
       format: 'date-time',
     },
-    is_active: {
-      type: 'boolean',
+    domain: {
+      type: 'string',
       isRequired: true,
     },
-    is_superuser: {
+    is_secure: {
       type: 'boolean',
-      isRequired: true,
-    },
-    is_verified: {
-      type: 'boolean',
-      isRequired: true,
     },
   },
 } as const;
