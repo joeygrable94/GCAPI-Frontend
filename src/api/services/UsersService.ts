@@ -1,10 +1,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { UserAdmin } from '../models/UserAdmin';
 import type { UserCreate } from '../models/UserCreate';
 import type { UserRead } from '../models/UserRead';
-import type { UserReadAdmin } from '../models/UserReadAdmin';
 import type { UserUpdate } from '../models/UserUpdate';
+import type { UserUpdateAuthPermissions } from '../models/UserUpdateAuthPermissions';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -18,7 +19,7 @@ export class UsersService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static usersCurrentUserApiV1UsersMeGet(): CancelablePromise<(UserReadAdmin | UserRead)> {
+  public static usersCurrentUserApiV1UsersMeGet(): CancelablePromise<(UserAdmin | UserRead)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/me',
@@ -39,7 +40,7 @@ export class UsersService {
     requestBody,
   }: {
     requestBody: UserUpdate,
-  }): CancelablePromise<(UserReadAdmin | UserRead)> {
+  }): CancelablePromise<(UserAdmin | UserRead)> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/me',
@@ -67,7 +68,7 @@ export class UsersService {
     page = 1,
   }: {
     page?: number,
-  }): CancelablePromise<(Array<UserReadAdmin> | Array<UserRead> | Array<null>)> {
+  }): CancelablePromise<(Array<UserAdmin> | Array<UserRead>)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/',
@@ -93,7 +94,7 @@ export class UsersService {
     requestBody,
   }: {
     requestBody: UserCreate,
-  }): CancelablePromise<(UserReadAdmin | UserRead)> {
+  }): CancelablePromise<(UserAdmin | UserRead)> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/api/v1/users/',
@@ -119,7 +120,7 @@ export class UsersService {
     id,
   }: {
     id: any,
-  }): CancelablePromise<(UserReadAdmin | UserRead)> {
+  }): CancelablePromise<(UserAdmin | UserRead)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/{id}',
@@ -163,19 +164,19 @@ export class UsersService {
   }
 
   /**
-   * Users:Patch User
+   * Users:Update User
    * Allows current-active-verified-superusers to request to update a user
    * by their ID/UUID attribute.
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static usersPatchUserApiV1UsersIdPatch({
+  public static usersUpdateUserApiV1UsersIdPatch({
     id,
     requestBody,
   }: {
     id: any,
     requestBody: UserUpdate,
-  }): CancelablePromise<(UserReadAdmin | UserRead)> {
+  }): CancelablePromise<(UserAdmin | UserRead)> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/{id}',
@@ -189,6 +190,58 @@ export class UsersService {
         401: `Unauthorized`,
         403: `Forbidden`,
         404: `Not Found`,
+        422: `Validation Error`,
+      },
+    });
+  }
+
+  /**
+   * Users:Add Permissions To User
+   * @returns UserAdmin Successful Response
+   * @throws ApiError
+   */
+  public static usersAddPermissionsToUserApiV1UsersIdPermissionsAddPatch({
+    id,
+    requestBody,
+  }: {
+    id: any,
+    requestBody: UserUpdateAuthPermissions,
+  }): CancelablePromise<UserAdmin> {
+    return __request(OpenAPI, {
+      method: 'PATCH',
+      url: '/api/v1/users/{id}/permissions/add',
+      path: {
+        'id': id,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
+
+  /**
+   * Users:Remove Permissions From User
+   * @returns UserAdmin Successful Response
+   * @throws ApiError
+   */
+  public static usersRemovePermissionsFromUserApiV1UsersIdPermissionsRemovePatch({
+    id,
+    requestBody,
+  }: {
+    id: any,
+    requestBody: UserUpdateAuthPermissions,
+  }): CancelablePromise<UserAdmin> {
+    return __request(OpenAPI, {
+      method: 'PATCH',
+      url: '/api/v1/users/{id}/permissions/remove',
+      path: {
+        'id': id,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
         422: `Validation Error`,
       },
     });

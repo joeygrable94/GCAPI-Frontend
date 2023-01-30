@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserReadAdmin = {
+export const $ClientRead = {
   properties: {
     id: {
       type: 'string',
@@ -18,28 +18,11 @@ export const $UserReadAdmin = {
       isRequired: true,
       format: 'date-time',
     },
-    email: {
+    content: {
       type: 'string',
-      isRequired: true,
-      format: 'email',
     },
-    is_active: {
-      type: 'boolean',
-      isRequired: true,
-    },
-    is_superuser: {
-      type: 'boolean',
-      isRequired: true,
-    },
-    is_verified: {
-      type: 'boolean',
-      isRequired: true,
-    },
-    principals: {
-      type: 'array',
-      contains: {
-        type: 'string',
-      },
+    title: {
+      type: 'string',
       isRequired: true,
     },
   },

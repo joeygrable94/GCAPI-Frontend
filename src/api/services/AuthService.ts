@@ -6,7 +6,7 @@ import type { Body_auth_access_api_v1_auth_access_post } from '../models/Body_au
 import type { Body_auth_forgot_password_api_v1_auth_forgot_password_post } from '../models/Body_auth_forgot_password_api_v1_auth_forgot_password_post';
 import type { Body_auth_reset_password_api_v1_auth_reset_password_post } from '../models/Body_auth_reset_password_api_v1_auth_reset_password_post';
 import type { Body_auth_verification_api_v1_auth_verification_post } from '../models/Body_auth_verification_api_v1_auth_verification_post';
-import type { UserCreate } from '../models/UserCreate';
+import type { RequestUserCreate } from '../models/RequestUserCreate';
 import type { UserRead } from '../models/UserRead';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -25,7 +25,7 @@ export class AuthService {
   public static authRegisterApiV1AuthRegisterPost({
     requestBody,
   }: {
-    requestBody: UserCreate,
+    requestBody: RequestUserCreate,
   }): CancelablePromise<UserRead> {
     return __request(OpenAPI, {
       method: 'POST',

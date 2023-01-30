@@ -1,8 +1,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserRead = {
+export const $UserAdmin = {
   properties: {
+    principals: {
+      type: 'array',
+      contains: {
+        type: 'string',
+      },
+      isRequired: true,
+    },
     email: {
       type: 'string',
       isRequired: true,

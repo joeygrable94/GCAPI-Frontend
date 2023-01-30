@@ -2,13 +2,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserRead = {
-  email: string;
+export type ClientRead = {
   id: string;
   created_on: string;
   updated_on: string;
-  is_active: boolean;
-  is_superuser: boolean;
-  is_verified: boolean;
+  content?: string;
+  title: string;
 };
 
