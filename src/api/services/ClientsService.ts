@@ -2,7 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ClientCreate } from '../models/ClientCreate';
-import type { ClientRead } from '../models/ClientRead';
+import type { ClientReadRelations } from '../models/ClientReadRelations';
 import type { ClientUpdate } from '../models/ClientUpdate';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -13,14 +13,14 @@ export class ClientsService {
 
   /**
    * Clients:Read Clients
-   * @returns ClientRead Successful Response
+   * @returns ClientReadRelations Successful Response
    * @throws ApiError
    */
   public static clientsReadClientsApiV1ClientsGet({
     page = 1,
   }: {
     page?: number,
-  }): CancelablePromise<Array<ClientRead>> {
+  }): CancelablePromise<Array<ClientReadRelations>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/clients/',
@@ -35,14 +35,14 @@ export class ClientsService {
 
   /**
    * Clients:Create Client
-   * @returns ClientRead Successful Response
+   * @returns ClientReadRelations Successful Response
    * @throws ApiError
    */
   public static clientsCreateClientApiV1ClientsPost({
     requestBody,
   }: {
     requestBody: ClientCreate,
-  }): CancelablePromise<ClientRead> {
+  }): CancelablePromise<ClientReadRelations> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/api/v1/clients/',
@@ -56,14 +56,14 @@ export class ClientsService {
 
   /**
    * Clients:Read Client
-   * @returns ClientRead Successful Response
+   * @returns ClientReadRelations Successful Response
    * @throws ApiError
    */
   public static clientsReadClientApiV1ClientsIdGet({
     id,
   }: {
     id: string,
-  }): CancelablePromise<ClientRead> {
+  }): CancelablePromise<ClientReadRelations> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/clients/{id}',
@@ -100,7 +100,7 @@ export class ClientsService {
 
   /**
    * Clients:Update Client
-   * @returns ClientRead Successful Response
+   * @returns ClientReadRelations Successful Response
    * @throws ApiError
    */
   public static clientsUpdateClientApiV1ClientsIdPatch({
@@ -109,7 +109,7 @@ export class ClientsService {
   }: {
     id: string,
     requestBody: ClientUpdate,
-  }): CancelablePromise<ClientRead> {
+  }): CancelablePromise<ClientReadRelations> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/clients/{id}',

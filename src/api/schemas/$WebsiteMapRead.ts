@@ -1,39 +1,32 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserRead = {
+export const $WebsiteMapRead = {
   properties: {
-    id: {
+    title: {
+      type: 'string',
+      isRequired: true,
+    },
+    website_id: {
       type: 'string',
       isRequired: true,
       format: 'uuid4',
     },
-    created_on: {
+    file_path: {
       type: 'string',
       isRequired: true,
-      format: 'date-time',
     },
-    updated_on: {
+    file_name: {
       type: 'string',
       isRequired: true,
-      format: 'date-time',
     },
-    email: {
+    is_processed: {
+      type: 'boolean',
+    },
+    id: {
       type: 'string',
       isRequired: true,
-      format: 'email',
-    },
-    is_active: {
-      type: 'boolean',
-      isRequired: true,
-    },
-    is_superuser: {
-      type: 'boolean',
-      isRequired: true,
-    },
-    is_verified: {
-      type: 'boolean',
-      isRequired: true,
+      format: 'uuid4',
     },
   },
 } as const;

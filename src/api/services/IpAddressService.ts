@@ -1,29 +1,29 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { WebsiteCreate } from '../models/WebsiteCreate';
-import type { WebsiteReadRelations } from '../models/WebsiteReadRelations';
-import type { WebsiteUpdate } from '../models/WebsiteUpdate';
+import type { IpAddressCreate } from '../models/IpAddressCreate';
+import type { IpAddressReadRelations } from '../models/IpAddressReadRelations';
+import type { IpAddressUpdate } from '../models/IpAddressUpdate';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
-export class WebsitesService {
+export class IpAddressService {
 
   /**
-   * Websites:Read Websites
-   * @returns WebsiteReadRelations Successful Response
+   * Ipaddress:Read Ipaddress List
+   * @returns IpAddressReadRelations Successful Response
    * @throws ApiError
    */
-  public static websitesReadWebsitesApiV1WebsitesGet({
+  public static ipaddressReadIpaddressListApiV1IpGet({
     page = 1,
   }: {
     page?: number,
-  }): CancelablePromise<Array<WebsiteReadRelations>> {
+  }): CancelablePromise<Array<IpAddressReadRelations>> {
     return __request(OpenAPI, {
       method: 'GET',
-      url: '/api/v1/websites/',
+      url: '/api/v1/ip/',
       query: {
         'page': page,
       },
@@ -34,23 +34,18 @@ export class WebsitesService {
   }
 
   /**
-   * Websites:Create Website
-   * @returns WebsiteReadRelations Successful Response
+   * Ipaddress:Create Ipaddress
+   * @returns IpAddressReadRelations Successful Response
    * @throws ApiError
    */
-  public static websitesCreateWebsiteApiV1WebsitesPost({
+  public static ipaddressCreateIpaddressApiV1IpPost({
     requestBody,
-    clientId,
   }: {
-    requestBody: WebsiteCreate,
-    clientId?: any,
-  }): CancelablePromise<WebsiteReadRelations> {
+    requestBody: IpAddressCreate,
+  }): CancelablePromise<IpAddressReadRelations> {
     return __request(OpenAPI, {
       method: 'POST',
-      url: '/api/v1/websites/',
-      query: {
-        'client_id': clientId,
-      },
+      url: '/api/v1/ip/',
       body: requestBody,
       mediaType: 'application/json',
       errors: {
@@ -60,18 +55,18 @@ export class WebsitesService {
   }
 
   /**
-   * Websites:Read Website
-   * @returns WebsiteReadRelations Successful Response
+   * Ipaddress:Read Ipaddress
+   * @returns IpAddressReadRelations Successful Response
    * @throws ApiError
    */
-  public static websitesReadWebsiteApiV1WebsitesIdGet({
+  public static ipaddressReadIpaddressApiV1IpIdGet({
     id,
   }: {
     id: string,
-  }): CancelablePromise<WebsiteReadRelations> {
+  }): CancelablePromise<IpAddressReadRelations> {
     return __request(OpenAPI, {
       method: 'GET',
-      url: '/api/v1/websites/{id}',
+      url: '/api/v1/ip/{id}',
       path: {
         'id': id,
       },
@@ -82,18 +77,18 @@ export class WebsitesService {
   }
 
   /**
-   * Websites:Delete Website
+   * Ipaddress:Delete Ipaddress
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static websitesDeleteWebsiteApiV1WebsitesIdDelete({
+  public static ipaddressDeleteIpaddressApiV1IpIdDelete({
     id,
   }: {
     id: string,
   }): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: 'DELETE',
-      url: '/api/v1/websites/{id}',
+      url: '/api/v1/ip/{id}',
       path: {
         'id': id,
       },
@@ -104,20 +99,20 @@ export class WebsitesService {
   }
 
   /**
-   * Websites:Update Website
-   * @returns WebsiteReadRelations Successful Response
+   * Ipaddress:Update Ipaddress
+   * @returns IpAddressReadRelations Successful Response
    * @throws ApiError
    */
-  public static websitesUpdateWebsiteApiV1WebsitesIdPatch({
+  public static ipaddressUpdateIpaddressApiV1IpIdPatch({
     id,
     requestBody,
   }: {
     id: string,
-    requestBody: WebsiteUpdate,
-  }): CancelablePromise<WebsiteReadRelations> {
+    requestBody: IpAddressUpdate,
+  }): CancelablePromise<IpAddressReadRelations> {
     return __request(OpenAPI, {
       method: 'PATCH',
-      url: '/api/v1/websites/{id}',
+      url: '/api/v1/ip/{id}',
       path: {
         'id': id,
       },

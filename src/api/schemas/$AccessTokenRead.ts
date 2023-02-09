@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserRead = {
+export const $AccessTokenRead = {
   properties: {
     id: {
       type: 'string',
@@ -18,22 +18,26 @@ export const $UserRead = {
       isRequired: true,
       format: 'date-time',
     },
-    email: {
+    token_jti: {
       type: 'string',
       isRequired: true,
-      format: 'email',
     },
-    is_active: {
+    csrf: {
+      type: 'string',
+      isRequired: true,
+    },
+    expires_at: {
+      type: 'string',
+      format: 'date-time',
+    },
+    is_revoked: {
       type: 'boolean',
       isRequired: true,
     },
-    is_superuser: {
-      type: 'boolean',
+    user_id: {
+      type: 'string',
       isRequired: true,
-    },
-    is_verified: {
-      type: 'boolean',
-      isRequired: true,
+      format: 'uuid4',
     },
   },
 } as const;

@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { UserAdmin } from '../models/UserAdmin';
+import type { UserAdminRelations } from '../models/UserAdminRelations';
 import type { UserCreate } from '../models/UserCreate';
-import type { UserRead } from '../models/UserRead';
+import type { UserReadRelations } from '../models/UserReadRelations';
 import type { UserUpdate } from '../models/UserUpdate';
 import type { UserUpdateAuthPermissions } from '../models/UserUpdateAuthPermissions';
 
@@ -19,7 +19,7 @@ export class UsersService {
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static usersCurrentUserApiV1UsersMeGet(): CancelablePromise<(UserAdmin | UserRead)> {
+  public static usersCurrentUserApiV1UsersMeGet(): CancelablePromise<(UserAdminRelations | UserReadRelations)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/me',
@@ -40,7 +40,7 @@ export class UsersService {
     requestBody,
   }: {
     requestBody: UserUpdate,
-  }): CancelablePromise<(UserAdmin | UserRead)> {
+  }): CancelablePromise<(UserAdminRelations | UserReadRelations)> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/me',
@@ -68,7 +68,7 @@ export class UsersService {
     page = 1,
   }: {
     page?: number,
-  }): CancelablePromise<(Array<UserAdmin> | Array<UserRead>)> {
+  }): CancelablePromise<(Array<UserAdminRelations> | Array<UserReadRelations>)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/',
@@ -94,7 +94,7 @@ export class UsersService {
     requestBody,
   }: {
     requestBody: UserCreate,
-  }): CancelablePromise<(UserAdmin | UserRead)> {
+  }): CancelablePromise<(UserAdminRelations | UserReadRelations)> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/api/v1/users/',
@@ -120,7 +120,7 @@ export class UsersService {
     id,
   }: {
     id: any,
-  }): CancelablePromise<(UserAdmin | UserRead)> {
+  }): CancelablePromise<(UserAdminRelations | UserReadRelations)> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/users/{id}',
@@ -176,7 +176,7 @@ export class UsersService {
   }: {
     id: any,
     requestBody: UserUpdate,
-  }): CancelablePromise<(UserAdmin | UserRead)> {
+  }): CancelablePromise<(UserAdminRelations | UserReadRelations)> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/{id}',
@@ -197,7 +197,7 @@ export class UsersService {
 
   /**
    * Users:Add Permissions To User
-   * @returns UserAdmin Successful Response
+   * @returns UserAdminRelations Successful Response
    * @throws ApiError
    */
   public static usersAddPermissionsToUserApiV1UsersIdPermissionsAddPatch({
@@ -206,7 +206,7 @@ export class UsersService {
   }: {
     id: any,
     requestBody: UserUpdateAuthPermissions,
-  }): CancelablePromise<UserAdmin> {
+  }): CancelablePromise<UserAdminRelations> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/{id}/permissions/add',
@@ -223,7 +223,7 @@ export class UsersService {
 
   /**
    * Users:Remove Permissions From User
-   * @returns UserAdmin Successful Response
+   * @returns UserAdminRelations Successful Response
    * @throws ApiError
    */
   public static usersRemovePermissionsFromUserApiV1UsersIdPermissionsRemovePatch({
@@ -232,7 +232,7 @@ export class UsersService {
   }: {
     id: any,
     requestBody: UserUpdateAuthPermissions,
-  }): CancelablePromise<UserAdmin> {
+  }): CancelablePromise<UserAdminRelations> {
     return __request(OpenAPI, {
       method: 'PATCH',
       url: '/api/v1/users/{id}/permissions/remove',

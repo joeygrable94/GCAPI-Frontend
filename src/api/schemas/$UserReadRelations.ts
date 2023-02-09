@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserRead = {
+export const $UserReadRelations = {
   properties: {
     id: {
       type: 'string',
@@ -34,6 +34,12 @@ export const $UserRead = {
     is_verified: {
       type: 'boolean',
       isRequired: true,
+    },
+    clients: {
+      type: 'array',
+      contains: {
+        type: 'ClientRead',
+      },
     },
   },
 } as const;

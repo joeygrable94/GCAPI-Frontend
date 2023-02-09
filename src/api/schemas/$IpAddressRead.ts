@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserRead = {
+export const $IpAddressRead = {
   properties: {
     id: {
       type: 'string',
@@ -18,22 +18,23 @@ export const $UserRead = {
       isRequired: true,
       format: 'date-time',
     },
-    email: {
+    address: {
       type: 'string',
       isRequired: true,
-      format: 'email',
     },
-    is_active: {
+    is_blocked: {
       type: 'boolean',
       isRequired: true,
     },
-    is_superuser: {
-      type: 'boolean',
-      isRequired: true,
+    isp: {
+      type: 'string',
     },
-    is_verified: {
-      type: 'boolean',
-      isRequired: true,
+    location: {
+      type: 'string',
+    },
+    geocoord_id: {
+      type: 'string',
+      format: 'uuid4',
     },
   },
 } as const;
