@@ -2,13 +2,13 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserRead = {
+export type WebsitePageRead = {
   id: string;
   created_on: string;
   updated_on: string;
-  email: string;
-  is_active: boolean;
-  is_superuser: boolean;
-  is_verified: boolean;
+  path: string;
+  status: number;
+  website_id: string;
+  sitemap_id?: string;
 };
 

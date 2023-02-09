@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserRead = {
+export const $WebsiteReadRelations = {
   properties: {
     id: {
       type: 'string',
@@ -18,22 +18,30 @@ export const $UserRead = {
       isRequired: true,
       format: 'date-time',
     },
-    email: {
+    domain: {
       type: 'string',
       isRequired: true,
-      format: 'email',
     },
-    is_active: {
+    is_secure: {
       type: 'boolean',
-      isRequired: true,
     },
-    is_superuser: {
-      type: 'boolean',
-      isRequired: true,
+    clients: {
+      type: 'array',
+      contains: {
+        type: 'ClientRead',
+      },
     },
-    is_verified: {
-      type: 'boolean',
-      isRequired: true,
+    sitemaps: {
+      type: 'array',
+      contains: {
+        type: 'WebsiteMapRead',
+      },
+    },
+    pages: {
+      type: 'array',
+      contains: {
+        type: 'WebsitePageRead',
+      },
     },
   },
 } as const;

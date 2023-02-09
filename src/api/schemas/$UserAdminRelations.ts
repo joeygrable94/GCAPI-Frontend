@@ -1,8 +1,15 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserRead = {
+export const $UserAdminRelations = {
   properties: {
+    principals: {
+      type: 'array',
+      contains: {
+        type: 'string',
+      },
+      isRequired: true,
+    },
     id: {
       type: 'string',
       isRequired: true,
@@ -34,6 +41,24 @@ export const $UserRead = {
     is_verified: {
       type: 'boolean',
       isRequired: true,
+    },
+    ip_addresses: {
+      type: 'array',
+      contains: {
+        type: 'IpAddressRead',
+      },
+    },
+    tokens: {
+      type: 'array',
+      contains: {
+        type: 'AccessTokenRead',
+      },
+    },
+    clients: {
+      type: 'array',
+      contains: {
+        type: 'ClientRead',
+      },
     },
   },
 } as const;

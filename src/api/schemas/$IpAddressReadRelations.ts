@@ -1,20 +1,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $UserAdmin = {
+export const $IpAddressReadRelations = {
   properties: {
-    principals: {
-      type: 'array',
-      contains: {
-        type: 'string',
-      },
-      isRequired: true,
-    },
-    email: {
-      type: 'string',
-      isRequired: true,
-      format: 'email',
-    },
     id: {
       type: 'string',
       isRequired: true,
@@ -30,17 +18,29 @@ export const $UserAdmin = {
       isRequired: true,
       format: 'date-time',
     },
-    is_active: {
+    address: {
+      type: 'string',
+      isRequired: true,
+    },
+    is_blocked: {
       type: 'boolean',
       isRequired: true,
     },
-    is_superuser: {
-      type: 'boolean',
-      isRequired: true,
+    isp: {
+      type: 'string',
     },
-    is_verified: {
-      type: 'boolean',
-      isRequired: true,
+    location: {
+      type: 'string',
+    },
+    geocoord_id: {
+      type: 'string',
+      format: 'uuid4',
+    },
+    users: {
+      type: 'array',
+      contains: {
+        type: 'UserRead',
+      },
     },
   },
 } as const;
