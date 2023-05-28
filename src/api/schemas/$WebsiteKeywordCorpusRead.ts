@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $WebsitePageRead = {
+export const $WebsiteKeywordCorpusRead = {
   properties: {
     id: {
       type: 'string',
@@ -18,37 +18,22 @@ export const $WebsitePageRead = {
       isRequired: true,
       format: 'date-time',
     },
-    url: {
+    rawtext: {
       type: 'string',
       isRequired: true,
     },
-    status: {
-      type: 'number',
-      isRequired: true,
-    },
-    priority: {
-      type: 'any-of',
-      contains: [{
-        type: 'number',
-      }, {
-        type: 'number',
-      }],
-      isRequired: true,
-    },
-    last_modified: {
+    corpus: {
       type: 'string',
-      format: 'date-time',
-    },
-    change_frequency: {
-      type: 'SitemapPageChangeFrequency',
+      isRequired: true,
     },
     website_id: {
       type: 'string',
       isRequired: true,
       format: 'uuid4',
     },
-    sitemap_id: {
+    page_id: {
       type: 'string',
+      isRequired: true,
       format: 'uuid4',
     },
   },

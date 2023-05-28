@@ -3,8 +3,10 @@
 /* eslint-disable */
 
 import type { SitemapPageChangeFrequency } from './SitemapPageChangeFrequency';
+import type { WebsiteKeywordCorpusRead } from './WebsiteKeywordCorpusRead';
+import type { WebsitePageSpeedInsightsRead } from './WebsitePageSpeedInsightsRead';
 
-export type WebsitePageRead = {
+export type WebsitePageReadRelations = {
   id: string;
   created_on: string;
   updated_on: string;
@@ -15,5 +17,7 @@ export type WebsitePageRead = {
   change_frequency?: SitemapPageChangeFrequency;
   website_id: string;
   sitemap_id?: string;
+  keywordcorpus?: Array<WebsiteKeywordCorpusRead>;
+  pagespeedinsights?: Array<WebsitePageSpeedInsightsRead>;
 };
 

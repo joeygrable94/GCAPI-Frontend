@@ -4,10 +4,7 @@
 
 import type { SitemapPageChangeFrequency } from './SitemapPageChangeFrequency';
 
-export type WebsitePageRead = {
-  id: string;
-  created_on: string;
-  updated_on: string;
+export type WebsitePageCreate = {
   url: string;
   status: number;
   priority: number;

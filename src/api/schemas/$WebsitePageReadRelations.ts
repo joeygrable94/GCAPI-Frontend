@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $WebsitePageRead = {
+export const $WebsitePageReadRelations = {
   properties: {
     id: {
       type: 'string',
@@ -50,6 +50,18 @@ export const $WebsitePageRead = {
     sitemap_id: {
       type: 'string',
       format: 'uuid4',
+    },
+    keywordcorpus: {
+      type: 'array',
+      contains: {
+        type: 'WebsiteKeywordCorpusRead',
+      },
+    },
+    pagespeedinsights: {
+      type: 'array',
+      contains: {
+        type: 'WebsitePageSpeedInsightsRead',
+      },
     },
   },
 } as const;

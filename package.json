@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "gcapi-solid-start",
   "scripts": {
     "generate-client": "openapi --input http://localhost:8888/api/v1/docs/openapi.json --output ./src/api --useOptions --useUnionTypes --exportSchemas true --indent 2",
     "generate-client-docker": "openapi --input http://0.0.0.0:8888/api/v1/docs/openapi.json --output ./src/api --useOptions --useUnionTypes --exportSchemas true --indent 2",
@@ -10,25 +10,27 @@
   },
   "type": "module",
   "devDependencies": {
+    "@suid/vite-plugin": "^0.1.4",
+    "@types/node": "^18.11.18",
     "openapi-typescript-codegen": "^0.23.0",
     "prettier": "^2.8.1",
     "prettier-plugin-organize-imports": "^3.2.1",
     "sass": "^1.57.1",
-    "solid-start-node": "^0.2.0",
-    "typescript": "^4.8.4",
-    "vite": "^3.1.8"
+    "solid-start-node": "^0.2.19",
+    "typescript": "^4.9.4",
+    "vite": "^4.1.4",
+    "vite-plugin-solid": "^2.7.0",
+    "vite-tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
-    "@hope-ui/core": "^1.0.0-next.11",
-    "@solidjs/meta": "^0.28.0",
-    "@solidjs/router": "^0.6.0",
-    "@stitches/core": "^1.2.8",
-    "@tanstack/solid-table": "^8.7.6",
-    "clsx": "^1.2.1",
-    "solid-icons": "^1.0.4",
-    "solid-js": "^1.6.2",
-    "solid-start": "^0.2.0",
-    "undici": "^5.11.0"
+    "@afroze9/solid-auth0": "^0.2.0",
+    "@solidjs/meta": "^0.28.2",
+    "@solidjs/router": "^0.8.2",
+    "@suid/icons-material": "^0.6.3",
+    "@suid/material": "^0.12.3",
+    "solid-js": "^1.7.2",
+    "solid-start": "^0.2.26",
+    "undici": "^5.15.1"
   },
   "engines": {
     "node": ">=16.8"

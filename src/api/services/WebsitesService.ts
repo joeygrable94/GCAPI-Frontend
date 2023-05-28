@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { WebsiteCreate } from '../models/WebsiteCreate';
+import type { WebsiteCreateProcessing } from '../models/WebsiteCreateProcessing';
 import type { WebsiteReadRelations } from '../models/WebsiteReadRelations';
 import type { WebsiteUpdate } from '../models/WebsiteUpdate';
 
@@ -12,20 +13,26 @@ import { request as __request } from '../core/request';
 export class WebsitesService {
 
   /**
-   * Websites:Read Websites
+   * Websites:List
    * @returns WebsiteReadRelations Successful Response
    * @throws ApiError
    */
-  public static websitesReadWebsitesApiV1WebsitesGet({
+  public static websitesListApiV1WebsitesGet({
     page = 1,
+    clientId,
+    websiteId,
   }: {
     page?: number,
+    clientId?: any,
+    websiteId?: any,
   }): CancelablePromise<Array<WebsiteReadRelations>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/websites/',
       query: {
         'page': page,
+        'client_id': clientId,
+        'website_id': websiteId,
       },
       errors: {
         422: `Validation Error`,
@@ -34,23 +41,18 @@ export class WebsitesService {
   }
 
   /**
-   * Websites:Create Website
-   * @returns WebsiteReadRelations Successful Response
+   * Websites:Create
+   * @returns WebsiteCreateProcessing Successful Response
    * @throws ApiError
    */
-  public static websitesCreateWebsiteApiV1WebsitesPost({
+  public static websitesCreateApiV1WebsitesPost({
     requestBody,
-    clientId,
   }: {
     requestBody: WebsiteCreate,
-    clientId?: any,
-  }): CancelablePromise<WebsiteReadRelations> {
+  }): CancelablePromise<WebsiteCreateProcessing> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/api/v1/websites/',
-      query: {
-        'client_id': clientId,
-      },
       body: requestBody,
       mediaType: 'application/json',
       errors: {
@@ -60,20 +62,20 @@ export class WebsitesService {
   }
 
   /**
-   * Websites:Read Website
+   * Websites:Read
    * @returns WebsiteReadRelations Successful Response
    * @throws ApiError
    */
-  public static websitesReadWebsiteApiV1WebsitesIdGet({
-    id,
+  public static websitesReadApiV1WebsitesWebsiteIdGet({
+    websiteId,
   }: {
-    id: string,
+    websiteId: any,
   }): CancelablePromise<WebsiteReadRelations> {
     return __request(OpenAPI, {
       method: 'GET',
-      url: '/api/v1/websites/{id}',
+      url: '/api/v1/websites/{website_id}',
       path: {
-        'id': id,
+        'website_id': websiteId,
       },
       errors: {
         422: `Validation Error`,
@@ -82,20 +84,20 @@ export class WebsitesService {
   }
 
   /**
-   * Websites:Delete Website
+   * Websites:Delete
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static websitesDeleteWebsiteApiV1WebsitesIdDelete({
-    id,
+  public static websitesDeleteApiV1WebsitesWebsiteIdDelete({
+    websiteId,
   }: {
-    id: string,
+    websiteId: any,
   }): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: 'DELETE',
-      url: '/api/v1/websites/{id}',
+      url: '/api/v1/websites/{website_id}',
       path: {
-        'id': id,
+        'website_id': websiteId,
       },
       errors: {
         422: `Validation Error`,
@@ -104,22 +106,22 @@ export class WebsitesService {
   }
 
   /**
-   * Websites:Update Website
+   * Websites:Update
    * @returns WebsiteReadRelations Successful Response
    * @throws ApiError
    */
-  public static websitesUpdateWebsiteApiV1WebsitesIdPatch({
-    id,
+  public static websitesUpdateApiV1WebsitesWebsiteIdPatch({
+    websiteId,
     requestBody,
   }: {
-    id: string,
+    websiteId: any,
     requestBody: WebsiteUpdate,
   }): CancelablePromise<WebsiteReadRelations> {
     return __request(OpenAPI, {
       method: 'PATCH',
-      url: '/api/v1/websites/{id}',
+      url: '/api/v1/websites/{website_id}',
       path: {
-        'id': id,
+        'website_id': websiteId,
       },
       body: requestBody,
       mediaType: 'application/json',

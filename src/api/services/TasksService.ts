@@ -1,30 +1,29 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { TaskState } from '../models/TaskState';
+
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 
-export class PublicService {
+export class TasksService {
 
   /**
-   * Public:Status
-   * @returns any Successful Response
+   * Tasks:Get Status
+   * @returns TaskState Successful Response
    * @throws ApiError
    */
-  public static publicStatusApiV1StatusGet({
-    page = 1,
-    speak,
+  public static tasksGetStatusApiV1TasksTaskIdGet({
+    taskId,
   }: {
-    page?: number,
-    speak?: string,
-  }): CancelablePromise<any> {
+    taskId: any,
+  }): CancelablePromise<TaskState> {
     return __request(OpenAPI, {
       method: 'GET',
-      url: '/api/v1/status',
-      query: {
-        'page': page,
-        'speak': speak,
+      url: '/api/v1/tasks/{task_id}',
+      path: {
+        'task_id': taskId,
       },
       errors: {
         422: `Validation Error`,

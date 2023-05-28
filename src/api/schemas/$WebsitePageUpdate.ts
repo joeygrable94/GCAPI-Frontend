@@ -1,30 +1,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $WebsitePageRead = {
+export const $WebsitePageUpdate = {
   properties: {
-    id: {
-      type: 'string',
-      isRequired: true,
-      format: 'uuid4',
-    },
-    created_on: {
-      type: 'string',
-      isRequired: true,
-      format: 'date-time',
-    },
-    updated_on: {
-      type: 'string',
-      isRequired: true,
-      format: 'date-time',
-    },
     url: {
       type: 'string',
-      isRequired: true,
     },
     status: {
       type: 'number',
-      isRequired: true,
     },
     priority: {
       type: 'any-of',
@@ -33,7 +16,6 @@ export const $WebsitePageRead = {
       }, {
         type: 'number',
       }],
-      isRequired: true,
     },
     last_modified: {
       type: 'string',
@@ -41,11 +23,6 @@ export const $WebsitePageRead = {
     },
     change_frequency: {
       type: 'SitemapPageChangeFrequency',
-    },
-    website_id: {
-      type: 'string',
-      isRequired: true,
-      format: 'uuid4',
     },
     sitemap_id: {
       type: 'string',

@@ -12,20 +12,26 @@ import { request as __request } from '../core/request';
 export class ClientsService {
 
   /**
-   * Clients:Read Clients
+   * Clients:List
    * @returns ClientReadRelations Successful Response
    * @throws ApiError
    */
-  public static clientsReadClientsApiV1ClientsGet({
+  public static clientsListApiV1ClientsGet({
     page = 1,
+    clientId,
+    websiteId,
   }: {
     page?: number,
+    clientId?: any,
+    websiteId?: any,
   }): CancelablePromise<Array<ClientReadRelations>> {
     return __request(OpenAPI, {
       method: 'GET',
       url: '/api/v1/clients/',
       query: {
         'page': page,
+        'client_id': clientId,
+        'website_id': websiteId,
       },
       errors: {
         422: `Validation Error`,
@@ -34,11 +40,11 @@ export class ClientsService {
   }
 
   /**
-   * Clients:Create Client
+   * Clients:Create
    * @returns ClientReadRelations Successful Response
    * @throws ApiError
    */
-  public static clientsCreateClientApiV1ClientsPost({
+  public static clientsCreateApiV1ClientsPost({
     requestBody,
   }: {
     requestBody: ClientCreate,
@@ -55,42 +61,43 @@ export class ClientsService {
   }
 
   /**
-   * Clients:Read Client
+   * Clients:Read
    * @returns ClientReadRelations Successful Response
    * @throws ApiError
    */
-  public static clientsReadClientApiV1ClientsIdGet({
-    id,
+  public static clientsReadApiV1ClientsClientIdGet({
+    clientId,
   }: {
-    id: string,
+    clientId: any,
   }): CancelablePromise<ClientReadRelations> {
     return __request(OpenAPI, {
       method: 'GET',
-      url: '/api/v1/clients/{id}',
+      url: '/api/v1/clients/{client_id}',
       path: {
-        'id': id,
+        'client_id': clientId,
       },
       errors: {
+        404: `Not Found`,
         422: `Validation Error`,
       },
     });
   }
 
   /**
-   * Clients:Delete Client
+   * Clients:Delete
    * @returns any Successful Response
    * @throws ApiError
    */
-  public static clientsDeleteClientApiV1ClientsIdDelete({
-    id,
+  public static clientsDeleteApiV1ClientsClientIdDelete({
+    clientId,
   }: {
-    id: string,
+    clientId: any,
   }): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: 'DELETE',
-      url: '/api/v1/clients/{id}',
+      url: '/api/v1/clients/{client_id}',
       path: {
-        'id': id,
+        'client_id': clientId,
       },
       errors: {
         422: `Validation Error`,
@@ -99,22 +106,22 @@ export class ClientsService {
   }
 
   /**
-   * Clients:Update Client
+   * Clients:Update
    * @returns ClientReadRelations Successful Response
    * @throws ApiError
    */
-  public static clientsUpdateClientApiV1ClientsIdPatch({
-    id,
+  public static clientsUpdateApiV1ClientsClientIdPatch({
+    clientId,
     requestBody,
   }: {
-    id: string,
+    clientId: any,
     requestBody: ClientUpdate,
   }): CancelablePromise<ClientReadRelations> {
     return __request(OpenAPI, {
       method: 'PATCH',
-      url: '/api/v1/clients/{id}',
+      url: '/api/v1/clients/{client_id}',
       path: {
-        'id': id,
+        'client_id': clientId,
       },
       body: requestBody,
       mediaType: 'application/json',
