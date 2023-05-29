@@ -1,5 +1,5 @@
+import { useMediaQuery } from '@suid/material';
 import {
-  Component,
   createContext,
   createEffect,
   createSignal,
@@ -7,24 +7,22 @@ import {
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import {
-  ThemeActions,
-  ThemeContext,
-  ThemeState,
-} from './types';
-import { useMediaQuery } from '@suid/material';
+import { GLOBAL } from '~/features';
+import { ThemeActions, ThemeContext, ThemeState } from './types';
 
 const ThemeStateContext = createContext<ThemeContext>();
 
 // @ts-ignore
-export function ThemeProvider(props) {
+export default function ThemeProvider(props) {
   const [isDarkMode, setDarkMode] = createSignal(false);
-  const stored: string | null = !import.meta.env.SSR ? localStorage.getItem(import.meta.env.VITE_APP_THEME_STORAGE_KEY) : null;
+  const stored: string | null = !import.meta.env.SSR
+    ? GLOBAL.localStorage.getItem(import.meta.env.VITE_LOCAL_STORAGE_KEY)
+    : null;
   const [state, setState] = createStore<ThemeState>(
     stored
       ? JSON.parse(stored)
       : {
-          mode: 'light',
+          mode: 'light'
         }
   );
   const actions: ThemeActions = {
@@ -34,7 +32,7 @@ export function ThemeProvider(props) {
         return prefersDarkMode();
       }
       return isDarkMode();
-    },
+    }
   };
   const store: ThemeContext = [state, actions];
 
@@ -49,7 +47,7 @@ export function ThemeProvider(props) {
   });
 
   createEffect(() =>
-    localStorage.setItem(
+    GLOBAL.localStorage.setItem(
       import.meta.env.VITE_APP_LOCAL_STORAGE_KEY,
       JSON.stringify(state)
     )
@@ -65,5 +63,3 @@ export function ThemeProvider(props) {
 export function useThemeState<ThemeContext>() {
   return useContext(ThemeStateContext);
 }
-
-export default ThemeProvider;

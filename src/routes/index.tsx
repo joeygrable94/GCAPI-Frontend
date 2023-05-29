@@ -1,5 +1,5 @@
-import { Title } from "solid-start";
-import { Counter } from "~/features";
+import { Title } from 'solid-start';
+import { Counter } from '~/features';
 
 export default function Home() {
   return (

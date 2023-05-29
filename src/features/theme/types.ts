@@ -1,18 +1,11 @@
-type ThemeModes = 'light' | 'dark';
+export type ThemeModes = 'light' | 'dark';
 
-type ThemeState = {
+export type ThemeState = {
   mode: ThemeModes;
 };
 
-type ThemeActions = {
+export type ThemeActions = {
   userPrefersDarkMode: () => boolean;
 };
 
-type ThemeContext = [ThemeState, ThemeActions];
-
-export type {
-  ThemeModes,
-  ThemeActions,
-  ThemeContext,
-  ThemeState,
-};
+export type ThemeContext = [ThemeState, ThemeActions];

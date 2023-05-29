@@ -2,7 +2,6 @@
 import { Auth0 } from '@afroze9/solid-auth0';
 import { Suspense } from 'solid-js';
 import {
-  A,
   Body,
   ErrorBoundary,
   FileRoutes,
@@ -14,7 +13,7 @@ import {
   Scripts,
   Title
 } from 'solid-start';
-import { ThemeContext, ThemeDefault } from '~/features';
+import { Navigation, ThemeContext, ThemeDefault } from '~/features';
 import './root.scss';
 
 export default function Root() {
@@ -24,7 +23,10 @@ export default function Root() {
         <Title>SolidStart - Bare</Title>
         <Meta charset="utf-8" />
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
+        <Link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+        />
       </Head>
       <Body>
         <Suspense>
@@ -34,13 +36,12 @@ export default function Root() {
               clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
               audience={import.meta.env.VITE_AUTH0_AUDIENCE}
               logoutRedirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
-              loginRedirectUri={`${import.meta.env.VITE_BASE_URL}/`}
+              loginRedirectUri={import.meta.env.VITE_BASE_URL}
               scope={import.meta.env.VITE_AUTH0_SCOPES}
             >
               <ThemeContext>
                 <ThemeDefault>
-                  <A href="/">Index</A>
-                  <A href="/about">About</A>
+                  <Navigation />
                   <Routes>
                     <FileRoutes />
                   </Routes>
