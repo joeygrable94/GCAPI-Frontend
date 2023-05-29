@@ -9,14 +9,14 @@ interface ImportMetaEnv {
   readonly VITE_SESSION_SECRET: string;
   readonly VITE_BASE_URL: string;
   readonly VITE_API_BASE_URL: string;
-  // Auth0
-  readonly VITE_AUTH0_CLIENT_SECRET: string;
+  // Auth Settings
   readonly VITE_AUTH0_DOMAIN: string;
   readonly VITE_AUTH0_CLIENT_ID: string;
-  readonly VITE_AUTH0_GRANT_ID: string;
   readonly VITE_AUTH0_AUDIENCE: string;
   readonly VITE_AUTH0_REDIRECT_URI: string;
-  readonly VITE_AUTH0_SCOPES: string;
+  readonly VITE_AUTH0_REWRITE_REDIRECT: boolean;
+  readonly VITE_AUTH0_OFFLINE_ACCESS: boolean;
+  readonly VITE_AUTH0_LOGOUT_URL: string;
 }
 
 interface ImportMeta {

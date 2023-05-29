@@ -18,9 +18,7 @@ export function useCookieSession(request: Request): Promise<Session> {
  * @param data cookie session data to store
  * @returns session headers
  */
-export async function createSession(
-  data: CookieSessionData
-): Promise<SessionHeaders> {
+export async function createSession(data: CookieSessionData): Promise<SessionHeaders> {
   const session: Session = await CookieSession.getSession();
   if (data.csrf) session.set('csrf', data.csrf);
   return {
@@ -36,9 +34,7 @@ export async function createSession(
  * @param request server request
  * @returns session headers
  */
-export async function destroySession(
-  request: Request
-): Promise<SessionHeaders> {
+export async function destroySession(request: Request): Promise<SessionHeaders> {
   const session: Session = await CookieSession.getSession(
     request.headers.get('Cookie')
   );

@@ -16,9 +16,8 @@ import {
   Typography
 } from '@suid/material';
 import useTheme from '@suid/material/styles/useTheme';
-import { Component, createSignal, onMount } from 'solid-js';
+import { Component, createSignal, Match, Switch } from 'solid-js';
 import { useNavigate } from 'solid-start';
-import { log } from '~/features';
 
 const Navigation: Component = () => {
   // navigation
@@ -35,19 +34,20 @@ const Navigation: Component = () => {
     setIsOpen(open);
   };
   // auth state
-  // const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  // const auth = useAuth0();
   // auth actions
+  const showLogin = () => {
+    return false;
+  };
   const authLogin = () => {
     console.log('login');
+    // auth?.loginWithRedirect();
   };
   const authLogout = () => {
     console.log('logout');
+    // auth?.logout();
   };
-
-  onMount(() => {
-    log('Navigation', 'mounted');
-    // log(isAuthenticated());
-  });
+  // onMount(() => log(auth?.isAuthenticated()));
 
   return (
     <>
@@ -67,12 +67,18 @@ const Navigation: Component = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               GCAPI
             </Typography>
-            <Button color="inherit" onClick={() => authLogin()}>
-              Login
-            </Button>
-            <Button color="inherit" onClick={() => authLogout()}>
-              Logout
-            </Button>
+            <Switch>
+              <Match when={showLogin()}>
+                <Button color="inherit" onClick={() => authLogout()}>
+                  Logout
+                </Button>
+              </Match>
+              <Match when={showLogin() === false}>
+                <Button color="inherit" onClick={() => authLogin()}>
+                  Login
+                </Button>
+              </Match>
+            </Switch>
           </Toolbar>
         </AppBar>
       </Box>

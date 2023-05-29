@@ -6,9 +6,11 @@ const Counter: Component<any> = () => {
   const clicksCount = createMemo(() => `Clicks: ${count()}`);
   return (
     <>
-      <Button class="increment" onClick={() => setCount(count() + 1)}>{clicksCount()}</Button>
+      <Button class="increment" onClick={() => setCount(count() + 1)}>
+        {clicksCount()}
+      </Button>
     </>
   );
-}
+};
 
 export { Counter };

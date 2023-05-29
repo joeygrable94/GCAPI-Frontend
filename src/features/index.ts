@@ -1,3 +1,4 @@
+export * from './auth';
 export * from './counter';
 export * from './global';
 export * from './navigation';

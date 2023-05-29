@@ -12,7 +12,7 @@ import {
   Scripts,
   Title
 } from 'solid-start';
-import { Navigation, ThemeContext, ThemeDefault } from '~/features';
+import { Navigation, ThemeDefault, ThemeProvider } from '~/features';
 import './root.scss';
 
 export default function Root() {
@@ -30,14 +30,14 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <ThemeContext>
+            <ThemeProvider>
               <ThemeDefault>
                 <Navigation />
                 <Routes>
                   <FileRoutes />
                 </Routes>
               </ThemeDefault>
-            </ThemeContext>
+            </ThemeProvider>
           </ErrorBoundary>
         </Suspense>
         <Scripts />
