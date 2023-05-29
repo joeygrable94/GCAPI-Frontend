@@ -1,3 +1,5 @@
+import { createEffect } from 'solid-js';
+import { createStore } from 'solid-js/store';
 import { isServer } from 'solid-js/web';
 import { OpenAPI } from '~/api';
 
@@ -84,3 +86,54 @@ const API_URL_BASE = `${APP_PROTOCOL}://${API_HOST}`;
 once(() => {
   OpenAPI.BASE = API_URL_BASE;
 })();
+
+/**
+ * @description create a solidjs store that is persisted to localStorage
+ *
+ * @param value to store
+ * @param appKey to store the value under
+ * @returns a solidjs getter and setter
+ */
+export function createLocalStore<T extends object>(value: T, appKey: string) {
+  const stored = localStorage.getItem(appKey);
+  const [state, setState] = createStore<T>(stored ? JSON.parse(stored) : value);
+
+  createEffect(() => localStorage.setItem(appKey, JSON.stringify(state)));
+  return [state, setState] as const;
+}
+
+/**
+ * @description store a value in a cookie
+ *
+ * @param name of the cookie
+ * @param value to store in the cookie
+ * @param daysToExpire until the cookie expires
+ */
+export const setCookie = (name: string, value: string, daysToExpire: number): void => {
+  const expirationDate = new Date();
+  expirationDate.setDate(expirationDate.getDate() + daysToExpire);
+
+  const cookieValue =
+    encodeURIComponent(value) +
+    '; expires=' +
+    expirationDate.toUTCString() +
+    '; path=/';
+  document.cookie = name + '=' + cookieValue;
+};
+
+/**
+ * @description retrieve a value from a cookie by name
+ *
+ * @param name of the cookie to retrieve
+ * @returns value of the cookie
+ */
+export const getCookie = (name: string): string => {
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i].trim();
+    if (cookie.startsWith(name + '=')) {
+      return decodeURIComponent(cookie.substring(name.length + 1));
+    }
+  }
+  return '';
+};
