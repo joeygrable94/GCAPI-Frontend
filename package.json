@@ -23,7 +23,6 @@
     "vite-tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
-    "@afroze9/solid-auth0": "^0.2.0",
     "@solidjs/meta": "^0.28.2",
     "@solidjs/router": "^0.8.2",
     "@suid/icons-material": "^0.6.3",

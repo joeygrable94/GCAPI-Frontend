@@ -1,5 +1,4 @@
 // @refresh reload
-import { Auth0 } from '@afroze9/solid-auth0';
 import { Suspense } from 'solid-js';
 import {
   Body,
@@ -31,23 +30,14 @@ export default function Root() {
       <Body>
         <Suspense>
           <ErrorBoundary>
-            <Auth0
-              domain={import.meta.env.VITE_AUTH0_DOMAIN}
-              clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-              audience={import.meta.env.VITE_AUTH0_AUDIENCE}
-              logoutRedirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
-              loginRedirectUri={import.meta.env.VITE_BASE_URL}
-              scope={import.meta.env.VITE_AUTH0_SCOPES}
-            >
-              <ThemeContext>
-                <ThemeDefault>
-                  <Navigation />
-                  <Routes>
-                    <FileRoutes />
-                  </Routes>
-                </ThemeDefault>
-              </ThemeContext>
-            </Auth0>
+            <ThemeContext>
+              <ThemeDefault>
+                <Navigation />
+                <Routes>
+                  <FileRoutes />
+                </Routes>
+              </ThemeDefault>
+            </ThemeContext>
           </ErrorBoundary>
         </Suspense>
         <Scripts />

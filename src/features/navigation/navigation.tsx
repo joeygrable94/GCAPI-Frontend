@@ -1,4 +1,3 @@
-import { useAuth0 } from '@afroze9/solid-auth0';
 import DraftsIcon from '@suid/icons-material/Drafts';
 import InboxIcon from '@suid/icons-material/Inbox';
 import MenuIcon from '@suid/icons-material/Menu';
@@ -17,15 +16,17 @@ import {
   Typography
 } from '@suid/material';
 import useTheme from '@suid/material/styles/useTheme';
-import { Component, createSignal, onMount, Show } from 'solid-js';
+import { Component, createSignal, onMount } from 'solid-js';
 import { useNavigate } from 'solid-start';
 import { log } from '~/features';
 
 const Navigation: Component = () => {
+  // navigation
   const navigate = useNavigate();
+  // theme state
   const theme = useTheme();
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const [isOpen, setIsOpen] = createSignal(false);
+  // theme actions
   const toggleDrawer = (open: boolean) => (event: MouseEvent | KeyboardEvent) => {
     if (event.type === 'keydown') {
       const keyboardEvent = event as KeyboardEvent;
@@ -33,10 +34,19 @@ const Navigation: Component = () => {
     }
     setIsOpen(open);
   };
+  // auth state
+  // const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  // auth actions
+  const authLogin = () => {
+    console.log('login');
+  };
+  const authLogout = () => {
+    console.log('logout');
+  };
 
   onMount(() => {
     log('Navigation', 'mounted');
-    log(isAuthenticated());
+    // log(isAuthenticated());
   });
 
   return (
@@ -57,16 +67,12 @@ const Navigation: Component = () => {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               GCAPI
             </Typography>
-            <Show when={isAuthenticated() === false}>
-              <Button color="inherit" onClick={() => loginWithRedirect()}>
-                Login
-              </Button>
-            </Show>
-            <Show when={isAuthenticated()}>
-              <Button color="inherit" onClick={() => logout()}>
-                Logout
-              </Button>
-            </Show>
+            <Button color="inherit" onClick={() => authLogin()}>
+              Login
+            </Button>
+            <Button color="inherit" onClick={() => authLogout()}>
+              Logout
+            </Button>
           </Toolbar>
         </AppBar>
       </Box>
