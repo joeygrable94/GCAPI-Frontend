@@ -12,11 +12,10 @@ interface ImportMetaEnv {
   // Auth Settings
   readonly VITE_AUTH0_DOMAIN: string;
   readonly VITE_AUTH0_CLIENT_ID: string;
+  readonly VITE_AUTH0_CLIENT_SECRET: string;
   readonly VITE_AUTH0_AUDIENCE: string;
-  readonly VITE_AUTH0_REDIRECT_URI: string;
-  readonly VITE_AUTH0_REWRITE_REDIRECT: boolean;
-  readonly VITE_AUTH0_OFFLINE_ACCESS: boolean;
-  readonly VITE_AUTH0_LOGOUT_URL: string;
+  readonly VITE_AUTH0_SCOPE: string;
+  readonly VITE_AUTH0_CALLBACK_URL: string;
 }
 
 interface ImportMeta {

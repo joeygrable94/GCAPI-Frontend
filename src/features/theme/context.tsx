@@ -16,7 +16,7 @@ const ThemeStateContext = createContext<ThemeContext>();
 export default function ThemeProvider(props) {
   const [isDarkMode, setDarkMode] = createSignal(false);
   const stored: string | null = !import.meta.env.SSR
-    ? GLOBAL.localStorage.getItem(import.meta.env.VITE_LOCAL_STORAGE_KEY)
+    ? GLOBAL.localStorage.getItem('gcapi_theme')
     : null;
   const [state, setState] = createStore<ThemeState>(
     stored
@@ -46,12 +46,7 @@ export default function ThemeProvider(props) {
     }
   });
 
-  createEffect(() =>
-    GLOBAL.localStorage.setItem(
-      import.meta.env.VITE_APP_LOCAL_STORAGE_KEY,
-      JSON.stringify(state)
-    )
-  );
+  createEffect(() => GLOBAL.localStorage.setItem('gcapi_theme', JSON.stringify(state)));
 
   return (
     <ThemeStateContext.Provider value={store}>

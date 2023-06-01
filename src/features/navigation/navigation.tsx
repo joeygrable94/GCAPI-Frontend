@@ -16,16 +16,15 @@ import {
   Typography
 } from '@suid/material';
 import useTheme from '@suid/material/styles/useTheme';
-import { Component, createSignal, Match, Switch } from 'solid-js';
+import { Component, createEffect, createSignal, Match, Switch } from 'solid-js';
 import { useNavigate } from 'solid-start';
+import { log, useAuth } from '~/features';
 
 const Navigation: Component = () => {
-  // navigation
   const navigate = useNavigate();
-  // theme state
   const theme = useTheme();
+  const [authState, authActions] = useAuth();
   const [isOpen, setIsOpen] = createSignal(false);
-  // theme actions
   const toggleDrawer = (open: boolean) => (event: MouseEvent | KeyboardEvent) => {
     if (event.type === 'keydown') {
       const keyboardEvent = event as KeyboardEvent;
@@ -33,21 +32,20 @@ const Navigation: Component = () => {
     }
     setIsOpen(open);
   };
-  // auth state
-  // const auth = useAuth0();
-  // auth actions
   const showLogin = () => {
-    return false;
+    return authActions.isAuthenticated();
   };
   const authLogin = () => {
-    console.log('login');
-    // auth?.loginWithRedirect();
+    navigate('/login');
   };
   const authLogout = () => {
     console.log('logout');
-    // auth?.logout();
+    authActions.logout();
   };
-  // onMount(() => log(auth?.isAuthenticated()));
+
+  createEffect(() => {
+    log(authActions.isAuthenticated());
+  });
 
   return (
     <>
@@ -68,7 +66,7 @@ const Navigation: Component = () => {
               GCAPI
             </Typography>
             <Switch>
-              <Match when={showLogin()}>
+              <Match when={showLogin() === true}>
                 <Button color="inherit" onClick={() => authLogout()}>
                   Logout
                 </Button>

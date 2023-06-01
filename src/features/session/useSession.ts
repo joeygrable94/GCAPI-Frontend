@@ -53,6 +53,6 @@ export async function destroySession(request: Request): Promise<SessionHeaders> 
  */
 export async function useCookieSessionData(request: Request): Promise<any> {
   const session: Session = await useCookieSession(request);
-  const csrf: string = session.get('csrf') ? session.get('colorMode') : '';
+  const csrf: string = session.get('csrf') ? session.get('csrf') : '';
   return { csrf: csrf } as CookieSessionData;
 }

@@ -11,6 +11,7 @@
   "type": "module",
   "devDependencies": {
     "@suid/vite-plugin": "^0.1.4",
+    "@types/auth0-js": "^9.14.7",
     "@types/node": "^18.11.18",
     "openapi-typescript-codegen": "^0.23.0",
     "prettier": "^2.8.1",
@@ -27,6 +28,8 @@
     "@solidjs/router": "^0.8.2",
     "@suid/icons-material": "^0.6.3",
     "@suid/material": "^0.12.3",
+    "auth0-js": "^9.21.0",
+    "axios": "^1.4.0",
     "solid-js": "^1.7.2",
     "solid-start": "^0.2.26",
     "undici": "^5.15.1"
