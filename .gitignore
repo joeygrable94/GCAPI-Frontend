@@ -1,5 +1,7 @@
 
 dist
+.env
+!.env.example
 .solid
 .output
 .vercel
