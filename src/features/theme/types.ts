@@ -6,6 +6,7 @@ export type ThemeState = {
 
 export type ThemeActions = {
   userPrefersDarkMode: () => boolean;
+  toggleColorMode: () => void;
 };
 
 export type ThemeContext = [ThemeState, ThemeActions];

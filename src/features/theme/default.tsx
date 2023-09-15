@@ -7,7 +7,7 @@ const ThemeDefault: Component<any> = (props) => {
   const [state, action] = useThemeState();
   const theme = createTheme({
     palette: {
-      mode: state.mode
+      mode: 'light'
     }
   });
 

@@ -1,10 +1,13 @@
+import { useNavigate } from '@solidjs/router';
 import DraftsIcon from '@suid/icons-material/Drafts';
 import InboxIcon from '@suid/icons-material/Inbox';
+import LogoutIcon from '@suid/icons-material/Logout';
 import MenuIcon from '@suid/icons-material/Menu';
 import {
   AppBar,
   Box,
   Button,
+  Divider,
   Drawer,
   IconButton,
   List,
@@ -16,9 +19,8 @@ import {
   Typography
 } from '@suid/material';
 import useTheme from '@suid/material/styles/useTheme';
-import { Component, createEffect, createSignal, Match, Switch } from 'solid-js';
-import { useNavigate } from 'solid-start';
-import { log, useAuth } from '~/features';
+import { Component, createSignal, Match, Show, Switch } from 'solid-js';
+import { useAuth } from '~/features';
 
 const Navigation: Component = () => {
   const navigate = useNavigate();
@@ -39,37 +41,29 @@ const Navigation: Component = () => {
     navigate('/login');
   };
   const authLogout = () => {
-    console.log('logout');
+    setIsOpen(false);
     authActions.logout();
   };
-
-  createEffect(() => {
-    log(authActions.isAuthenticated());
-  });
 
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-              onClick={toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               GCAPI
             </Typography>
             <Switch>
               <Match when={showLogin() === true}>
-                <Button color="inherit" onClick={() => authLogout()}>
-                  Logout
-                </Button>
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={toggleDrawer(true)}
+                >
+                  <MenuIcon />
+                </IconButton>
               </Match>
               <Match when={showLogin() === false}>
                 <Button color="inherit" onClick={() => authLogin()}>
@@ -87,31 +81,51 @@ const Navigation: Component = () => {
         sx={{ zIndex: 9999 }}
         onClose={toggleDrawer(false)}
       >
-        <Box
-          sx={{ width: 250, bgcolor: theme.palette.background.paper }}
+        <List
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexWrap: 'nowrap',
+            width: 250,
+            height: '100%',
+            bgcolor: theme.palette.background.paper
+          }}
           role="presentation"
           onClick={toggleDrawer(false)}
           onKeyDown={toggleDrawer(false)}
         >
-          <List>
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => navigate('/')}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Home'} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => navigate('/about')}>
+              <ListItemIcon>
+                <DraftsIcon />
+              </ListItemIcon>
+              <ListItemText primary={'About'} />
+            </ListItemButton>
+          </ListItem>
+          <Show when={showLogin() === true}>
+            <Divider
+              sx={{
+                mt: 'auto'
+              }}
+            />
             <ListItem disablePadding>
-              <ListItemButton onClick={() => navigate('/')}>
+              <ListItemButton onClick={() => authLogout()}>
                 <ListItemIcon>
-                  <InboxIcon />
+                  <LogoutIcon />
                 </ListItemIcon>
-                <ListItemText primary={'Home'} />
+                <ListItemText primary={'Logout'} />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => navigate('/about')}>
-                <ListItemIcon>
-                  <DraftsIcon />
-                </ListItemIcon>
-                <ListItemText primary={'About'} />
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Box>
+          </Show>
+        </List>
       </Drawer>
     </>
   );

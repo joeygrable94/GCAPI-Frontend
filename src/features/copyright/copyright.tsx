@@ -1,5 +1,5 @@
+import { Link } from '@solidjs/router';
 import { Typography } from '@suid/material';
-import { Link } from 'solid-start';
 
 const Copyright = (props: any) => {
   return (

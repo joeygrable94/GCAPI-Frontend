@@ -1,54 +1,104 @@
-import { createContext, createEffect, ParentComponent, useContext } from 'solid-js';
+import { useNavigate } from '@solidjs/router';
+import {
+  Auth0DecodedHash,
+  Auth0Error,
+  Auth0ParseHashError,
+  Auth0UserProfile
+} from 'auth0-js';
+import {
+  createContext,
+  createEffect,
+  createSignal,
+  onMount,
+  ParentComponent,
+  useContext
+} from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { useNavigate } from 'solid-start';
-import { GLOBAL } from '~/features';
+import { log, SecureLocalStorage, warn } from '~/utilities';
 import { auth0Client } from './client';
-import { AuthContextValue, AuthLogin, IAuthState } from './types';
+import { AuthContextValue, AuthLogin, AuthRegister, IAuthState } from './types';
 
 function createAuthState() {
   const navigate = useNavigate();
 
-  const stored: string = !import.meta.env.SSR
-    ? GLOBAL.localStorage.getItem('gcapi_auth0')
-      ? (GLOBAL.localStorage.getItem('gcapi_auth0') as string)
-      : JSON.stringify({ access: '', state: '', nonce: '', user: '', expires: 0 })
-    : JSON.stringify({ access: '', state: '', nonce: '', user: '', expires: 0 });
-  const [state, setState] = createStore<IAuthState>(JSON.parse(stored));
-
+  const stored: IAuthState = SecureLocalStorage.get('gcapi_auth0')
+    ? (SecureLocalStorage.get('gcapi_auth0') as IAuthState)
+    : ({
+        access: '',
+        state: '',
+        nonce: '',
+        sub: '',
+        expires: 0,
+        user: null
+      } as IAuthState);
+  const [state, setState] = createStore<IAuthState>(stored);
+  const [authReady, setAuthReady] = createSignal<boolean>(false);
   const captureAuth = () => {
     try {
-      auth0Client.parseHash((err, authResult) => {
-        if (err) throw new Error('Error parsing hash: ' + err.description);
-        if (!authResult) throw new Error('Error fetching authResult: ' + authResult);
-        const token = authResult.accessToken ? authResult.accessToken : '';
-        auth0Client.client.userInfo(token, (err, user) => {
-          if (err) throw new Error('Error fetch userInfo' + err.description);
-          setState((_) => {
-            return {
-              access: authResult.accessToken,
-              state: authResult.state,
-              nonce: authResult.idTokenPayload.nonce,
-              user: authResult.idTokenPayload.sub,
-              expires: authResult.expiresIn
-            };
-          });
-        });
-      });
-    } catch (e) {
-      console.log(e);
+      auth0Client.parseHash(
+        (err: Auth0ParseHashError | null, authResult: Auth0DecodedHash | null) => {
+          if (err) throw new Error('Auth context error:' + err.description);
+          if (!authResult) throw new Error('Unauthenticated User');
+          const token = authResult.accessToken ? authResult.accessToken : '';
+          auth0Client.client.userInfo(
+            token,
+            (err: Auth0Error | null, user: Auth0UserProfile) => {
+              if (err) throw new Error('Auth context error:' + err.description);
+              setState((_) => {
+                return {
+                  access: authResult.accessToken,
+                  state: authResult.state,
+                  nonce: authResult.idTokenPayload.nonce,
+                  sub: authResult.idTokenPayload.sub,
+                  expires: authResult.expiresIn,
+                  user: user
+                } as IAuthState;
+              });
+            }
+          );
+        }
+      );
+    } catch (e: Auth0ParseHashError | Auth0Error | Error | any) {
+      warn('Auth Capture Error:', e);
     } finally {
-      navigate('/');
+      setAuthReady(true);
     }
   };
 
+  onMount(() => {
+    log('Auth:', SecureLocalStorage.get('gcapi_auth0'));
+  });
+
   createEffect(() => {
     captureAuth();
-    GLOBAL.localStorage.setItem('gcapi_auth0', JSON.stringify(state));
+    SecureLocalStorage.set('gcapi_auth0', state);
+    log(authReady());
   });
 
   return [
     state,
     {
+      register(user: AuthRegister) {
+        try {
+          auth0Client.signupAndAuthorize(
+            {
+              connection: 'Username-Password-Authentication',
+              username: user.username,
+              email: user.email,
+              password: user.password,
+              userMetadata: {
+                name: user.name
+              }
+            },
+            (err, data) => {
+              if (err) throw new Error('Auth context error:' + err.description);
+              log('Auth Register Callback:', data);
+            }
+          );
+        } catch (e) {
+          warn('Auth Register Error:', e);
+        }
+      },
       login(user: AuthLogin) {
         try {
           auth0Client.login(
@@ -58,17 +108,25 @@ function createAuthState() {
               password: user.password
             },
             (err, data) => {
-              if (err) throw new Error('login callback error');
-              console.log('login callback', data);
+              if (err) throw new Error('Auth context error:' + err.description);
+              log('Auth Login Callback:', data);
             }
           );
         } catch (e) {
-          console.error(e);
+          warn('Auth Login Error:', e);
         }
       },
       logout() {
-        // TODO: reset cookie.
-        console.log('logout');
+        setState((_) => {
+          return {
+            access: '',
+            state: '',
+            nonce: '',
+            sub: '',
+            expires: 0,
+            user: null
+          } as IAuthState;
+        });
       },
       refreshAuth() {
         try {
@@ -78,11 +136,12 @@ function createAuthState() {
               nonce: state.nonce
             },
             (err, data) => {
-              console.log('renewAuth callback', err, data);
+              if (err) throw new Error('Auth context error:' + err.description);
+              log('Auth Refresh Callback:', data);
             }
           );
         } catch (e) {
-          console.error(e);
+          warn('Auth Refresh Error:', e);
         }
       },
       isAuthenticated() {
@@ -99,7 +158,7 @@ export const AuthProvider: ParentComponent = (props) => {
   return <AuthContext.Provider value={state}>{props.children}</AuthContext.Provider>;
 };
 
-export function useAuth() {
+export function useAuth<AuthContextValue>() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('Auth context not set');
   return ctx;

@@ -1,3 +1,4 @@
+import { Link as Anchor } from '@solidjs/router';
 import { LockOutlined } from '@suid/icons-material';
 import {
   Avatar,
@@ -11,17 +12,18 @@ import {
   TextField,
   Typography
 } from '@suid/material';
-import { JSX } from 'solid-js';
+import { Component, JSX } from 'solid-js';
 import { AuthLogin, Copyright, useAuth } from '~/features';
 
-export default function SignIn() {
+const SignIn: Component = () => {
   const [, authActions] = useAuth();
   const handleSubmit: JSX.EventHandler<HTMLFormElement, SubmitEvent> = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     authActions.login({
       email: data.get('email'),
-      password: data.get('password')
+      password: data.get('password'),
+      remember: data.get('remember')
     } as AuthLogin);
   };
 
@@ -63,7 +65,7 @@ export default function SignIn() {
             autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox name="remember" value="true" color="primary" />}
             label="Remember me"
           />
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
@@ -76,7 +78,7 @@ export default function SignIn() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link as={Anchor} href="/register" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
@@ -86,4 +88,6 @@ export default function SignIn() {
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );
-}
+};
+
+export default SignIn;

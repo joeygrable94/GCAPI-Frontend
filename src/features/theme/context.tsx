@@ -2,59 +2,61 @@ import { useMediaQuery } from '@suid/material';
 import {
   createContext,
   createEffect,
-  createSignal,
   onMount,
+  ParentComponent,
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { GLOBAL } from '~/features';
 import { ThemeActions, ThemeContext, ThemeState } from './types';
 
-const ThemeStateContext = createContext<ThemeContext>();
+const THEME_LOCAL_STORAGE_KEY = import.meta.env.VITE_APP_LOCAL_STORAGE_KEY + '-theme';
 
-// @ts-ignore
-export default function ThemeProvider(props) {
-  const [isDarkMode, setDarkMode] = createSignal(false);
-  const stored: string | null = !import.meta.env.SSR
-    ? GLOBAL.localStorage.getItem('gcapi_theme')
+function createThemeState(): ThemeContext {
+  const stored: string | null = localStorage.getItem(THEME_LOCAL_STORAGE_KEY)
+    ? localStorage.getItem(THEME_LOCAL_STORAGE_KEY)
     : null;
   const [state, setState] = createStore<ThemeState>(
-    stored
-      ? JSON.parse(stored)
-      : {
-          mode: 'light'
-        }
+    stored ? JSON.parse(stored) : { mode: 'light' }
   );
   const actions: ThemeActions = {
     userPrefersDarkMode: () => {
-      if (!import.meta.env.SSR) {
-        const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-        return prefersDarkMode();
-      }
-      return isDarkMode();
+      const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+      return prefersDarkMode();
+    },
+    toggleColorMode: () => {
+      if (state.mode === 'dark') setState('mode', 'light');
+      else setState('mode', 'dark');
+      setTimeout(() => window.location.reload(), 1);
     }
   };
-  const store: ThemeContext = [state, actions];
-
+  const store: ThemeContext = [state, actions] as ThemeContext;
   onMount(() => {
-    if (actions.userPrefersDarkMode()) {
-      setState('mode', 'dark');
-      setDarkMode(true);
-    } else {
-      setState('mode', 'light');
-      setDarkMode(false);
+    if (stored === null) {
+      if (actions.userPrefersDarkMode()) setState('mode', 'dark');
+      else setState('mode', 'light');
     }
   });
+  createEffect(() => {
+    localStorage.setItem(THEME_LOCAL_STORAGE_KEY, JSON.stringify(state));
+  });
+  return store;
+}
 
-  createEffect(() => GLOBAL.localStorage.setItem('gcapi_theme', JSON.stringify(state)));
+const ThemeStateContext = createContext<ReturnType<typeof createThemeState>>();
 
+const ThemeProvider: ParentComponent = (props) => {
+  const state: ThemeContext = createThemeState();
   return (
-    <ThemeStateContext.Provider value={store}>
+    <ThemeStateContext.Provider value={state}>
       {props.children}
     </ThemeStateContext.Provider>
   );
-}
+};
 
-export function useThemeState<ThemeContext>() {
-  return useContext(ThemeStateContext);
+export default ThemeProvider;
+
+export function useThemeState(): ThemeContext {
+  const ctx = useContext(ThemeStateContext);
+  if (!ctx) throw new Error('<ThemeProvider> not found wrapping the <App />.');
+  return ctx as ThemeContext;
 }

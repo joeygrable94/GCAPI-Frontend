@@ -1,4 +1,4 @@
-import { Session } from 'solid-start/session/sessions';
+// import { Session } from 'solid-start/session/sessions';
 import { CookieSession } from './session';
 import { Cookie, CookieSessionData, SessionHeaders } from './types';
 
@@ -8,7 +8,7 @@ import { Cookie, CookieSessionData, SessionHeaders } from './types';
  * @param request server request
  * @returns session object
  */
-export function useCookieSession(request: Request): Promise<Session> {
+export function useCookieSession(request: Request): Promise<any> {
   return CookieSession.getSession(request.headers.get('Cookie'));
 }
 
@@ -19,7 +19,7 @@ export function useCookieSession(request: Request): Promise<Session> {
  * @returns session headers
  */
 export async function createSession(data: CookieSessionData): Promise<SessionHeaders> {
-  const session: Session = await CookieSession.getSession();
+  const session: any = await CookieSession.getSession();
   if (data.csrf) session.set('csrf', data.csrf);
   return {
     headers: {
@@ -35,9 +35,7 @@ export async function createSession(data: CookieSessionData): Promise<SessionHea
  * @returns session headers
  */
 export async function destroySession(request: Request): Promise<SessionHeaders> {
-  const session: Session = await CookieSession.getSession(
-    request.headers.get('Cookie')
-  );
+  const session: any = await CookieSession.getSession(request.headers.get('Cookie'));
   return {
     headers: {
       'Set-Cookie': await CookieSession.destroySession(session)
@@ -52,7 +50,7 @@ export async function destroySession(request: Request): Promise<SessionHeaders> 
  * @returns cookie session data
  */
 export async function useCookieSessionData(request: Request): Promise<any> {
-  const session: Session = await useCookieSession(request);
+  const session: any = await useCookieSession(request);
   const csrf: string = session.get('csrf') ? session.get('csrf') : '';
   return { csrf: csrf } as CookieSessionData;
 }

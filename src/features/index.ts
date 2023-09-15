@@ -1,6 +1,6 @@
 export * from './auth';
+export * from './color-mode';
 export * from './copyright';
 export * from './counter';
-export * from './global';
 export * from './navigation';
 export * from './theme';

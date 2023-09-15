@@ -1,13 +1,13 @@
 import suid from '@suid/vite-plugin';
-import solid from 'solid-start/vite';
 import { defineConfig } from 'vite';
+import solidPlugin from 'vite-plugin-solid';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-  define: {
-    'process.env': process.env
+  plugins: [tsconfigPaths(), suid(), solidPlugin()],
+  server: {
+    port: 3000
   },
-  plugins: [tsconfigPaths(), suid(), solid({ ssr: false })],
   build: {
     target: 'esnext'
   }
