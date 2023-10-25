@@ -34,7 +34,7 @@
     "@suid/material": "^0.12.3",
     "auth0-js": "^9.21.0",
     "axios": "^1.4.0",
-    "crypto-js": "^4.1.1",
+    "crypto-js": "^4.2.0",
     "localstorage-slim": "^2.4.0",
     "solid-js": "^1.7.2",
     "yup": "^1.2.0"
