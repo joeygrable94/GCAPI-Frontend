@@ -1,12 +1,14 @@
 
 dist
-.env
-!.env.example
 .solid
 .output
 .vercel
 .netlify
 netlify
+
+# Environment
+.env
+.env*.local
 
 # dependencies
 /node_modules
@@ -24,4 +26,3 @@ gitignore
 # System Files
 .DS_Store
 Thumbs.db
-.vscode

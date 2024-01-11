@@ -1,36 +1,21 @@
-import { MetaProvider } from '@solidjs/meta';
-import { Route, Routes } from '@solidjs/router';
-import { lazy, type Component } from 'solid-js';
-import { AuthProvider, Navigation, ThemeDefault, ThemeProvider } from '~/features';
-import { viewportHeightStyles } from '~/utilities';
+// @refresh reload
+import { Router } from "@solidjs/router";
+import { FileRoutes } from "@solidjs/start";
+import { Suspense } from "solid-js";
+import "./app.css";
 
-const Page404 = lazy(() => import('~/pages/[...404]'));
-const Home = lazy(() => import('~/pages/index'));
-const Login = lazy(() => import('~/pages/login'));
-const Register = lazy(() => import('~/pages/register'));
-
-let tags: any = [];
-
-const App: Component = () => {
-  viewportHeightStyles();
-
+export default function App() {
   return (
-    <MetaProvider tags={tags}>
-      <AuthProvider>
-        <ThemeProvider>
-          <ThemeDefault>
-            <Navigation />
-            <Routes>
-              <Route path="/" component={Home} />
-              <Route path="/login" component={Login} />
-              <Route path="/register" component={Register} />
-              <Route path="*any" component={Page404} />
-            </Routes>
-          </ThemeDefault>
-        </ThemeProvider>
-      </AuthProvider>
-    </MetaProvider>
+    <Router
+      root={(props) => (
+        <>
+          <a href="/">Index</a>
+          <a href="/about">About</a>
+          <Suspense>{props.children}</Suspense>
+        </>
+      )}
+    >
+      <FileRoutes />
+    </Router>
   );
-};
-
-export default App;
+}
