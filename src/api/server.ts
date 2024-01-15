@@ -1,7 +1,8 @@
 "use server";
 import { redirect } from "@solidjs/router";
-import { useSession } from "@solidjs/start/server";
+import { APIEvent, useSession } from "@solidjs/start/server";
 import { getRequestEvent } from "solid-js/web";
+import { UserInfo, UserSessionData } from "./auth0/types";
 import { db } from "./db";
 
 function validateUsername(username: unknown) {
@@ -30,8 +31,9 @@ async function register(username: string, password: string) {
   });
 }
 
-function getSession() {
-  return useSession(getRequestEvent()!, {
+export function getSession(event: APIEvent | undefined = undefined) {
+  let requestEvent = event ?? getRequestEvent();
+  return useSession<UserSessionData>(requestEvent!, {
     password:
       process.env.SESSION_SECRET ?? "areallylongsecretthatyoushouldreplace",
   });
@@ -49,7 +51,7 @@ export async function loginOrRegister(formData: FormData) {
       ? register(username, password)
       : login(username, password));
     const session = await getSession();
-    await session.update((d) => (d.userId = user!.id));
+    // await session.update((d: UserSessionData) => (d.userId = user!.id));
   } catch (err) {
     return err as Error;
   }
@@ -58,7 +60,7 @@ export async function loginOrRegister(formData: FormData) {
 
 export async function logout() {
   const session = await getSession();
-  await session.update((d) => (d.userId = undefined));
+  // await session.update((d) => (d.userId = undefined));
   throw redirect("/login");
 }
 
@@ -67,12 +69,12 @@ export async function getUser() {
   const userId = session.data.userId;
   if (userId === undefined) throw redirect("/login");
 
-  let user;
+  let user: UserInfo | undefined;
   try {
-    user = await db.user.findUnique({ where: { id: userId } });
+    // user = await db.user.findUnique({ where: { id: userId } });
   } catch {
     logout();
   }
   if (!user) return logout();
-  return { id: user.id, username: user.username };
+  return { id: user.sub, username: user.email };
 }

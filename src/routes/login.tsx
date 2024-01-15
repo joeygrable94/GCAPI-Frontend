@@ -5,6 +5,15 @@ import { loginOrRegister } from "~/api";
 export default function Login(props: RouteSectionProps) {
   const loggingIn = useSubmission(loginOrRegister);
 
+  /*
+  onMount(() => {
+    toast.custom(
+      (t) => <ToastAlert t={t} title="Logging In" message="You are being logged in" bg="danger" />,
+      { duration: 8000 }
+    );
+  });
+  */
+
   return (
     <main>
       <h1>Login</h1>
