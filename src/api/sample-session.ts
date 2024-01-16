@@ -8,7 +8,7 @@ type UserSession = {
 
 function getSession() {
   return useSession(getRequestEvent()!, {
-    password: process.env.SESSION_SECRET!
+    password: import.meta.env.VITE_SESSION_SECRET!
   });
 }
 

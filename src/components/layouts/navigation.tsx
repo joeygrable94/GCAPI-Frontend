@@ -1,6 +1,7 @@
 import { A } from '@solidjs/router';
 import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
-import { BsMoon, BsSun } from 'solid-icons/bs';
+import { Icon } from 'solid-heroicons';
+import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
 import { useLayoutContext } from '../theme';
 
@@ -27,23 +28,25 @@ const Navigation: Component = () => {
             <Nav.Link as={A} href="/about">
               About
             </Nav.Link>
-            <NavDropdown title="Dropdown" id="basic-nav-dropdown" style={{ 'margin-left': 'auto' }} menuVariant={bg()}>
+            <NavDropdown
+              title="Dropdown"
+              id="basic-nav-dropdown"
+              style={{ 'margin-left': 'auto' }}
+              menuVariant={bg()}
+            >
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link
-              href="#"
-              onClick={() => handleToggleSessionLayout()}
-            >
+            <Nav.Link href="#" onClick={() => handleToggleSessionLayout()}>
               <Switch>
                 <Match when={layoutContext.darkMode === true}>
-                  <BsSun />
+                  <Icon path={sun} style="width: 24px;" />
                 </Match>
                 <Match when={layoutContext.darkMode === false}>
-                  <BsMoon />
+                  <Icon path={moon} style="width: 24px;" />
                 </Match>
               </Switch>
             </Nav.Link>

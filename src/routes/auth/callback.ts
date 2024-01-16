@@ -1,75 +1,10 @@
-import { APIEvent } from '@solidjs/start/server';
-import { parseCookies } from 'vinxi/server';
-import { getSession } from '~/api/server';
-// import { storage } from '../session.js'
+import { APIEvent, parseCookies } from '@solidjs/start/server';
+import { UserSessionData, getSession } from '~/api/server';
+import { auth0FetchOAuthToken, auth0UserInfo } from '~/components';
 
-async function auth0UserInfo(accessToken: string) {
-  const endpoint = new URL(`https://${import.meta.env.AUTH0_DOMAIN}/userinfo`);
-
-  const userInfo = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${accessToken}`
-    }
-  });
-
-  if (userInfo.status !== 200) {
-    return undefined;
-  }
-
-  return userInfo.json();
-}
-
-async function auth0FetchOAuthToken(
-  code: string,
-  state: string,
-  redirectUrl: string,
-  organization: string | undefined
-) {
-  const endpoint = new URL(`https://${import.meta.env.AUTH0_DOMAIN}/oauth/token`);
-
-  const scopes = ['openid', 'profile'];
-  if (import.meta.env.AUTH0_OFFLINE_ACCESS === 'true') {
-    scopes.push('offline_access');
-  }
-
-  if (import.meta.env.AUTH0_PERMISSIONS === 'true') {
-    scopes.push('permissions');
-  }
-
-  const formData = new URLSearchParams();
-  formData.append('grant_type', 'authorization_code');
-  formData.append('client_id', import.meta.env.AUTH0_CLIENT_ID);
-  formData.append('client_secret', process.env.AUTH0_CLIENT_SECRET!);
-  formData.append('code', code);
-  formData.append('state', state);
-  formData.append('redirect_uri', redirectUrl);
-  formData.append('scope', scopes.join(' '));
-
-  if (organization) {
-    formData.append('organization', organization);
-  }
-
-  if (import.meta.env.AUTH0_AUDIENCE) {
-    formData.append('audience', import.meta.env.AUTH0_AUDIENCE);
-  }
-
-  if (process.env.DEBUG) {
-    console.log('formData');
-    console.log(formData);
-  }
-
-  const authToken = await fetch(endpoint, {
-    method: 'POST',
-    body: formData
-  });
-
-  return authToken.json();
-}
-
-export default async function GET(event: APIEvent) {
-  let baseUrl = import.meta.env.APP_BASE_URL;
-  if (process.env.DEBUG) {
+export async function GET(event: APIEvent) {
+  let baseUrl = import.meta.env.VITE_APP_BASE_URL;
+  if (import.meta.env.VITE_DEBUG) {
     console.log('baseUrl', baseUrl);
   }
 
@@ -88,7 +23,7 @@ export default async function GET(event: APIEvent) {
     });
   }
 
-  if (process.env.DEBUG) {
+  if (import.meta.env.VITE_DEBUG) {
     console.log('state verification');
     console.log(state);
     console.log(verification);
@@ -118,11 +53,14 @@ export default async function GET(event: APIEvent) {
     );
   }
 
-  let redirectUrl = import.meta.env.AUTH0_REDIRECT_URI;
-  if (import.meta.env.AUTH0_REWRITE_REDIRECT === 'true') {
+  let redirectUrl = import.meta.env.VITE_AUTH0_REDIRECT_URI;
+  if (import.meta.env.VITE_AUTH0_REWRITE_REDIRECT === 'true') {
     const orgName = url.hostname.split('.')[0];
-    redirectUrl = import.meta.env.AUTH0_REDIRECT_URI.replace('org_id', orgName);
-    baseUrl = import.meta.env.APP_BASE_URL.replace('https://', `https://${orgName}.`);
+    redirectUrl = import.meta.env.VITE_AUTH0_REDIRECT_URI.replace('org_id', orgName);
+    baseUrl = import.meta.env.VITE_APP_BASE_URL.replace(
+      'https://',
+      `https://${orgName}.`
+    );
   }
 
   const jsonAuthToken = await auth0FetchOAuthToken(
@@ -132,13 +70,13 @@ export default async function GET(event: APIEvent) {
     verification.organization
   );
 
-  if (process.env.DEBUG) {
+  if (import.meta.env.VITE_DEBUG) {
     console.log('auth0FetchOAuthToken');
     console.log(jsonAuthToken);
   }
 
   const userInfo = await auth0UserInfo(jsonAuthToken.access_token);
-  if (process.env.DEBUG) {
+  if (import.meta.env.VITE_DEBUG) {
     console.log('auth0UserInfo');
     console.log(userInfo);
   }
@@ -148,23 +86,28 @@ export default async function GET(event: APIEvent) {
     });
   }
 
-  // await session.update((d: UserSession) => (d.userId = user!.id));
-
-  session.set('accessToken', jsonAuthToken.access_token);
+  await session.update(
+    (d: UserSessionData) => (d.accessToken = jsonAuthToken.access_token)
+  );
   if (jsonAuthToken.refresh_token) {
-    session.set('refreshToken', jsonAuthToken.refresh_token);
+    await session.update(
+      (d: UserSessionData) => (d.refreshToken = jsonAuthToken.refresh_token)
+    );
   }
-  session.set('idToken', jsonAuthToken.id_token);
-  session.set('scope', jsonAuthToken.scope);
-  session.set('tokenType', jsonAuthToken.accessToken_type);
-  session.set('userInfo', userInfo);
-  session.set('userId', userInfo.sub);
-  session.set('orgId', userInfo.org_id);
-  session.set('permissions', userInfo.permissions);
+  await session.update((d: UserSessionData) => (d.idToken = jsonAuthToken.id_token));
+  await session.update((d: UserSessionData) => (d.scope = jsonAuthToken.scope));
+  await session.update(
+    (d: UserSessionData) => (d.tokenType = jsonAuthToken.accessToken_type)
+  );
+  await session.update((d: UserSessionData) => (d.userInfo = userInfo));
+  await session.update((d: UserSessionData) => (d.userId = userInfo.sub));
+  await session.update((d: UserSessionData) => (d.orgId = userInfo.org_id));
+  await session.update((d: UserSessionData) => (d.permissions = userInfo.permissions));
 
   headers.append('Content-Type', 'text/html; charset=utf-8');
-  headers.append('Set-Cookie', session.id ? `session=${session.id}` : '');
-  // headers.append('Set-Cookie', await storage.commitSession(session))
+  if (session.id) {
+    headers.append('Set-Cookie', session.id ? `session=${session.id}` : '');
+  }
 
   const body = `<html><head>
     <meta http-equiv="refresh" content="0; url=${baseUrl}" />

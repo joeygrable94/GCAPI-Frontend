@@ -1,5 +1,5 @@
 /*
-import { OpenAPI } from '~/openapi';
+import { OpenAPI } from '~/backend';
 import { once } from '~/utilities';
 
 const APP_PROTOCOL: string =
@@ -14,7 +14,7 @@ const API_URL_BASE = `${APP_PROTOCOL}://${API_HOST}`;
 
 // set base url for OpenAPI once
 once(() => {
-  const tokens = JSON.parse(import.meta.env.VITE_API_ACCESS_TOKENS);
+  const tokens = JSON.parse(import.meta.env.API_ACCESS_TOKENS);
   OpenAPI.BASE = API_URL_BASE;
   OpenAPI.HEADERS = {
     'x-api-key': tokens[0],

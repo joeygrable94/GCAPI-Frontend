@@ -2,7 +2,7 @@
 import { redirect } from "@solidjs/router";
 import { APIEvent, useSession } from "@solidjs/start/server";
 import { getRequestEvent } from "solid-js/web";
-import { UserInfo, UserSessionData } from "./auth0/types";
+// import { UserInfo, UserSessionData } from "../components/auth0/types";
 import { db } from "./db";
 
 function validateUsername(username: unknown) {
@@ -31,11 +31,38 @@ async function register(username: string, password: string) {
   });
 }
 
+export type UserInfo = {
+  sub: string;
+  nickname: string;
+  name: string;
+  picture: string;
+  updated_at: string;
+  org_id: string;
+  email: string;
+  email_verified: boolean;
+};
+
+/*
+  Note: This is the most basic form of SessionData, but sufficient for most of the times. Ideally, we should have built a discriminated union.
+  One type would set the refreshToken as required when the scope is set to offline_access, and another type would ignore that field.
+*/
+export interface UserSessionData {
+  accessToken: string;
+  idToken: string;
+  refreshToken?: string;
+  scope: string;
+  tokenType?: string;
+  userInfo: UserInfo;
+  userId: string;
+  orgId: string;
+  permissions?: unknown;
+}
+
 export function getSession(event: APIEvent | undefined = undefined) {
   let requestEvent = event ?? getRequestEvent();
   return useSession<UserSessionData>(requestEvent!, {
     password:
-      process.env.SESSION_SECRET ?? "areallylongsecretthatyoushouldreplace",
+      import.meta.env.VITE_SESSION_SECRET ?? "areallylongsecretthatyoushouldreplace",
   });
 }
 

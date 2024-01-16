@@ -10,10 +10,13 @@ const MainLayout: ParentComponent = (props) => {
 
   createEffect(() => {
     saveDarkMode(layout.darkMode);
-    document.documentElement.setAttribute('data-bs-theme', layout.darkMode ? 'dark' : 'light');
+    document.documentElement.setAttribute(
+      'data-bs-theme',
+      layout.darkMode ? 'dark' : 'light'
+    );
     document.body.setAttribute('data-bs-theme', layout.darkMode ? 'dark' : 'light');
     appDiv = document.getElementById('app') as HTMLElement;
-    appDiv.setAttribute( 'data-bs-theme', layout.darkMode ? 'dark' : 'light');
+    appDiv.setAttribute('data-bs-theme', layout.darkMode ? 'dark' : 'light');
   });
   return (
     <LayoutContext.Provider value={layout}>

@@ -2,7 +2,7 @@ import { APIEvent } from '@solidjs/start/server';
 // import { storage } from '../session.js'
 
 export default async function GET(event: APIEvent) {
-  const baseUrl = import.meta.env.APP_BASE_URL;
+  const baseUrl = import.meta.env.VITE_APP_BASE_URL;
   const headers = new Headers();
   // const session = await storage.getSession()
   headers.append('Content-Type', 'text/html; charset=utf-8');
