@@ -10,15 +10,9 @@ import {
 } from 'solid-js';
 import { getRequestEvent, isServer } from 'solid-js/web';
 import { setCookie } from 'vinxi/server';
-import { getSession } from '~/api/server';
+import { UserInfo, UserSessionData, getSession } from '~/api/server';
 import refresh from './refresh';
-import {
-  AuthContext,
-  AuthProps,
-  Organization,
-  UserInfo,
-  UserSessionData
-} from './types';
+import { AuthContext, AuthProps, Organization } from './types';
 
 function createAuthState(props: AuthProps): AuthContext {
   const [auth0config] = splitProps(props, [
