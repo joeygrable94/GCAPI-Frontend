@@ -47,7 +47,6 @@ export async function getUser() {
   let user: UserInfo | undefined;
   try {
     log('Validate user session data and return user, or renew auth');
-    log(session.data);
   } catch {
     log('Get user error');
   }

@@ -1,3 +1,4 @@
+import { Button, Form } from 'solid-bootstrap';
 import { Component, JSX } from 'solid-js';
 import { useAuth } from './context';
 import { AuthLogin } from './types';
@@ -17,20 +18,41 @@ const SignIn: Component = () => {
   return (
     <div>
       <h3>Sign in</h3>
-      <form onSubmit={handleSubmit}>
-        <input type="text" id="email" name="email" auto-complete="email" required />
-        <input
-          type="password"
-          id="password"
-          name="password"
-          auto-complete="current-password"
-          required
-        />
-        <input type="checkbox" name="remember" value="true" />
-        <input type="hidden" name="redirect" value="/" />
-        <button type="submit">Sign In</button>
-        <a href="/register">Don't have an account? Sign Up</a>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group class="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            name="email"
+            type="email"
+            placeholder="Enter email"
+            auto-complete="email"
+            required
+          />
+          <Form.Text class="text-muted">Please enter your email.</Form.Text>
+        </Form.Group>
+        <Form.Group class="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            name="password"
+            type="password"
+            placeholder="Password"
+            auto-complete="current-password"
+            required
+          />
+        </Form.Group>
+        <Form.Group class="mb-3" controlId="formBasicCheckbox">
+          <Form.Check
+            name="remember"
+            type="checkbox"
+            label="Remember this device?"
+            value="true"
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
+      <a href="/register">Don't have an account? Sign Up</a>
     </div>
   );
 };

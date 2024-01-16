@@ -25,20 +25,16 @@ const Navigation: Component = () => {
             <Nav.Link as={A} href="/">
               Home
             </Nav.Link>
-            <Nav.Link as={A} href="/about">
-              About
-            </Nav.Link>
             <NavDropdown
               title="Dropdown"
               id="basic-nav-dropdown"
               style={{ 'margin-left': 'auto' }}
               menuVariant={bg()}
             >
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+              <NavDropdown.Item href="/login">Login</NavDropdown.Item>
+              <NavDropdown.Item href="/register">Sign Up</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+              <NavDropdown.Item href="#account">Account</NavDropdown.Item>
             </NavDropdown>
             <Nav.Link href="#" onClick={() => handleToggleSessionLayout()}>
               <Switch>
