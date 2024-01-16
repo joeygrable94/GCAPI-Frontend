@@ -2,9 +2,7 @@
 import { redirect } from "@solidjs/router";
 import { APIEvent, useSession } from "@solidjs/start/server";
 import { getRequestEvent } from "solid-js/web";
-// import { UserInfo, UserSessionData } from "../components/auth0/types";
 import { log } from "~/utils";
-import { db } from "./db";
 
 export type UserInfo = {
   sub: string;
@@ -41,45 +39,6 @@ export function getSession(event: APIEvent | undefined = undefined) {
   });
 }
 
-async function login(username: string, password: string) {
-  // const user = await db.user.findUnique({ where: { username } });
-  // if (!user || password !== user.password) throw new Error("Invalid login");
-  log("login", { username, password });
-  // log(webAuthn);
-  return {};
-}
-
-async function register(username: string, password: string) {
-  const existingUser = await db.user.findUnique({ where: { username } });
-  if (existingUser) throw new Error("User already exists");
-  return db.user.create({
-    data: { username: username, password },
-  });
-}
-
-export async function loginOrRegister(formData: FormData) {
-  const username = String(formData.get("username"));
-  const password = String(formData.get("password"));
-  const loginType = String(formData.get("loginType"));
-
-  try {
-    const user = await (loginType !== "login"
-      ? register(username, password)
-      : login(username, password));
-    const session = await getSession();
-    // await session.update((d: UserSessionData) => (d.userId = user!.id));
-  } catch (err) {
-    return err as Error;
-  }
-  throw redirect("/");
-}
-
-export async function logout() {
-  const session = await getSession();
-  // await session.update((d) => (d.userId = undefined));
-  throw redirect("/login");
-}
-
 export async function getUser() {
   const session = await getSession();
   const userId = session.data.userId;
@@ -87,10 +46,11 @@ export async function getUser() {
 
   let user: UserInfo | undefined;
   try {
-    // user = await db.user.findUnique({ where: { id: userId } });
+    log('Validate user session data and return user, or renew auth');
+    log(session.data);
   } catch {
-    logout();
+    log('Get user error');
   }
-  if (!user) return logout();
-  return { id: user.sub, username: user.email };
+  if (!user) throw redirect("/login");
+  return { id: user.sub, email: user.email };
 }
