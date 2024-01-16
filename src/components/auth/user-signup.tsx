@@ -23,7 +23,7 @@ const SignUp: Component = () => {
     <div>
       <h3>Sign Up</h3>
       <Form onSubmit={handleSubmit}>
-        <Form.Group class="mb-3" controlId="formBasicText">
+        <Form.Group class="mb-3" controlId="formBasicFirstName">
           <Form.Label>First Name</Form.Label>
           <Form.Control
             type="text"
@@ -33,8 +33,8 @@ const SignUp: Component = () => {
             required
           />
         </Form.Group>
-        <Form.Group class="mb-3" controlId="formBasicText">
-          <Form.Label>First Name</Form.Label>
+        <Form.Group class="mb-3" controlId="formBasicLastName">
+          <Form.Label>Last Name</Form.Label>
           <Form.Control
             type="text"
             name="last_name"
@@ -43,8 +43,8 @@ const SignUp: Component = () => {
             required
           />
         </Form.Group>
-        <Form.Group class="mb-3" controlId="formBasicText">
-          <Form.Label>First Name</Form.Label>
+        <Form.Group class="mb-3" controlId="formBasicCompany">
+          <Form.Label>Company</Form.Label>
           <Form.Control
             type="text"
             name="client_ref"
@@ -74,8 +74,8 @@ const SignUp: Component = () => {
             required
           />
         </Form.Group>
-        <Form.Group class="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
+        <Form.Group class="mb-3" controlId="formBasicPasswordConf">
+          <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             name="password_conf"
             type="password"

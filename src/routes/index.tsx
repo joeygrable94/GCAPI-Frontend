@@ -1,17 +1,12 @@
-import { createAsync, type RouteDefinition } from '@solidjs/router';
-import { getUser } from '~/api';
-
-export const route = {
-  load: () => getUser()
-} satisfies RouteDefinition;
+import { useAuth } from '~/components';
 
 export default function Home() {
-  const user = createAsync(getUser, { deferStream: true });
+  const [state, actions] = useAuth();
   return (
     <main>
-      <h2>Hello {user()?.email}</h2>
+      <h2>Hello World</h2>
       <h3>Message board</h3>
-      <button name="logout" type="submit">
+      <button name="logout" type="submit" onClick={() => actions.logout()}>
         Logout Action
       </button>
     </main>

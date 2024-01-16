@@ -1,12 +1,11 @@
 import { Container } from 'solid-bootstrap';
 import { ParentComponent, createEffect } from 'solid-js';
+import { AuthProvider } from '~/components';
 import { LayoutContext, createLayoutMutable, saveDarkMode } from '~/components/theme';
-import { AuthProvider } from '../auth';
 import Navigation from './navigation';
 
-let appDiv: HTMLElement;
-
 const MainLayout: ParentComponent = (props) => {
+  let appDiv: HTMLElement;
   const layout = createLayoutMutable({});
 
   createEffect(() => {

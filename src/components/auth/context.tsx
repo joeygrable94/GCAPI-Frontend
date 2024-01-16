@@ -10,7 +10,6 @@ import {
   createContext,
   createEffect,
   createSignal,
-  onMount,
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
@@ -20,10 +19,17 @@ import { AuthContextValue, AuthLogin, AuthRegister, IAuthState } from './types';
 
 function createAuthState() {
   const navigate = useNavigate();
-
+  const [isInitialized, setInitialized] = createSignal<boolean>(false);
+  const [isAuthorized, setAuthorized] = createSignal<boolean>(false);
   const stored: IAuthState = SecureLocalStorage.get('gcapi_auth0')
     ? (SecureLocalStorage.get('gcapi_auth0') as IAuthState)
     : ({
+        get initialized() {
+          return isInitialized();
+        },
+        get authorized() {
+          return isAuthorized();
+        },
         access: '',
         state: '',
         nonce: '',
@@ -32,18 +38,27 @@ function createAuthState() {
         user: null
       } as IAuthState);
   const [state, setState] = createStore<IAuthState>(stored);
-  const [authReady, setAuthReady] = createSignal<boolean>(false);
   const captureAuth = () => {
     try {
       auth0Client.parseHash(
         (err: Auth0ParseHashError | null, authResult: Auth0DecodedHash | null) => {
-          if (err) throw new Error('Auth context error:' + err.description);
-          if (!authResult) throw new Error('Unauthenticated User');
+          if (err) {
+            log(err);
+            throw new Error('Auth parse hash:' + err.errorDescription);
+          }
+          if (!authResult) {
+            warn('Auth Result:', authResult);
+            throw new Error('Unauthenticated User');
+          }
           const token = authResult.accessToken ? authResult.accessToken : '';
           auth0Client.client.userInfo(
             token,
             (err: Auth0Error | null, user: Auth0UserProfile) => {
-              if (err) throw new Error('Auth context error:' + err.description);
+              if (err) {
+                warn('Auth0Error:', err);
+                throw new Error('Auth context error');
+              }
+              setAuthorized(true);
               setState((_) => {
                 return {
                   access: authResult.accessToken,
@@ -60,19 +75,21 @@ function createAuthState() {
       );
     } catch (e: Auth0ParseHashError | Auth0Error | Error | any) {
       warn('Auth Capture Error:', e);
+      setAuthorized(false);
+      // return navigate('/login', { replace: true });
     } finally {
-      setAuthReady(true);
+      setInitialized(true);
+      // return navigate('/', { replace: true });
     }
   };
-
-  onMount(() => {
-    log('Auth:', SecureLocalStorage.get('gcapi_auth0'));
-  });
 
   createEffect(() => {
     captureAuth();
     SecureLocalStorage.set('gcapi_auth0', state);
-    log(authReady());
+  });
+  createEffect(() => {
+    log('is initialized', isInitialized(), state.initialized);
+    log('is authorized', isAuthorized(), state.authorized);
   });
 
   return [
@@ -109,7 +126,10 @@ function createAuthState() {
               password: user.password
             },
             (err, data) => {
-              if (err) throw new Error('Auth context error:' + err.description);
+              if (err) {
+                log(err);
+                throw new Error('Auth context error:' + err.description);
+              }
               log('Auth Login Callback:', data);
             }
           );
@@ -118,16 +138,23 @@ function createAuthState() {
         }
       },
       logout() {
-        setState((_) => {
-          return {
-            access: '',
-            state: '',
-            nonce: '',
-            sub: '',
-            expires: 0,
-            user: null
-          } as IAuthState;
-        });
+        try {
+          auth0Client.logout({
+            returnTo: import.meta.env.VITE_AUTH0_LOGOUT_URL
+          });
+          setState((_) => {
+            return {
+              access: '',
+              state: '',
+              nonce: '',
+              sub: '',
+              expires: 0,
+              user: null
+            } as IAuthState;
+          });
+        } catch (e) {
+          warn('Auth Login Error:', e);
+        }
       },
       refreshAuth() {
         try {

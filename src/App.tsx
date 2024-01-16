@@ -1,9 +1,8 @@
 import { Link, MetaProvider, Title } from '@solidjs/meta';
-import { Router } from '@solidjs/router';
-import { FileRoutes } from '@solidjs/start';
+import { Route, Router } from '@solidjs/router';
 import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
-import { Suspense, onMount } from 'solid-js';
+import { Suspense, lazy, onMount } from 'solid-js';
 import { Toaster } from 'solid-toast';
 import { Counter, CounterProvider, MainLayout } from '~/components';
 import './sass/index.scss';
@@ -23,32 +22,35 @@ export default function App() {
     viewportHeightStyles();
   });
   return (
-    <QueryClientProvider client={queryClient}>
-      <SolidQueryDevtools />
-      <Toaster position="bottom-right" />
-      <Router
-        root={(props) => {
-          return (
-            <MetaProvider>
-              <Title>GC Inc</Title>
-              <Link
-                href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-                rel="stylesheet"
-                integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-                crossorigin="anonymous"
-              />
-              <CounterProvider initialCount={10}>
+    <Router
+      root={(props) => {
+        return (
+          <QueryClientProvider client={queryClient}>
+            <SolidQueryDevtools />
+            <Toaster position="bottom-right" />
+            <CounterProvider initialCount={10}>
+              <MetaProvider>
+                <Title>GC Inc</Title>
+                <Link
+                  href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+                  rel="stylesheet"
+                  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+                  crossorigin="anonymous"
+                />
                 <MainLayout>
                   <Suspense fallback={<div>Loading...</div>}>{props.children}</Suspense>
                 </MainLayout>
                 <Counter />
-              </CounterProvider>
-            </MetaProvider>
-          );
-        }}
-      >
-        <FileRoutes />
-      </Router>
-    </QueryClientProvider>
+              </MetaProvider>
+            </CounterProvider>
+          </QueryClientProvider>
+        );
+      }}
+    >
+      <Route path="/" component={lazy(() => import('./routes/index'))} />
+      <Route path="/login" component={lazy(() => import('./routes/login'))} />
+      <Route path="/register" component={lazy(() => import('./routes/register'))} />
+      <Route path="/about" component={lazy(() => import('./routes/about'))} />
+    </Router>
   );
 }

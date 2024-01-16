@@ -1,6 +1,8 @@
 import { Accessor } from 'solid-js';
 
 export interface IAuthState {
+  initialized: boolean;
+  authorized: boolean;
   access: string;
   state: string;
   nonce: string;

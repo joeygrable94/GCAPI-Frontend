@@ -3,7 +3,7 @@ import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
-import { useLayoutContext } from '../theme';
+import { useLayoutContext } from '~/components';
 
 const Navigation: Component = () => {
   const layoutContext = useLayoutContext();
