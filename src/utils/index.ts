@@ -6,5 +6,6 @@ export * from './glob-patterns';
 export * from './global';
 export * from './height-fix';
 export * from './logger';
+export * from './secure-storage';
 // export * from './openapi';
 export * from './urls';

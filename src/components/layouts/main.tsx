@@ -1,6 +1,7 @@
 import { Container } from 'solid-bootstrap';
 import { ParentComponent, createEffect } from 'solid-js';
 import { LayoutContext, createLayoutMutable, saveDarkMode } from '~/components/theme';
+import { AuthProvider } from '../auth';
 import Navigation from './navigation';
 
 let appDiv: HTMLElement;
@@ -20,8 +21,10 @@ const MainLayout: ParentComponent = (props) => {
   });
   return (
     <LayoutContext.Provider value={layout}>
-      <Navigation />
-      <Container>{props.children}</Container>
+      <AuthProvider>
+        <Navigation />
+        <Container>{props.children}</Container>
+      </AuthProvider>
     </LayoutContext.Provider>
   );
 };

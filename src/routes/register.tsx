@@ -1,11 +1,11 @@
 import { type RouteSectionProps } from '@solidjs/router';
-import { SignIn } from '~/components/auth';
+import { SignUp } from '~/components/auth';
 
 export default function Login(props: RouteSectionProps) {
   return (
     <main>
       <h1>Login Page</h1>
-      <SignIn />
+      <SignUp />
     </main>
   );
 }
