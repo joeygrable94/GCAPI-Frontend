@@ -56,21 +56,6 @@ function createAuthState(props: AuthProps): AuthContext {
 
   const webAuthn = new auth0.WebAuth(webAuth0Config);
 
-  /*
-  const [state, setState] = createStore<ThemeState>({
-    mode: options.mode ?? defaultThemeState.mode
-  });
-  const actions: ThemeActions = {
-    prefersDarkMode: () => isSysLayoutDark(),
-    toggleColorMode: () => {
-      setState('mode', state.mode === 'dark' ? 'light' : 'dark');
-    }
-  };
-  const store: ThemeContext = [state, actions] as ThemeContext;
-  createEffect(() => saveDarkMode(state.mode === 'dark'));
-  return store;
-  */
-
   return {
     auth0Client: webAuthn,
     isAuthenticated: () => !!isAuthenticated(),

@@ -3,33 +3,8 @@ import { redirect } from "@solidjs/router";
 import { APIEvent, useSession } from "@solidjs/start/server";
 import { getRequestEvent } from "solid-js/web";
 // import { UserInfo, UserSessionData } from "../components/auth0/types";
+import { log } from "~/utils";
 import { db } from "./db";
-
-function validateUsername(username: unknown) {
-  if (typeof username !== "string" || username.length < 3) {
-    return `Usernames must be at least 3 characters long`;
-  }
-}
-
-function validatePassword(password: unknown) {
-  if (typeof password !== "string" || password.length < 6) {
-    return `Passwords must be at least 6 characters long`;
-  }
-}
-
-async function login(username: string, password: string) {
-  const user = await db.user.findUnique({ where: { username } });
-  if (!user || password !== user.password) throw new Error("Invalid login");
-  return user;
-}
-
-async function register(username: string, password: string) {
-  const existingUser = await db.user.findUnique({ where: { username } });
-  if (existingUser) throw new Error("User already exists");
-  return db.user.create({
-    data: { username: username, password },
-  });
-}
 
 export type UserInfo = {
   sub: string;
@@ -66,12 +41,26 @@ export function getSession(event: APIEvent | undefined = undefined) {
   });
 }
 
+async function login(username: string, password: string) {
+  // const user = await db.user.findUnique({ where: { username } });
+  // if (!user || password !== user.password) throw new Error("Invalid login");
+  log("login", { username, password });
+  // log(webAuthn);
+  return {};
+}
+
+async function register(username: string, password: string) {
+  const existingUser = await db.user.findUnique({ where: { username } });
+  if (existingUser) throw new Error("User already exists");
+  return db.user.create({
+    data: { username: username, password },
+  });
+}
+
 export async function loginOrRegister(formData: FormData) {
   const username = String(formData.get("username"));
   const password = String(formData.get("password"));
   const loginType = String(formData.get("loginType"));
-  let error = validateUsername(username) || validatePassword(password);
-  if (error) return new Error(error);
 
   try {
     const user = await (loginType !== "login"
