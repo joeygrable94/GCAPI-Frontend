@@ -38,6 +38,7 @@
     "auth0-js": "^9.24.1",
     "axios": "^1.6.5",
     "crypto-js": "^4.2.0",
+    "jose": "^5.2.0",
     "localstorage-slim": "^2.7.0",
     "solid-bootstrap": "^1.0.19",
     "solid-heroicons": "^3.2.4",
