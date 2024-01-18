@@ -1,30 +1,50 @@
-import type { Component } from 'solid-js';
+import { Link, MetaProvider, Title } from '@solidjs/meta';
+import { Route, Router } from '@solidjs/router';
+import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
+import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
+import { Suspense, lazy, onMount } from 'solid-js';
+import { Toaster } from 'solid-toast';
+import { MainLayout } from '~/components';
+import { viewportHeightStyles } from './utils';
 
-import { viewportHeightStyles } from '~/utils';
-import styles from './app.module.css';
-import logo from './logo.svg';
-
-const App: Component = () => {
-  viewportHeightStyles();
-
+export default function App() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        staleTime: 5000
+      }
+    }
+  });
+  onMount(() => {
+    viewportHeightStyles();
+  });
   return (
-    <div class={styles.app}>
-      <header class={styles.header}>
-        <img src={logo} class={styles.logo} alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          class={styles.link}
-          href="https://github.com/solidjs/solid"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Solid
-        </a>
-      </header>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <SolidQueryDevtools />
+      <Toaster position="bottom-right" />
+      <Router
+        root={(props) => {
+          return (
+            <MetaProvider>
+              <Title>GCAPI</Title>
+              <Link
+                href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+                rel="stylesheet"
+                integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+                crossorigin="anonymous"
+              />
+              <MainLayout>
+                <Suspense>{props.children}</Suspense>
+              </MainLayout>
+            </MetaProvider>
+          );
+        }}
+      >
+        <Route path="/" component={lazy(() => import('./routes/index'))} />
+        <Route path="/login" component={lazy(() => import('./routes/login'))} />
+        <Route path="/register" component={lazy(() => import('./routes/register'))} />
+      </Router>
+    </QueryClientProvider>
   );
-};
-
-export default App;
+}

@@ -1,5 +1,5 @@
 import { A } from '@solidjs/router';
-import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
+import { Container, Nav, Navbar } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
@@ -13,11 +13,18 @@ const Navigation: Component = () => {
   const [bg, setBg] = createSignal<'light' | 'dark'>('light');
   createEffect(() => setBg(layoutContext.darkMode === true ? 'dark' : 'light'));
   return (
-    <Navbar bg={bg()} variant={bg()} expand="lg">
+    <Navbar bg={bg()} variant={bg()} expand="lg" style={{ padding: 0 }}>
       <Container>
-        <Navbar.Brand as={A} href="/">
-          <img alt="" src={'favicon.png'} width="30" height="30" />
-          {' Get Community Inc'}
+        <Navbar.Brand
+          as={A}
+          href="/"
+          style={{
+            display: 'flex',
+            'align-items': 'center'
+          }}
+        >
+          <img alt="" src={'logo.png'} width="50" height="50" />
+          <span style={{ 'margin-left': '10px' }}>{'Get Community Inc'}</span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -25,17 +32,9 @@ const Navigation: Component = () => {
             <Nav.Link as={A} href="/">
               Home
             </Nav.Link>
-            <NavDropdown
-              title="Dropdown"
-              id="basic-nav-dropdown"
-              style={{ 'margin-left': 'auto' }}
-              menuVariant={bg()}
-            >
-              <NavDropdown.Item href="/login">Login</NavDropdown.Item>
-              <NavDropdown.Item href="/register">Sign Up</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#account">Account</NavDropdown.Item>
-            </NavDropdown>
+            <Nav.Link as={A} href="/login" style={{ 'margin-left': 'auto' }}>
+              Login
+            </Nav.Link>
             <Nav.Link href="#" onClick={() => handleToggleSessionLayout()}>
               <Switch>
                 <Match when={layoutContext.darkMode === true}>

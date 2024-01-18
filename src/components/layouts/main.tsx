@@ -4,7 +4,7 @@ import { LayoutContext, createLayoutMutable, saveDarkMode } from '~/components';
 import Navigation from './navigation';
 
 const MainLayout: ParentComponent = (props) => {
-  let appDiv: HTMLElement;
+  let rootDiv: HTMLElement;
   const layout = createLayoutMutable({});
 
   createEffect(() => {
@@ -14,8 +14,8 @@ const MainLayout: ParentComponent = (props) => {
       layout.darkMode ? 'dark' : 'light'
     );
     document.body.setAttribute('data-bs-theme', layout.darkMode ? 'dark' : 'light');
-    appDiv = document.getElementById('app') as HTMLElement;
-    appDiv.setAttribute('data-bs-theme', layout.darkMode ? 'dark' : 'light');
+    rootDiv = document.getElementById('root') as HTMLElement;
+    rootDiv.setAttribute('data-bs-theme', layout.darkMode ? 'dark' : 'light');
   });
   return (
     <LayoutContext.Provider value={layout}>
