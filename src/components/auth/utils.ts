@@ -1,6 +1,30 @@
 import { error, getCookie, warn } from '~/utils';
 import { defaultAuthState } from './constants';
-import { IAuthState, UpdatedAuthState } from './types';
+import { CurrentUser, IAuthState, UpdatedAuthState, UserRole } from './types';
+
+/**
+ * @summary Returns a boolean if the input user is an Admin
+ */
+export const isAdmin = (user: CurrentUser) => {
+  if (user === undefined) return false;
+  let userKeys: string[] = Object.keys(user);
+  if (userKeys.includes('is_superuser')) return true;
+  return false;
+};
+
+export const isManager = (user: CurrentUser) => {
+  if (user === undefined) return false;
+  let userKeys: string[] = Object.keys(user);
+  if (userKeys.includes('scopes') && !userKeys.includes('is_superuser')) return true;
+  return false;
+};
+
+export const getUserRole = (user: CurrentUser): UserRole => {
+  if (user === undefined) return 'user';
+  if (isAdmin(user)) return 'admin';
+  if (isManager(user)) return 'manager';
+  return 'user';
+};
 
 /**
  * @summary Completes the authorization process by getting the access token and user info

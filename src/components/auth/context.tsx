@@ -11,18 +11,19 @@ import {
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { isServer } from 'solid-js/web';
-import { OpenAPI, UsersService } from '~/backend';
-import { SecureLocalStorage as SLS, error } from '~/utils';
+import { ApiError, OpenAPI, UsersService } from '~/backend';
+import { SecureLocalStorage as SLS, error, warn } from '~/utils';
 import { defaultAuthState } from './constants';
 import {
   AuthContext,
   AuthProps,
+  CurrentUser,
   IAuthActions,
   IAuthState,
   Organization,
   UpdatedAuthState
 } from './types';
-import { completeAuthorization, refresh } from './utils';
+import { completeAuthorization, getUserRole, refresh } from './utils';
 
 function createAuthState(props: AuthProps): AuthContext {
   const [auth0config] = splitProps(props, [
@@ -111,7 +112,6 @@ function createAuthState(props: AuthProps): AuthContext {
         clientID: auth0config.clientId
       });
       setState(defaultAuthState);
-      // await redirect('/login');
     }
   } as IAuthActions;
   const verifyAuthCode = async () => {
@@ -128,18 +128,23 @@ function createAuthState(props: AuthProps): AuthContext {
     return navigate('/', { replace: true });
   };
   const setCurrentUser = async () => {
-    let user = undefined;
+    let user: CurrentUser | undefined;
     if (isAuthenticated() && state.accessToken.length > 0 && OpenAPI.TOKEN) {
-      user = await UsersService.usersCurrentApiV1UsersMeGet();
+      try {
+        user = await UsersService.usersCurrentApiV1UsersMeGet();
+        // check if user is UserReadAsAdmin | UserReadAsManager | UserRead
+        if (user === undefined) throw new Error('No user not found');
+        setState('role', getUserRole(user));
+      } catch (error: ApiError | any) {
+        if (error instanceof ApiError) warn('Error fetching current user:', error);
+        if (error instanceof Error) warn('Error fetching current user:', error.message);
+        user = undefined;
+      }
     }
     setState('user', user);
   };
-  createEffect(() => {
-    if (!isServer) SLS.set('gcapi-auth', state);
-  });
-  createEffect(() => {
-    if (!isServer) verifyAuthCode();
-  });
+  createEffect(() => (!isServer ? SLS.set('gcapi-auth', state) : null));
+  createEffect(() => (!isServer ? verifyAuthCode() : null));
   createEffect(() => (OpenAPI.TOKEN = state.accessToken));
   createEffect(() => setCurrentUser());
   return [state, actions] as AuthContext;
