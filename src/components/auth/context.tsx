@@ -1,24 +1,26 @@
-import auth0, {
-  Auth0DecodedHash,
-  Auth0Error,
-  Auth0ParseHashError,
-  Auth0UserProfile,
-  WebAuth
-} from 'auth0-js';
+import { useNavigate } from '@solidjs/router';
+import auth0, { WebAuth } from 'auth0-js';
 import * as jose from 'jose';
 import {
   ParentComponent,
   createContext,
   createEffect,
   createSignal,
+  onMount,
   splitProps,
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { SecureLocalStorage as SLS, log, warn } from '~/utils';
+import { SecureLocalStorage as SLS, error, getCookie, log, warn } from '~/utils';
 import { defaultAuthState } from './constants';
-import { AuthContextValue, AuthProps, IAuthActions, IAuthState } from './types';
-import { refresh } from './utils';
+import {
+  AuthContextValue,
+  AuthProps,
+  IAuthActions,
+  IAuthState,
+  Organization
+} from './types';
+import { auth0FetchOAuthToken, auth0UserInfo, refresh } from './utils';
 
 function createAuthState(props: AuthProps): AuthContextValue {
   const [auth0config] = splitProps(props, [
@@ -30,8 +32,11 @@ function createAuthState(props: AuthProps): AuthContextValue {
     'organization',
     'invitation'
   ]);
+  const [isAuthenticated, setIsAuthenticated] = createSignal<boolean | undefined>();
+  const [organization, setOrg] = createSignal<Organization | undefined>();
+  const navigate = useNavigate();
   const logoutUrl: string =
-    auth0config.logoutUrl || `${import.meta.env.VITE_APP_BASE_URL}/logout`;
+    auth0config.logoutUrl || `http://${import.meta.env.VITE_APP_BASE_URL}/`;
   const scopes = ['openid', 'profile', 'email'];
   if (import.meta.env.VITE_AUTH0_OFFLINE_ACCESS === 'true') {
     scopes.push('offline_access');
@@ -44,18 +49,81 @@ function createAuthState(props: AuthProps): AuthContextValue {
     redirectUri: auth0config.redirectUri,
     responseType: 'code' // 'token id_token'
   };
+  if (auth0config.organization) setOrg(auth0config.organization);
   const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
-  const [isAuthenticated, setIsAuthenticated] = createSignal<boolean | undefined>();
   const stored: IAuthState = (SLS.get('gcapi-auth') as IAuthState) ?? defaultAuthState;
   const [state, setState] = createStore<IAuthState>(stored);
   const actions = {
     get webAuth() {
       return webAuth;
     },
+    get organization() {
+      return organization();
+    },
     isAuthenticated: () => !!isAuthenticated(),
     isInitialized: () => isAuthenticated() !== undefined,
     authorize: async () => {
       await webAuth.authorize({ scope: scopes.join(' ') });
+    },
+    completeAuthorization: async (code: string, state: string) => {
+      let baseUrl = import.meta.env.VITE_BASE_URL;
+      if (import.meta.env.VITE_DEBUG) {
+        log('baseUrl', baseUrl);
+      }
+      const cookies = getCookie(`com.auth0.auth.${state}`);
+      const verification = JSON.parse(cookies);
+      if (!verification) {
+        warn('No verification cookie found');
+      }
+      if (import.meta.env.VITE_DEBUG) {
+        log('state verification');
+        log(state);
+        log(verification);
+      }
+      if (code === undefined || code === null) {
+        error('No code found');
+      }
+
+      if (state !== verification.state) {
+        error('Code and state do not match verification');
+      }
+      let redirectUrl = import.meta.env.VITE_AUTH0_REDIRECT_URI;
+      const jsonAuthToken = await auth0FetchOAuthToken(
+        code,
+        state,
+        redirectUrl,
+        verification.organization
+      );
+      const userInfo = await auth0UserInfo(jsonAuthToken.access_token);
+      if (import.meta.env.VITE_DEBUG) {
+        log('auth0FetchOAuthToken');
+        log(jsonAuthToken);
+        log('auth0UserInfo');
+        log(userInfo);
+      }
+      if (userInfo === undefined) {
+        warn('No user info found');
+      }
+      setState('accessToken', jsonAuthToken.access_token);
+      if (jsonAuthToken.refresh_token) {
+        setState('refreshToken', jsonAuthToken.refresh_token);
+      }
+      setState('idToken', jsonAuthToken.id_token);
+      setState('scope', jsonAuthToken.scope);
+      setState('tokenType', jsonAuthToken.accessToken_type);
+      setState('user', {
+        sub: userInfo.sub,
+        picture: userInfo.picture,
+        email: userInfo.email,
+        email_verified: userInfo.email_verified,
+        created_on:
+          userInfo['https://github.com/dorinclisu/fastapi-auth0/created_on'] ?? '',
+        updated_on: userInfo.updated_at,
+        roles: userInfo['https://github.com/dorinclisu/fastapi-auth0/roles'] ?? []
+      });
+      setState('userId', userInfo.sub);
+      setState('orgId', userInfo.orgId);
+      return navigate('/', { replace: true });
     },
     login: async () => {
       if (state.userId && state.accessToken) {
@@ -71,19 +139,19 @@ function createAuthState(props: AuthProps): AuthContextValue {
           });
           setIsAuthenticated(true);
         } catch (err: any) {
-          console.error(err);
+          error(err);
           if (err.name === 'JWTExpired' || err.code === 'ERR_JWT_EXPIRED') {
             const refreshToken = state.refreshToken;
             if (refreshToken) {
               const tokens = await refresh(refreshToken);
-              setState((d: IAuthState) => (d.accessToken = tokens.access_token));
-              setState((d: IAuthState) => (d.idToken = tokens.id_token));
+              setState('accessToken', tokens.access_token);
+              setState('idToken', tokens.id_token);
               setIsAuthenticated(true);
             } else {
               setIsAuthenticated(false);
             }
           } else {
-            console.error(err);
+            error(err);
             setIsAuthenticated(false);
           }
         }
@@ -98,48 +166,10 @@ function createAuthState(props: AuthProps): AuthContextValue {
       });
       setState(defaultAuthState);
       // await redirect('/login');
-    },
-    captureAuth: async () => {
-      try {
-        await webAuth.parseHash(
-          async (
-            err: Auth0ParseHashError | null,
-            authResult: Auth0DecodedHash | null
-          ) => {
-            if (err) throw err;
-            if (!authResult) throw authResult;
-            if (authResult.accessToken === undefined)
-              throw new Error('No access token');
-            await webAuth.client.userInfo(
-              authResult.accessToken,
-              (err: Auth0Error | null, user: Auth0UserProfile) => {
-                if (err) throw err;
-                log('Auth Capture Callback:', user);
-                setIsAuthenticated(true);
-                setState({
-                  accessToken: authResult.accessToken,
-                  refreshToken: authResult.refreshToken ?? '',
-                  idToken: authResult.idToken ?? '',
-                  userId: user.user_id,
-                  state: authResult.state,
-                  nonce: authResult.idTokenPayload.nonce,
-                  sub: authResult.idTokenPayload.sub,
-                  expires: authResult.expiresIn,
-                  user: user
-                } as IAuthState);
-              }
-            );
-          }
-        );
-      } catch (e: Auth0ParseHashError | Auth0Error | Error | any) {
-        setIsAuthenticated(false);
-        warn('Auth Capture Error:', e);
-      }
-      setState(defaultAuthState);
     }
   } as IAuthActions;
-  createEffect(async () => await actions.captureAuth());
-  createEffect(() => SLS.set('gcapi_auth0', state));
+  onMount(() => {});
+  createEffect(() => SLS.set('gcapi-auth', state));
   return [state, actions] as AuthContextValue;
 }
 

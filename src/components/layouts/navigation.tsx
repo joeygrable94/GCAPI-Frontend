@@ -1,11 +1,19 @@
 import { A } from '@solidjs/router';
+import { Auth0UserProfile } from 'auth0-js';
 import { Container, Nav, Navbar } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
-import { useLayoutContext } from '~/components';
+import { useAuth0, useLayoutContext } from '~/components';
 
-const Navigation: Component = () => {
+type NavigationProps = {
+  user?: Auth0UserProfile;
+  login: () => Promise<void>;
+  logout: () => Promise<void>;
+};
+
+const Navigation: Component<NavigationProps> = (props) => {
+  const [authState, authAct] = useAuth0();
   const layoutContext = useLayoutContext();
   const handleToggleSessionLayout = () => {
     layoutContext.darkMode = !layoutContext.darkMode;
@@ -32,9 +40,27 @@ const Navigation: Component = () => {
             <Nav.Link as={A} href="/">
               Home
             </Nav.Link>
-            <Nav.Link as={A} href="/login" style={{ 'margin-left': 'auto' }}>
-              Login
-            </Nav.Link>
+            <div style={{ 'margin-left': 'auto' }} />
+            <Switch>
+              <Match when={props.user}>
+                <Nav.Link
+                  as={A}
+                  href="#logout"
+                  onClick={async () => await props.logout()}
+                >
+                  Logout
+                </Nav.Link>
+              </Match>
+              <Match when={!props.user}>
+                <Nav.Link
+                  as={A}
+                  href="#login"
+                  onClick={async () => await props.login()}
+                >
+                  Login
+                </Nav.Link>
+              </Match>
+            </Switch>
             <Nav.Link href="#" onClick={() => handleToggleSessionLayout()}>
               <Switch>
                 <Match when={layoutContext.darkMode === true}>

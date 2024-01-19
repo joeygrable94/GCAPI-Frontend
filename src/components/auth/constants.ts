@@ -5,9 +5,9 @@ export const defaultAuthState: IAuthState = {
   refreshToken: '',
   idToken: '',
   userId: '',
-  state: '',
-  nonce: '',
-  sub: '',
-  expires: 0,
-  user: undefined
+  user: undefined,
+  scope: '',
+  tokenType: '',
+  orgId: '',
+  permissions: []
 } as IAuthState;

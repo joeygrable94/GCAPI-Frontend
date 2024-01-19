@@ -1,9 +1,20 @@
 import { Container } from 'solid-bootstrap';
-import { ParentComponent, createEffect } from 'solid-js';
-import { LayoutContext, createLayoutMutable, saveDarkMode } from '~/components';
+import { ParentComponent, Show, createEffect } from 'solid-js';
+import { isServer } from 'solid-js/web';
+import {
+  LayoutContext,
+  createLayoutMutable,
+  saveDarkMode,
+  useAuth0
+} from '~/components';
 import Navigation from './navigation';
 
 const MainLayout: ParentComponent = (props) => {
+  const [authState, authAct] = useAuth0();
+  if (!authAct.isAuthenticated() && !isServer) {
+    authAct.login();
+  }
+
   let rootDiv: HTMLElement;
   const layout = createLayoutMutable({});
 
@@ -19,8 +30,14 @@ const MainLayout: ParentComponent = (props) => {
   });
   return (
     <LayoutContext.Provider value={layout}>
-      <Navigation />
-      <Container>{props.children}</Container>
+      <Navigation
+        user={authState.user}
+        login={authAct.authorize}
+        logout={authAct.logout}
+      />
+      <Container>
+        <Show when={authAct.isInitialized()}>{props.children}</Show>
+      </Container>
     </LayoutContext.Provider>
   );
 };

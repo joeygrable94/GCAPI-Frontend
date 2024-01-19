@@ -28,23 +28,34 @@ export type AuthProps = {
   organization?: Organization;
 };
 
+export type AuthorizedUser = {
+  sub: string;
+  picture: string;
+  email: string;
+  email_verified: boolean;
+  created_on: string;
+  updated_on: string;
+  roles: string[];
+};
+
 export interface IAuthState {
   accessToken: string;
   refreshToken: string;
   idToken: string;
   userId: string;
-  state: string;
-  nonce: string;
-  sub: string;
-  expires: number;
-  user: Auth0UserProfile | undefined;
+  user: AuthorizedUser | undefined;
+  scope: string;
+  tokenType: string;
+  orgId: string;
+  permissions: string[];
 }
 
 export interface IAuthActions {
   webAuth: WebAuth;
+  organization: Organization | undefined;
   isInitialized: Accessor<boolean>;
   isAuthenticated: Accessor<boolean>;
-  captureAuth: () => Promise<void>;
+  completeAuthorization: (code: string, state: string) => Promise<void>;
   authorize: () => Promise<void>;
   login: () => Promise<void>;
   logout: () => Promise<void>;
