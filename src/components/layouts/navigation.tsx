@@ -26,7 +26,7 @@ const Navigation: Component<NavigationProps> = (props) => {
             'align-items': 'center'
           }}
         >
-          <img alt="" src={'logo.png'} width="50" height="50" />
+          <img alt="" src={'/logo.png'} width="50" height="50" />
           <span style={{ 'margin-left': '10px' }}>{'Get Community Inc'}</span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

@@ -105,7 +105,7 @@ export class UsersService {
   public static usersReadApiV1UsersUserIdGet({
     userId,
   }: {
-    userId: null,
+    userId: any,
   }): CancelablePromise<(UserReadAsAdmin | UserReadAsManager | UserRead)> {
     return __request(OpenAPI, {
       method: 'GET',
@@ -145,7 +145,7 @@ export class UsersService {
     userId,
     requestBody,
   }: {
-    userId: null,
+    userId: any,
     requestBody: (UserUpdateAsAdmin | UserUpdateAsManager | UserUpdate),
   }): CancelablePromise<(UserReadAsAdmin | UserReadAsManager | UserRead)> {
     return __request(OpenAPI, {
@@ -181,7 +181,7 @@ export class UsersService {
   public static usersDeleteApiV1UsersUserIdDelete({
     userId,
   }: {
-    userId: null,
+    userId: any,
   }): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: 'DELETE',
@@ -217,7 +217,7 @@ export class UsersService {
     userId,
     requestBody,
   }: {
-    userId: null,
+    userId: any,
     requestBody: UserUpdatePrivileges,
   }): CancelablePromise<(UserReadAsAdmin | UserReadAsManager)> {
     return __request(OpenAPI, {
@@ -254,7 +254,7 @@ export class UsersService {
     userId,
     requestBody,
   }: {
-    userId: null,
+    userId: any,
     requestBody: UserUpdatePrivileges,
   }): CancelablePromise<(UserReadAsAdmin | UserReadAsManager)> {
     return __request(OpenAPI, {

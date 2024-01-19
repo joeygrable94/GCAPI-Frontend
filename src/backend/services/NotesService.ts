@@ -96,7 +96,7 @@ export class NotesService {
   public static notesReadApiV1NotesNoteIdGet({
     noteId,
   }: {
-    noteId: null,
+    noteId: any,
   }): CancelablePromise<NoteRead> {
     return __request(OpenAPI, {
       method: 'GET',
@@ -129,7 +129,7 @@ export class NotesService {
     noteId,
     requestBody,
   }: {
-    noteId: null,
+    noteId: any,
     requestBody: NoteUpdate,
   }): CancelablePromise<NoteRead> {
     return __request(OpenAPI, {
@@ -164,7 +164,7 @@ export class NotesService {
   public static notesDeleteApiV1NotesNoteIdDelete({
     noteId,
   }: {
-    noteId: null,
+    noteId: any,
   }): CancelablePromise<any> {
     return __request(OpenAPI, {
       method: 'DELETE',

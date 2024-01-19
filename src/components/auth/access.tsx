@@ -7,7 +7,7 @@ type AuthorizedAccessProps = {
   children: JSX.Element;
 };
 
-export const AuthorizedAccess: ParentComponent<AuthorizedAccessProps> = (props) => {
+const AuthorizedAccess: ParentComponent<AuthorizedAccessProps> = (props) => {
   const [authState, authAct] = useAuth0();
   return (
     <Show when={authAct.isInitialized()}>
@@ -24,3 +24,5 @@ export const AuthorizedAccess: ParentComponent<AuthorizedAccessProps> = (props) 
     </Show>
   );
 };
+
+export default AuthorizedAccess;

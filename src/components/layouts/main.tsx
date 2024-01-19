@@ -1,7 +1,8 @@
 import { Container } from 'solid-bootstrap';
-import { ParentComponent, Show, createEffect } from 'solid-js';
+import { ParentComponent, createEffect } from 'solid-js';
 import { isServer } from 'solid-js/web';
 import {
+  AuthorizedAccess,
   LayoutContext,
   createLayoutMutable,
   saveDarkMode,
@@ -32,7 +33,7 @@ const MainLayout: ParentComponent = (props) => {
     <LayoutContext.Provider value={layout}>
       <Navigation />
       <Container>
-        <Show when={authAct.isInitialized()}>{props.children}</Show>
+        <AuthorizedAccess>{props.children}</AuthorizedAccess>
       </Container>
     </LayoutContext.Provider>
   );

@@ -115,8 +115,8 @@ function createAuthState(props: AuthProps): AuthContext {
     }
   } as IAuthActions;
   const verifyAuthCode = async () => {
-    if (acState() === undefined) return navigate('/');
-    if (authCode() === undefined) return navigate('/');
+    if (acState() === undefined) return;
+    if (authCode() === undefined) return;
     let newAuthState: UpdatedAuthState = await completeAuthorization(
       authCode()!,
       acState()!
@@ -143,10 +143,14 @@ function createAuthState(props: AuthProps): AuthContext {
     }
     setState('user', user);
   };
-  createEffect(() => (!isServer ? SLS.set('gcapi-auth', state) : null));
-  createEffect(() => (!isServer ? verifyAuthCode() : null));
-  createEffect(() => (OpenAPI.TOKEN = state.accessToken));
-  createEffect(() => setCurrentUser());
+  createEffect(async () => {
+    if (!isServer) {
+      SLS.set('gcapi-auth', state);
+      await verifyAuthCode();
+      OpenAPI.TOKEN = async () => await state.accessToken;
+      await setCurrentUser();
+    }
+  });
   return [state, actions] as AuthContext;
 }
 

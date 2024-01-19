@@ -98,7 +98,7 @@ export class ClientsService {
   public static clientsReadApiV1ClientsClientIdGet({
     clientId,
   }: {
-    clientId: null,
+    clientId: any,
   }): CancelablePromise<ClientRead> {
     return __request(OpenAPI, {
       method: 'GET',
@@ -132,7 +132,7 @@ export class ClientsService {
     clientId,
     requestBody,
   }: {
-    clientId: null,
+    clientId: any,
     requestBody: ClientUpdate,
   }): CancelablePromise<ClientRead> {
     return __request(OpenAPI, {
@@ -168,7 +168,7 @@ export class ClientsService {
   public static clientsDeleteApiV1ClientsClientIdDelete({
     clientId,
   }: {
-    clientId: null,
+    clientId: any,
   }): CancelablePromise<ClientDelete> {
     return __request(OpenAPI, {
       method: 'DELETE',
