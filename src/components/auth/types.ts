@@ -1,21 +1,7 @@
-import { Auth0UserProfile, WebAuth } from 'auth0-js';
+import { WebAuth } from 'auth0-js';
 import { Accessor, JSX } from 'solid-js';
 
-export type Organization = { id: string };
-
-export type AuthContext = {
-  auth0Client: WebAuth;
-  isAuthenticated: () => boolean;
-  isInitialized: () => boolean;
-  organization: Accessor<Organization | undefined>;
-  user: Accessor<Auth0UserProfile | undefined>;
-  userId: Accessor<string>;
-  idToken: Accessor<string>;
-  accessToken: Accessor<string>;
-  authorize: () => Promise<void>;
-  login: () => Promise<void>;
-  logout: () => Promise<void>;
-};
+export type Organization = { id: string; name: string };
 
 export type AuthProps = {
   children: JSX.Element;
@@ -28,26 +14,19 @@ export type AuthProps = {
   organization?: Organization;
 };
 
-export type AuthorizedUser = {
-  sub: string;
-  picture: string;
-  email: string;
-  email_verified: boolean;
-  created_on: string;
-  updated_on: string;
-  roles: string[];
-};
-
 export interface IAuthState {
   accessToken: string;
   refreshToken: string;
-  idToken: string;
-  userId: string;
-  user: AuthorizedUser | undefined;
-  scope: string;
   tokenType: string;
-  orgId: string;
-  permissions: string[];
+  idToken: string;
+  scope: string;
+  userId: string;
+  email: string;
+  email_verified: boolean;
+  picture: string;
+  roles: string[];
+  created: string;
+  updated: string;
 }
 
 export interface IAuthActions {
@@ -55,7 +34,6 @@ export interface IAuthActions {
   organization: Organization | undefined;
   isInitialized: Accessor<boolean>;
   isAuthenticated: Accessor<boolean>;
-  completeAuthorization: (code: string, state: string) => Promise<void>;
   authorize: () => Promise<void>;
   login: () => Promise<void>;
   logout: () => Promise<void>;
@@ -76,4 +54,6 @@ export type AuthRegister = {
   password_conf: string;
 };
 
-export type AuthContextValue = [state: IAuthState, actions: IAuthActions];
+export type UpdatedAuthState = [boolean, IAuthState];
+
+export type AuthContext = [state: IAuthState, actions: IAuthActions];

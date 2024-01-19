@@ -34,7 +34,10 @@ export default function App() {
                   audience={import.meta.env.VITE_AUTH0_AUDIENCE}
                   redirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
                   logoutUrl={import.meta.env.VITE_AUTH0_LOGOUT_URL}
-                  organization={{ id: import.meta.env.VITE_AUTH0_ORGANIZATION_ID }}
+                  organization={{
+                    id: import.meta.env.VITE_AUTH0_ORGANIZATION_ID,
+                    name: import.meta.env.VITE_AUTH0_ORGANIZATION
+                  }}
                 >
                   <MetaProvider>
                     <Title>GCAPI</Title>
@@ -55,7 +58,6 @@ export default function App() {
         }}
       >
         <Route path="/" component={lazy(() => import('./routes/index'))} />
-        <Route path="/authorize" component={lazy(() => import('./routes/authorize'))} />
       </Router>
     </QueryClientProvider>
   );

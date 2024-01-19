@@ -1,4 +1,4 @@
-import { useNavigate } from '@solidjs/router';
+import { useLocation, useNavigate } from '@solidjs/router';
 import auth0, { WebAuth } from 'auth0-js';
 import * as jose from 'jose';
 import {
@@ -6,23 +6,24 @@ import {
   createContext,
   createEffect,
   createSignal,
-  onMount,
   splitProps,
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { SecureLocalStorage as SLS, error, getCookie, log, warn } from '~/utils';
+import { isServer } from 'solid-js/web';
+import { SecureLocalStorage as SLS, error } from '~/utils';
 import { defaultAuthState } from './constants';
 import {
-  AuthContextValue,
+  AuthContext,
   AuthProps,
   IAuthActions,
   IAuthState,
-  Organization
+  Organization,
+  UpdatedAuthState
 } from './types';
-import { auth0FetchOAuthToken, auth0UserInfo, refresh } from './utils';
+import { completeAuthorization, refresh } from './utils';
 
-function createAuthState(props: AuthProps): AuthContextValue {
+function createAuthState(props: AuthProps): AuthContext {
   const [auth0config] = splitProps(props, [
     'domain',
     'clientId',
@@ -32,15 +33,17 @@ function createAuthState(props: AuthProps): AuthContextValue {
     'organization',
     'invitation'
   ]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [authCode, setAuthCode] = createSignal<string | undefined>(location.query.code);
+  const [acState, setAcState] = createSignal<string | undefined>(location.query.state);
   const [isAuthenticated, setIsAuthenticated] = createSignal<boolean | undefined>();
   const [organization, setOrg] = createSignal<Organization | undefined>();
-  const navigate = useNavigate();
+  const [scopes, setScopes] = createSignal<string[]>(['openid', 'profile', 'email']);
   const logoutUrl: string =
     auth0config.logoutUrl || `http://${import.meta.env.VITE_APP_BASE_URL}/`;
-  const scopes = ['openid', 'profile', 'email'];
-  if (import.meta.env.VITE_AUTH0_OFFLINE_ACCESS === 'true') {
-    scopes.push('offline_access');
-  }
+  if (import.meta.env.VITE_AUTH0_OFFLINE_ACCESS === 'true')
+    setScopes((s) => [...s, 'offline_access']);
   const webAuth0Config: auth0.AuthOptions = {
     _sendTelemetry: false,
     domain: auth0config.domain,
@@ -51,7 +54,9 @@ function createAuthState(props: AuthProps): AuthContextValue {
   };
   if (auth0config.organization) setOrg(auth0config.organization);
   const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
-  const stored: IAuthState = (SLS.get('gcapi-auth') as IAuthState) ?? defaultAuthState;
+  const stored: IAuthState = !isServer
+    ? SLS.get('gcapi-auth') ?? defaultAuthState
+    : defaultAuthState;
   const [state, setState] = createStore<IAuthState>(stored);
   const actions = {
     get webAuth() {
@@ -63,67 +68,7 @@ function createAuthState(props: AuthProps): AuthContextValue {
     isAuthenticated: () => !!isAuthenticated(),
     isInitialized: () => isAuthenticated() !== undefined,
     authorize: async () => {
-      await webAuth.authorize({ scope: scopes.join(' ') });
-    },
-    completeAuthorization: async (code: string, state: string) => {
-      let baseUrl = import.meta.env.VITE_BASE_URL;
-      if (import.meta.env.VITE_DEBUG) {
-        log('baseUrl', baseUrl);
-      }
-      const cookies = getCookie(`com.auth0.auth.${state}`);
-      const verification = JSON.parse(cookies);
-      if (!verification) {
-        warn('No verification cookie found');
-      }
-      if (import.meta.env.VITE_DEBUG) {
-        log('state verification');
-        log(state);
-        log(verification);
-      }
-      if (code === undefined || code === null) {
-        error('No code found');
-      }
-
-      if (state !== verification.state) {
-        error('Code and state do not match verification');
-      }
-      let redirectUrl = import.meta.env.VITE_AUTH0_REDIRECT_URI;
-      const jsonAuthToken = await auth0FetchOAuthToken(
-        code,
-        state,
-        redirectUrl,
-        verification.organization
-      );
-      const userInfo = await auth0UserInfo(jsonAuthToken.access_token);
-      if (import.meta.env.VITE_DEBUG) {
-        log('auth0FetchOAuthToken');
-        log(jsonAuthToken);
-        log('auth0UserInfo');
-        log(userInfo);
-      }
-      if (userInfo === undefined) {
-        warn('No user info found');
-      }
-      setState('accessToken', jsonAuthToken.access_token);
-      if (jsonAuthToken.refresh_token) {
-        setState('refreshToken', jsonAuthToken.refresh_token);
-      }
-      setState('idToken', jsonAuthToken.id_token);
-      setState('scope', jsonAuthToken.scope);
-      setState('tokenType', jsonAuthToken.accessToken_type);
-      setState('user', {
-        sub: userInfo.sub,
-        picture: userInfo.picture,
-        email: userInfo.email,
-        email_verified: userInfo.email_verified,
-        created_on:
-          userInfo['https://github.com/dorinclisu/fastapi-auth0/created_on'] ?? '',
-        updated_on: userInfo.updated_at,
-        roles: userInfo['https://github.com/dorinclisu/fastapi-auth0/roles'] ?? []
-      });
-      setState('userId', userInfo.sub);
-      setState('orgId', userInfo.orgId);
-      return navigate('/', { replace: true });
+      await webAuth.authorize({ scope: scopes().join(' ') });
     },
     login: async () => {
       if (state.userId && state.accessToken) {
@@ -168,22 +113,39 @@ function createAuthState(props: AuthProps): AuthContextValue {
       // await redirect('/login');
     }
   } as IAuthActions;
-  onMount(() => {});
-  createEffect(() => SLS.set('gcapi-auth', state));
-  return [state, actions] as AuthContextValue;
+  const verifyAuthCode = async () => {
+    if (acState() === undefined) return navigate('/');
+    if (authCode() === undefined) return navigate('/');
+    let newAuthState: UpdatedAuthState = await completeAuthorization(
+      authCode()!,
+      acState()!
+    );
+    setIsAuthenticated(newAuthState[0]);
+    setState(newAuthState[1]);
+    setAuthCode(undefined);
+    setAcState(undefined);
+    return navigate('/', { replace: true });
+  };
+  createEffect(() => {
+    if (!isServer) SLS.set('gcapi-auth', state);
+  });
+  createEffect(() => {
+    if (!isServer) verifyAuthCode();
+  });
+  return [state, actions] as AuthContext;
 }
 
 const Auth0Context = createContext<ReturnType<typeof createAuthState>>();
 
 const Auth0: ParentComponent<AuthProps> = (props) => {
-  const state: AuthContextValue = createAuthState(props);
+  const state: AuthContext = createAuthState(props);
   return <Auth0Context.Provider value={state}>{props.children}</Auth0Context.Provider>;
 };
 
 export default Auth0;
 
-export function useAuth0(): AuthContextValue {
+export function useAuth0(): AuthContext {
   const ctx = useContext(Auth0Context);
   if (!ctx) throw new Error('<Auth0> not found wrapping the <App />.');
-  return ctx as AuthContextValue;
+  return ctx as AuthContext;
 }

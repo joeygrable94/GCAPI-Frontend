@@ -3,11 +3,14 @@ import { IAuthState } from './types';
 export const defaultAuthState: IAuthState = {
   accessToken: '',
   refreshToken: '',
-  idToken: '',
-  userId: '',
-  user: undefined,
-  scope: '',
   tokenType: '',
-  orgId: '',
-  permissions: []
+  idToken: '',
+  scope: '',
+  userId: '',
+  email: '',
+  email_verified: false,
+  picture: '',
+  roles: [],
+  created: '',
+  updated: ''
 } as IAuthState;

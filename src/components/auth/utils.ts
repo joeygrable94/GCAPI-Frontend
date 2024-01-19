@@ -1,3 +1,62 @@
+import { error, getCookie, warn } from '~/utils';
+import { defaultAuthState } from './constants';
+import { IAuthState, UpdatedAuthState } from './types';
+
+/**
+ * @summary Completes the authorization process by getting the access token and user info
+ *
+ * @param code string of the code in the redirect uri from Auth0
+ * @param state string of the state to be used to get the access token
+ * @returns a new IAuthState object containing the access token and user info
+ */
+export async function completeAuthorization(
+  code: string,
+  state: string
+): Promise<UpdatedAuthState> {
+  const cookies = getCookie(`com.auth0.auth.${state}`);
+  const verification = JSON.parse(cookies);
+  if (!verification) {
+    warn('No verification cookie found');
+    return [false, defaultAuthState];
+  }
+  if (code === undefined || code === null) {
+    error('No code found');
+    return [false, defaultAuthState];
+  }
+  if (state !== verification.state) {
+    error('Code and state do not match verification');
+    return [false, defaultAuthState];
+  }
+  let redirectUrl = import.meta.env.VITE_AUTH0_REDIRECT_URI;
+  const jsonAuthToken = await auth0FetchOAuthToken(
+    code,
+    state,
+    redirectUrl,
+    verification.organization
+  );
+  const userInfo = await auth0UserInfo(jsonAuthToken.access_token);
+  if (userInfo === undefined) {
+    warn('No user info found');
+    return [false, defaultAuthState];
+  }
+  let newAuthState = {} as IAuthState;
+  newAuthState.accessToken = jsonAuthToken.access_token;
+  newAuthState.refreshToken = jsonAuthToken.refresh_token ?? '';
+  newAuthState.tokenType = jsonAuthToken.accessToken_type;
+  newAuthState.idToken = jsonAuthToken.id_token;
+  newAuthState.scope = jsonAuthToken.scope;
+  newAuthState.userId = userInfo.sub;
+  newAuthState.email = userInfo.email;
+  newAuthState.email_verified = userInfo.email_verified;
+  newAuthState.picture = userInfo.picture;
+  newAuthState.roles =
+    userInfo['https://github.com/dorinclisu/fastapi-auth0/roles'] ?? [];
+  newAuthState.created =
+    userInfo['https://github.com/dorinclisu/fastapi-auth0/created_on'] ?? '';
+  newAuthState.updated = userInfo.updated_at;
+  return [true, newAuthState];
+}
+
 /**
  * @summary Refreshes the access token using the refresh token
  *
