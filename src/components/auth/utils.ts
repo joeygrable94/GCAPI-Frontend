@@ -54,6 +54,7 @@ export async function completeAuthorization(
   newAuthState.created =
     userInfo['https://github.com/dorinclisu/fastapi-auth0/created_on'] ?? '';
   newAuthState.updated = userInfo.updated_at;
+  newAuthState.user = undefined;
   return [true, newAuthState];
 }
 
@@ -64,9 +65,6 @@ export async function completeAuthorization(
  * @returns json object containing the new access token and refresh token
  */
 export async function refresh(refreshToken: string) {
-  if (import.meta.env.VITE_DEBUG) {
-    console.log('refreshToken');
-  }
   const endpoint = new URL(`https://${import.meta.env.VITE_AUTH0_DOMAIN}/oauth/token`);
 
   const formData = new URLSearchParams();
@@ -74,11 +72,6 @@ export async function refresh(refreshToken: string) {
   formData.append('client_id', import.meta.env.VITE_AUTH0_CLIENT_ID);
   formData.append('client_secret', import.meta.env.VITE_AUTH0_CLIENT_SECRET!);
   formData.append('refresh_token', refreshToken);
-
-  if (import.meta.env.VITE_DEBUG) {
-    console.log('formData');
-    console.log(formData);
-  }
 
   const authToken = await fetch(endpoint, {
     method: 'POST',
@@ -152,11 +145,6 @@ export async function auth0FetchOAuthToken(
 
   if (import.meta.env.VITE_AUTH0_AUDIENCE) {
     formData.append('audience', import.meta.env.VITE_AUTH0_AUDIENCE);
-  }
-
-  if (import.meta.env.VITE_DEBUG) {
-    console.log('formData');
-    console.log(formData);
   }
 
   const authToken = await fetch(endpoint, {

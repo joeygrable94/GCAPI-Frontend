@@ -12,5 +12,6 @@ export const defaultAuthState: IAuthState = {
   picture: '',
   roles: [],
   created: '',
-  updated: ''
+  updated: '',
+  user: undefined
 } as IAuthState;

@@ -30,11 +30,7 @@ const MainLayout: ParentComponent = (props) => {
   });
   return (
     <LayoutContext.Provider value={layout}>
-      <Navigation
-        user={authState.user}
-        login={authAct.authorize}
-        logout={authAct.logout}
-      />
+      <Navigation />
       <Container>
         <Show when={authAct.isInitialized()}>{props.children}</Show>
       </Container>

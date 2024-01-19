@@ -1,16 +1,11 @@
 import { A } from '@solidjs/router';
-import { Auth0UserProfile } from 'auth0-js';
 import { Container, Nav, Navbar } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
-import { useAuth0, useLayoutContext } from '~/components';
+import { AuthorizedAccess, useAuth0, useLayoutContext } from '~/components';
 
-type NavigationProps = {
-  user?: Auth0UserProfile;
-  login: () => Promise<void>;
-  logout: () => Promise<void>;
-};
+type NavigationProps = {};
 
 const Navigation: Component<NavigationProps> = (props) => {
   const [authState, authAct] = useAuth0();
@@ -40,27 +35,26 @@ const Navigation: Component<NavigationProps> = (props) => {
             <Nav.Link as={A} href="/">
               Home
             </Nav.Link>
-            <div style={{ 'margin-left': 'auto' }} />
-            <Switch>
-              <Match when={props.user}>
-                <Nav.Link
-                  as={A}
-                  href="#logout"
-                  onClick={async () => await props.logout()}
-                >
-                  Logout
-                </Nav.Link>
-              </Match>
-              <Match when={!props.user}>
+            <div style={{ 'margin-left': 'auto' }}></div>
+            <AuthorizedAccess
+              fallback={
                 <Nav.Link
                   as={A}
                   href="#login"
-                  onClick={async () => await props.login()}
+                  onClick={async () => await authAct.authorize()}
                 >
                   Login
                 </Nav.Link>
-              </Match>
-            </Switch>
+              }
+            >
+              <Nav.Link
+                as={A}
+                href="#logout"
+                onClick={async () => await authAct.logout()}
+              >
+                Logout
+              </Nav.Link>
+            </AuthorizedAccess>
             <Nav.Link href="#" onClick={() => handleToggleSessionLayout()}>
               <Switch>
                 <Match when={layoutContext.darkMode === true}>

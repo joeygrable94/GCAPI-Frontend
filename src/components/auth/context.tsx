@@ -11,6 +11,7 @@ import {
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { isServer } from 'solid-js/web';
+import { OpenAPI, UsersService } from '~/backend';
 import { SecureLocalStorage as SLS, error } from '~/utils';
 import { defaultAuthState } from './constants';
 import {
@@ -126,12 +127,21 @@ function createAuthState(props: AuthProps): AuthContext {
     setAcState(undefined);
     return navigate('/', { replace: true });
   };
+  const setCurrentUser = async () => {
+    let user = undefined;
+    if (isAuthenticated() && state.accessToken.length > 0) {
+      user = await UsersService.usersCurrentApiV1UsersMeGet();
+    }
+    setState('user', user);
+  };
   createEffect(() => {
     if (!isServer) SLS.set('gcapi-auth', state);
   });
   createEffect(() => {
     if (!isServer) verifyAuthCode();
   });
+  createEffect(() => (OpenAPI.TOKEN = state.accessToken));
+  createEffect(() => setCurrentUser());
   return [state, actions] as AuthContext;
 }
 
