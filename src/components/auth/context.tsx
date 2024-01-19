@@ -129,7 +129,7 @@ function createAuthState(props: AuthProps): AuthContext {
   };
   const setCurrentUser = async () => {
     let user = undefined;
-    if (isAuthenticated() && state.accessToken.length > 0) {
+    if (isAuthenticated() && state.accessToken.length > 0 && OpenAPI.TOKEN) {
       user = await UsersService.usersCurrentApiV1UsersMeGet();
     }
     setState('user', user);
