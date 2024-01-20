@@ -3,9 +3,11 @@ import { Route, Router } from '@solidjs/router';
 import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
 import { ErrorBoundary, Suspense, lazy, onMount } from 'solid-js';
+import { isServer } from 'solid-js/web';
 import { Toaster } from 'solid-toast';
 import { Auth0, MainLayout } from '~/components';
-import { viewportHeightStyles } from './utils';
+import '~/sass/index.scss';
+import { viewportHeightStyles } from '~/utils';
 
 export default function App() {
   const queryClient = new QueryClient({
@@ -16,9 +18,7 @@ export default function App() {
       }
     }
   });
-  onMount(() => {
-    viewportHeightStyles();
-  });
+  onMount(() => (!isServer ? viewportHeightStyles() : undefined));
   return (
     <QueryClientProvider client={queryClient}>
       <SolidQueryDevtools />
@@ -27,7 +27,7 @@ export default function App() {
         root={(props) => {
           return (
             <Suspense>
-              <ErrorBoundary fallback={<>Error Page</>}>
+              <ErrorBoundary fallback={<>Auth0 Error</>}>
                 <Auth0
                   domain={import.meta.env.VITE_AUTH0_DOMAIN}
                   clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
@@ -58,14 +58,6 @@ export default function App() {
         }}
       >
         <Route path="/" component={lazy(() => import('./routes/index'))} />
-        <Route
-          path="/clients"
-          component={lazy(() => import('./routes/clients/index'))}
-        />
-        <Route
-          path="/clients/:id"
-          component={lazy(() => import('./routes/clients/[id]'))}
-        />
       </Router>
     </QueryClientProvider>
   );

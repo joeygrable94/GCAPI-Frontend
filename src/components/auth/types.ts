@@ -31,8 +31,6 @@ export interface IAuthState {
   roles: string[];
   created: string;
   updated: string;
-  user: CurrentUser;
-  role: UserRole;
 }
 
 export interface IAuthActions {

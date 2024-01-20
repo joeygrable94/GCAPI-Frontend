@@ -78,7 +78,6 @@ export async function completeAuthorization(
   newAuthState.created =
     userInfo['https://github.com/dorinclisu/fastapi-auth0/created_on'] ?? '';
   newAuthState.updated = userInfo.updated_at;
-  newAuthState.user = undefined;
   return [true, newAuthState];
 }
 

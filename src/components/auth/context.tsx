@@ -11,19 +11,18 @@ import {
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { isServer } from 'solid-js/web';
-import { ApiError, OpenAPI, UsersService } from '~/backend';
-import { SecureLocalStorage as SLS, error, warn } from '~/utils';
+import { OpenAPI } from '~/backend';
+import { SecureLocalStorage as SLS, error } from '~/utils';
 import { defaultAuthState } from './constants';
 import {
   AuthContext,
   AuthProps,
-  CurrentUser,
   IAuthActions,
   IAuthState,
   Organization,
   UpdatedAuthState
 } from './types';
-import { completeAuthorization, getUserRole, refresh } from './utils';
+import { completeAuthorization, refresh } from './utils';
 
 function createAuthState(props: AuthProps): AuthContext {
   const [auth0config] = splitProps(props, [
@@ -55,13 +54,14 @@ function createAuthState(props: AuthProps): AuthContext {
     responseType: 'code' // 'token id_token'
   };
   if (auth0config.organization) setOrg(auth0config.organization);
-  const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
   const stored: IAuthState = !isServer
     ? SLS.get('gcapi-auth') ?? defaultAuthState
     : defaultAuthState;
   const [state, setState] = createStore<IAuthState>(stored);
   const actions = {
     get webAuth() {
+      if (isServer) return;
+      const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
       return webAuth;
     },
     get organization() {
@@ -70,6 +70,8 @@ function createAuthState(props: AuthProps): AuthContext {
     isAuthenticated: () => !!isAuthenticated(),
     isInitialized: () => isAuthenticated() !== undefined,
     authorize: async () => {
+      if (isServer) return;
+      const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
       await webAuth.authorize({ scope: scopes().join(' ') });
     },
     login: async () => {
@@ -107,6 +109,8 @@ function createAuthState(props: AuthProps): AuthContext {
       }
     },
     logout: async () => {
+      if (isServer) return;
+      const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
       await webAuth.logout({
         returnTo: logoutUrl,
         clientID: auth0config.clientId
@@ -127,30 +131,9 @@ function createAuthState(props: AuthProps): AuthContext {
     setAcState(undefined);
     return navigate('/', { replace: true });
   };
-  const setCurrentUser = async () => {
-    let user: CurrentUser | undefined;
-    if (isAuthenticated() && state.accessToken.length > 0 && OpenAPI.TOKEN) {
-      try {
-        user = await UsersService.usersCurrentApiV1UsersMeGet();
-        // check if user is UserReadAsAdmin | UserReadAsManager | UserRead
-        if (user === undefined) throw new Error('No user not found');
-        setState('role', getUserRole(user));
-      } catch (error: ApiError | any) {
-        if (error instanceof ApiError) warn('Error fetching current user:', error);
-        if (error instanceof Error) warn('Error fetching current user:', error.message);
-        user = undefined;
-      }
-    }
-    setState('user', user);
-  };
-  createEffect(async () => {
-    if (!isServer) {
-      SLS.set('gcapi-auth', state);
-      await verifyAuthCode();
-      OpenAPI.TOKEN = async () => await state.accessToken;
-      await setCurrentUser();
-    }
-  });
+  createEffect(() => (!isServer ? SLS.set('gcapi-auth', state) : undefined));
+  createEffect(async () => (!isServer ? await verifyAuthCode() : undefined));
+  createEffect(() => (OpenAPI.TOKEN = async () => await state.accessToken));
   return [state, actions] as AuthContext;
 }
 

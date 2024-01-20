@@ -7,10 +7,9 @@
   "scripts": {
     "generate-client": "openapi --input http://0.0.0.0:8888/api/docs/openapi.json --output ./src/backend --useOptions --useUnionTypes --indent 2 --client axios",
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start"
   },
   "license": "MIT",
   "devDependencies": {
@@ -34,6 +33,7 @@
   "dependencies": {
     "@solidjs/meta": "^0.29.3",
     "@solidjs/router": "^0.10.9",
+    "@solidjs/start": "^0.4.10",
     "@tanstack/solid-form": "^0.13.3",
     "@tanstack/solid-query": "^5.17.15",
     "@tanstack/solid-query-devtools": "^5.17.18",
@@ -48,6 +48,7 @@
     "solid-heroicons": "^3.2.4",
     "solid-js": "^1.8.11",
     "solid-toast": "^0.5.0",
+    "vinxi": "^0.1.4",
     "zod": "^3.22.4"
   }
 }
