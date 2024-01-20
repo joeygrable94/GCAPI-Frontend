@@ -6,8 +6,7 @@ const Home: Component = () => {
   return (
     <main>
       <h1>GCAPI Auth0 Secured Backend</h1>
-      <p>{authState.email}</p>
-      <img src={authState.picture} alt={authState.email} />
+      <p>Welcome to your dashboard {authState.email}.</p>
     </main>
   );
 };

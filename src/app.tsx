@@ -22,7 +22,6 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SolidQueryDevtools />
-      <Toaster position="bottom-right" />
       <Router
         root={(props) => {
           return (
@@ -47,9 +46,16 @@ export default function App() {
                       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
                       crossorigin="anonymous"
                     />
-                    <MainLayout>
-                      <Suspense>{props.children}</Suspense>
-                    </MainLayout>
+                    <ErrorBoundary fallback={<>Main Layout Error</>}>
+                      <MainLayout>
+                        <Suspense>
+                          <ErrorBoundary fallback={<>Page Route Error</>}>
+                            {props.children}
+                          </ErrorBoundary>
+                        </Suspense>
+                        <Toaster position="bottom-right" />
+                      </MainLayout>
+                    </ErrorBoundary>
                   </MetaProvider>
                 </Auth0>
               </ErrorBoundary>
@@ -58,6 +64,7 @@ export default function App() {
         }}
       >
         <Route path="/" component={lazy(() => import('./routes/index'))} />
+        <Route path="/profile" component={lazy(() => import('./routes/profile'))} />
         <Route
           path="/clients"
           component={lazy(() => import('./routes/clients/index'))}

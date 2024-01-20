@@ -1,8 +1,8 @@
 import { A } from '@solidjs/router';
-import { Container, Nav, Navbar } from 'solid-bootstrap';
+import { Container, Nav, Navbar, NavDropdown } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
-import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
+import { Component, createEffect, createSignal, Match, Switch } from 'solid-js';
 import { AuthorizedAccess, useAuth0, useLayoutContext } from '~/components';
 
 type NavigationProps = {};
@@ -32,9 +32,17 @@ const Navigation: Component<NavigationProps> = (props) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav style={{ width: '100%', 'justify-content': 'flex-start' }}>
-            <Nav.Link as={A} href="/">
-              Home
-            </Nav.Link>
+            <AuthorizedAccess
+              fallback={
+                <Nav.Link as={A} href="/">
+                  Home
+                </Nav.Link>
+              }
+            >
+              <Nav.Link as={A} href="/clients">
+                Clients
+              </Nav.Link>
+            </AuthorizedAccess>
             <div style={{ 'margin-left': 'auto' }}></div>
             <AuthorizedAccess
               fallback={
@@ -47,15 +55,21 @@ const Navigation: Component<NavigationProps> = (props) => {
                 </Nav.Link>
               }
             >
-              <Nav.Link
-                as={A}
-                href="#logout"
-                onClick={async () => await authAct.logout()}
-              >
-                Logout
-              </Nav.Link>
+              <NavDropdown title="Account" id="basic-nav-dropdown">
+                <NavDropdown.Item as={A} href="/profile">
+                  Profile
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item
+                  as={A}
+                  href="#logout"
+                  onClick={async () => await authAct.logout()}
+                >
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
             </AuthorizedAccess>
-            <Nav.Link href="#" onClick={() => handleToggleSessionLayout()}>
+            <Nav.Link as={A} href="#" onClick={() => handleToggleSessionLayout()}>
               <Switch>
                 <Match when={layoutContext.darkMode === true}>
                   <Icon path={sun} style="width: 24px;" />
