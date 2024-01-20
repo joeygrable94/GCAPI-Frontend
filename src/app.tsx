@@ -58,6 +58,14 @@ export default function App() {
         }}
       >
         <Route path="/" component={lazy(() => import('./routes/index'))} />
+        <Route
+          path="/clients"
+          component={lazy(() => import('./routes/clients/index'))}
+        />
+        <Route
+          path="/clients/:id"
+          component={lazy(() => import('./routes/clients/[id]'))}
+        />
       </Router>
     </QueryClientProvider>
   );
