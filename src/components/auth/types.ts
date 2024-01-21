@@ -20,17 +20,13 @@ export type AuthProps = {
 
 export interface IAuthState {
   accessToken: string;
-  refreshToken: string;
+  refreshToken: string | undefined;
   tokenType: string;
   idToken: string;
   scope: string;
   userId: string;
   email: string;
-  email_verified: boolean;
   picture: string;
-  roles: string[];
-  created: string;
-  updated: string;
 }
 
 export interface IAuthActions {

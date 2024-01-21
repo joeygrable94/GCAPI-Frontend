@@ -65,19 +65,13 @@ export async function completeAuthorization(
   }
   let newAuthState = {} as IAuthState;
   newAuthState.accessToken = jsonAuthToken.access_token;
-  newAuthState.refreshToken = jsonAuthToken.refresh_token ?? '';
+  newAuthState.refreshToken = jsonAuthToken.refresh_token ?? undefined;
   newAuthState.tokenType = jsonAuthToken.accessToken_type;
   newAuthState.idToken = jsonAuthToken.id_token;
   newAuthState.scope = jsonAuthToken.scope;
   newAuthState.userId = userInfo.sub;
   newAuthState.email = userInfo.email;
-  newAuthState.email_verified = userInfo.email_verified;
   newAuthState.picture = userInfo.picture;
-  newAuthState.roles =
-    userInfo['https://github.com/dorinclisu/fastapi-auth0/roles'] ?? [];
-  newAuthState.created =
-    userInfo['https://github.com/dorinclisu/fastapi-auth0/created_on'] ?? '';
-  newAuthState.updated = userInfo.updated_at;
   return [true, newAuthState];
 }
 
