@@ -1,4 +1,4 @@
-/// <reference types="@solidjs/start/env" />
+/// <reference types="vite/client" />
 
 type ENV_MODE = 'development' | 'production';
 
