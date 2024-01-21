@@ -46,30 +46,22 @@ const Navigation: Component<NavigationProps> = (props) => {
             <div style={{ 'margin-left': 'auto' }}></div>
             <AuthorizedAccess
               fallback={
-                <Nav.Link
-                  as={A}
-                  href="#login"
-                  onClick={async () => await authAct.authorize()}
-                >
+                <Nav.Link onClick={async () => await authAct.authorize()}>
                   Login
                 </Nav.Link>
               }
             >
-              <NavDropdown title="Account" id="basic-nav-dropdown">
+              <NavDropdown title="Account" menuVariant={bg()}>
                 <NavDropdown.Item as={A} href="/profile">
                   Profile
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item
-                  as={A}
-                  href="#logout"
-                  onClick={async () => await authAct.logout()}
-                >
+                <NavDropdown.Item onClick={async () => await authAct.logout()}>
                   Logout
                 </NavDropdown.Item>
               </NavDropdown>
             </AuthorizedAccess>
-            <Nav.Link as={A} href="#" onClick={() => handleToggleSessionLayout()}>
+            <Nav.Link onClick={() => handleToggleSessionLayout()}>
               <Switch>
                 <Match when={layoutContext.darkMode === true}>
                   <Icon path={sun} style="width: 24px;" />

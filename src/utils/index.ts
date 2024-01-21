@@ -1,4 +1,5 @@
 export * from './cookies';
+export * from './dates';
 export * from './glob-patterns';
 export * from './global';
 export * from './logger';
