@@ -10,19 +10,17 @@ import {
   Switch,
   createSignal
 } from 'solid-js';
-import { ClientRead, ClientsService } from '~/backend';
-
-async function fetchClients(page: number): Promise<ClientRead[]> {
-  const clients = await ClientsService.clientsListApiV1ClientsGet({ page });
-  return clients.results;
-}
+import { ClientsService } from '~/backend';
 
 const Clients: Component = () => {
   const loc = useLocation();
   const [page, setPage] = createSignal<number>(parseInt(loc.query.page) || 1);
   const clients = createQuery(() => ({
-    queryKey: ['/clients', page],
-    queryFn: async () => await fetchClients(page())
+    queryKey: ['/clients', page()],
+    queryFn: async () => {
+      const clients = await ClientsService.clientsListApiV1ClientsGet({ page: page() });
+      return clients.results;
+    }
   }));
 
   return (

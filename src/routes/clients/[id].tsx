@@ -1,17 +1,16 @@
 import { Title } from '@solidjs/meta';
 import { A, useParams } from '@solidjs/router';
 import { createQuery } from '@tanstack/solid-query';
-import { Component, Match, Show, Switch, createSignal } from 'solid-js';
+import { Component, Match, Show, Switch } from 'solid-js';
 import { ClientRead, ClientsService } from '~/backend';
 
 const ClientById: Component = () => {
   const params = useParams();
-  const [clientId, setClientId] = createSignal(params.id);
   const client = createQuery(() => ({
-    queryKey: ['clientById', clientId()],
+    queryKey: ['clientById', params.id],
     queryFn: async (): Promise<ClientRead> => {
       const client = await ClientsService.clientsReadApiV1ClientsClientIdGet({
-        clientId: clientId()
+        clientId: params.id
       });
       return client;
     }
