@@ -1,3 +1,4 @@
+import { redirect } from '@solidjs/router';
 import { APIEvent, parseCookies } from '@solidjs/start/server';
 // import { UserSessionData, getSession } from '~/api/server';
 import { auth0FetchOAuthToken, auth0UserInfo } from '~/components';
@@ -118,5 +119,6 @@ export async function GET(event: APIEvent) {
     <meta http-equiv="refresh" content="0; url=${baseUrl}" />
   </head><body></body></html>`;
 
-  return new Response(body, { headers });
+  return redirect('/', { headers });
+  // return new Response(body, { headers });
 }
