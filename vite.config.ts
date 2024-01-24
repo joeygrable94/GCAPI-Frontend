@@ -1,5 +1,5 @@
+import { defineConfig } from '@solidjs/start/config';
 import devtools from 'solid-devtools/vite';
-import { defineConfig } from 'vite';
 import solid from 'vite-plugin-solid';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import pckg from './package.json' assert { type: 'json' };
@@ -14,12 +14,17 @@ export default defineConfig({
     devtools({
       autoname: true
     }),
-    solid()
+    solid({ ssr: true })
   ],
   server: {
     port: 3000
   },
   build: {
     target: 'esnext'
+  },
+  start: {
+    ssr: true,
+    islands: false
+    // middleware: './src/middleware.ts'
   }
 });

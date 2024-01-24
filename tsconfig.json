@@ -9,7 +9,7 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "resolveJsonModule": true,
-    "types": ["vite/client"],
+    "types": ["vinxi/client", "vite/client"],
     "noEmit": true,
     "isolatedModules": true,
     "allowJs": true,
