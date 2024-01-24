@@ -1,16 +1,16 @@
 import { Title } from '@solidjs/meta';
-import { A, useLocation } from '@solidjs/router';
+import { useLocation } from '@solidjs/router';
 import { createQuery } from '@tanstack/solid-query';
 import {
   Component,
   ErrorBoundary,
-  For,
   Match,
   Suspense,
   Switch,
   createSignal
 } from 'solid-js';
 import { ClientsService } from '~/backend';
+import { ClientsDataTable } from '~/components';
 
 const Clients: Component = () => {
   const loc = useLocation();
@@ -26,27 +26,23 @@ const Clients: Component = () => {
   return (
     <>
       <Title>GCAPI Clients</Title>
-      <Suspense>
-        <ErrorBoundary fallback={<>Query Error</>}>
-          <Switch>
-            <Match when={clients.isPending}>
-              <p>Loading Clients</p>
-            </Match>
-            <Match when={clients.isError}>
-              <p>Error Loading Clients: {clients.error?.message}</p>
-            </Match>
-            <Match when={clients.isSuccess}>
-              <For each={clients.data}>
-                {(client) => (
-                  <p>
-                    <A href={`/clients/${client.id}`}>{client.title}</A>
-                  </p>
-                )}
-              </For>
-            </Match>
-          </Switch>
-        </ErrorBoundary>
-      </Suspense>
+      <main class="py-5">
+        <Suspense>
+          <ErrorBoundary fallback={<>Query Error</>}>
+            <Switch>
+              <Match when={clients.isPending}>
+                <p>Loading Clients</p>
+              </Match>
+              <Match when={clients.isError}>
+                <p>Error Loading Clients: {clients.error?.message}</p>
+              </Match>
+              <Match when={clients.isSuccess}>
+                <ClientsDataTable data={clients.data} />
+              </Match>
+            </Switch>
+          </ErrorBoundary>
+        </Suspense>
+      </main>
     </>
   );
 };
