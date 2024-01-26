@@ -23,10 +23,6 @@ export interface IAuthState {
   refreshToken: string | undefined;
   tokenType: string;
   idToken: string;
-  scope: string;
-  userId: string;
-  email: string;
-  picture: string;
 }
 
 export interface IAuthActions {
