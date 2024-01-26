@@ -1,5 +1,7 @@
 import { useLocation, useNavigate } from '@solidjs/router';
 import auth0, { WebAuth } from 'auth0-js';
+import { AES } from 'crypto-js';
+import encUTF8 from 'crypto-js/enc-utf8';
 import * as jose from 'jose';
 import {
   ParentComponent,
@@ -10,9 +12,14 @@ import {
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { isServer } from 'solid-js/web';
+import { getRequestEvent, isServer } from 'solid-js/web';
+import { getCookie } from 'vinxi/server';
 import { OpenAPI } from '~/backend';
-import { SecureLocalStorage as SLS, error } from '~/utils';
+import {
+  SecureLocalStorage as SLS,
+  error,
+  getCookie as getCookieClient
+} from '~/utils';
 import { defaultAuthState } from './constants';
 import {
   AuthContext,
@@ -51,16 +58,36 @@ function createAuthState(props: AuthProps): AuthContext {
     clientID: auth0config.clientId,
     audience: auth0config.audience,
     redirectUri: auth0config.redirectUri,
-    responseType: 'code' // 'token id_token'
+    responseType: 'code'
   };
   if (auth0config.organization) setOrg(auth0config.organization);
-  const stored: IAuthState = !isServer
-    ? SLS.get('gcapi-auth') ?? defaultAuthState
-    : defaultAuthState;
+  const getStoredState = (): IAuthState => {
+    let token: string | undefined;
+    let decrypted: string | undefined;
+    if (isServer) {
+      token = getCookie(getRequestEvent()!, 'gcapi_auth');
+      if (token?.length) {
+        decrypted = AES.decrypt(token, import.meta.env.VITE_SESSION_SECRET).toString(
+          encUTF8
+        );
+      }
+    } else {
+      token = getCookieClient('gcapi_auth');
+      decrypted = AES.decrypt(token, import.meta.env.VITE_SESSION_SECRET).toString(
+        encUTF8
+      );
+    }
+    if (decrypted) {
+      return JSON.parse(decrypted) as IAuthState;
+    } else {
+      return !isServer ? SLS.get('gcapi_auth') ?? defaultAuthState : defaultAuthState;
+    }
+  };
+  const stored: IAuthState = getStoredState();
   const [state, setState] = createStore<IAuthState>(stored);
   const actions = {
     get webAuth() {
-      if (isServer) return;
+      // if (isServer) return;
       const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
       return webAuth;
     },
@@ -70,12 +97,12 @@ function createAuthState(props: AuthProps): AuthContext {
     isAuthenticated: () => !!isAuthenticated(),
     isInitialized: () => isAuthenticated() !== undefined,
     authorize: async () => {
-      if (isServer) return;
+      // if (isServer) return;
       const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
       await webAuth.authorize({ scope: scopes().join(' ') });
     },
     login: async () => {
-      if (state.userId && state.accessToken) {
+      if (state.accessToken) {
         const jwt = state.accessToken;
         const JWKS = jose.createRemoteJWKSet(
           new URL(`https://${auth0config.domain}/.well-known/jwks.json`)
@@ -109,7 +136,7 @@ function createAuthState(props: AuthProps): AuthContext {
       }
     },
     logout: async () => {
-      if (isServer) return;
+      // if (isServer) return;
       const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
       await webAuth.logout({
         returnTo: logoutUrl,
@@ -131,9 +158,11 @@ function createAuthState(props: AuthProps): AuthContext {
     setAcState(undefined);
     return navigate('/', { replace: true });
   };
-  createEffect(() => (!isServer ? SLS.set('gcapi-auth', state) : undefined));
-  createEffect(async () => (!isServer ? await verifyAuthCode() : undefined));
+  createEffect(() => getStoredState());
+  createEffect(() => SLS.set('gcapi_auth', state));
+  createEffect(async () => await verifyAuthCode());
   createEffect(() => (OpenAPI.TOKEN = async () => await state.accessToken));
+
   return [state, actions] as AuthContext;
 }
 
