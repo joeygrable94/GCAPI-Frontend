@@ -161,7 +161,7 @@ function createAuthState(props: AuthProps): AuthContext {
   createEffect(() => getStoredState());
   createEffect(() => SLS.set('gcapi_auth', state));
   createEffect(async () => await verifyAuthCode());
-  createEffect(() => (OpenAPI.TOKEN = async () => await state.accessToken));
+  createEffect(() => (OpenAPI.TOKEN = state.accessToken));
 
   return [state, actions] as AuthContext;
 }
