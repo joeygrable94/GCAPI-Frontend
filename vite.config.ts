@@ -1,6 +1,5 @@
 import { defineConfig } from '@solidjs/start/config';
 import devtools from 'solid-devtools/vite';
-import solid from 'vite-plugin-solid';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import pckg from './package.json' assert { type: 'json' };
 
@@ -13,8 +12,8 @@ export default defineConfig({
     tsconfigPaths(),
     devtools({
       autoname: true
-    }),
-    solid({ ssr: true })
+    })
+    // solid({ ssr: true })
   ],
   server: {
     port: 3000

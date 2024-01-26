@@ -1,22 +1,15 @@
+'use server';
 import { APIEvent } from '@solidjs/start/server';
-// import { storage } from '../session.js'
+import { getSession } from '~/server/session';
 
 export default async function GET(event: APIEvent) {
   const baseUrl = import.meta.env.VITE_APP_BASE_URL;
-  const headers = new Headers();
-  // const session = await storage.getSession()
-  headers.append('Content-Type', 'text/html; charset=utf-8');
-  // headers.append('Set-Cookie', await storage.destroySession(session))
+  const session = await getSession(event);
+  await session.clear();
 
   console.log('Auth0 logout');
-  console.log('event.request.url', event.request.url);
+  console.log('event.path', event);
 
-  const body = `<html>
-  <head>
-    <meta http-equiv="refresh" content="0; url=${baseUrl}" />
-  </head>
-  <body></body>
-</html>`;
-
-  return new Response(body, { headers });
+  // return sendRedirect(event, '/', 302);
+  return event.respondWith(new Response(JSON.stringify({ success: true })));
 }

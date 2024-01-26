@@ -1,8 +1,8 @@
 import { isServer } from '@tanstack/solid-query';
 import { Container } from 'solid-bootstrap';
-import { ParentComponent, createEffect } from 'solid-js';
+import { ErrorBoundary, ParentComponent, createEffect } from 'solid-js';
 import {
-  AuthorizedAccess,
+  // AuthorizedAccess,
   LayoutContext,
   createLayoutMutable,
   saveDarkMode
@@ -26,15 +26,17 @@ const MainLayout: ParentComponent = (props) => {
   });
   return (
     <LayoutContext.Provider value={layout}>
-      <Navigation />
+      <ErrorBoundary fallback={<>Navigation Error</>}>
+        <Navigation />
+      </ErrorBoundary>
       <Container>
-        <AuthorizedAccess
+        {/* <AuthorizedAccess
           fallback={
             <p class="fs-2 my-5 text-center">You must log in to access this page.</p>
           }
-        >
-          {props.children}
-        </AuthorizedAccess>
+        > */}
+        {props.children}
+        {/* </AuthorizedAccess> */}
       </Container>
     </LayoutContext.Provider>
   );

@@ -3,7 +3,7 @@ import { Component, ErrorBoundary, Match, Suspense, Switch } from 'solid-js';
 import { UsersService } from '~/backend';
 import { useAuth0 } from '~/components';
 
-const Home: Component = () => {
+const Profile: Component = () => {
   const [authState, authAct] = useAuth0();
   const profile = createQuery(() => ({
     queryKey: ['/profile'],
@@ -32,4 +32,4 @@ const Home: Component = () => {
   );
 };
 
-export default Home;
+export default Profile;

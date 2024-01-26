@@ -1,14 +1,13 @@
 import { A } from '@solidjs/router';
-import { Container, Nav, Navbar, NavDropdown } from 'solid-bootstrap';
+import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
-import { Component, createEffect, createSignal, Match, Switch } from 'solid-js';
-import { AuthorizedAccess, useAuth0, useLayoutContext } from '~/components';
+import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
+import { AuthorizedAccess, useLayoutContext } from '~/components';
 
 type NavigationProps = {};
 
 const Navigation: Component<NavigationProps> = (props) => {
-  const [authState, authAct] = useAuth0();
   const layoutContext = useLayoutContext();
   const handleToggleSessionLayout = () => {
     layoutContext.darkMode = !layoutContext.darkMode;
@@ -44,21 +43,13 @@ const Navigation: Component<NavigationProps> = (props) => {
               </Nav.Link>
             </AuthorizedAccess>
             <div style={{ 'margin-left': 'auto' }}></div>
-            <AuthorizedAccess
-              fallback={
-                <Nav.Link onClick={async () => await authAct.authorize()}>
-                  Login
-                </Nav.Link>
-              }
-            >
+            <AuthorizedAccess fallback={<Nav.Link href="login">Login</Nav.Link>}>
               <NavDropdown title="Account" menuVariant={bg()}>
                 <NavDropdown.Item as={A} href="/profile">
                   Profile
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item onClick={async () => await authAct.logout()}>
-                  Logout
-                </NavDropdown.Item>
+                <NavDropdown.Item href="/auth/logout">Logout</NavDropdown.Item>
               </NavDropdown>
             </AuthorizedAccess>
             <Nav.Link onClick={() => handleToggleSessionLayout()}>

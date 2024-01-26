@@ -1,11 +1,14 @@
-import { redirect } from '@solidjs/router';
+'use server';
 import { APIEvent, parseCookies } from '@solidjs/start/server';
 // import { UserSessionData, getSession } from '~/api/server';
 import { auth0FetchOAuthToken, auth0UserInfo } from '~/components';
+import { UserInfo, getSession } from '~/server/session';
 
 export async function GET(event: APIEvent) {
   console.log('Auth0 callback');
-  console.log('event.request.url', event.request.url);
+  console.log('Event', typeof event);
+  console.log('Event', event.path);
+  console.log('event.path', event.request.url);
 
   let baseUrl = import.meta.env.VITE_APP_BASE_URL;
   if (import.meta.env.VITE_DEBUG) {
@@ -90,35 +93,34 @@ export async function GET(event: APIEvent) {
     });
   }
 
-  /*
-  await session.update(
-    (d: UserSessionData) => (d.accessToken = jsonAuthToken.access_token)
-  );
-  if (jsonAuthToken.refresh_token) {
-    await session.update(
-      (d: UserSessionData) => (d.refreshToken = jsonAuthToken.refresh_token)
-    );
-  }
-  await session.update((d: UserSessionData) => (d.idToken = jsonAuthToken.id_token));
-  await session.update((d: UserSessionData) => (d.scope = jsonAuthToken.scope));
-  await session.update(
-    (d: UserSessionData) => (d.tokenType = jsonAuthToken.accessToken_type)
-  );
-  await session.update((d: UserSessionData) => (d.userInfo = userInfo));
-  await session.update((d: UserSessionData) => (d.userId = userInfo.sub));
-  await session.update((d: UserSessionData) => (d.orgId = userInfo.org_id));
-  await session.update((d: UserSessionData) => (d.permissions = userInfo.permissions));
+  const session = await getSession(event);
+  const sessionUser = {
+    sub: userInfo.sub,
+    nickname: userInfo.nickname,
+    name: userInfo.name,
+    picture: userInfo.picture,
+    updated_at: userInfo.updated_at,
+    email: userInfo.email,
+    email_verified: userInfo.email_verified
+  } as UserInfo;
+  const newSession = {
+    accessToken: jsonAuthToken.access_token,
+    refreshToken: jsonAuthToken.refresh_token,
+    idToken: jsonAuthToken.id_token,
+    scope: jsonAuthToken.scope,
+    tokenType: jsonAuthToken.token_type,
+    userInfo: sessionUser,
+    userId: userInfo.sub,
+    permissions: userInfo['https://github.com/dorinclisu/fastapi-auth0/roles'] ?? []
+  };
 
-  headers.append('Content-Type', 'text/html; charset=utf-8');
-  if (session.id) {
-    headers.append('Set-Cookie', session.id ? `session=${session.id}` : '');
-  }
-  */
+  await session.clear();
+  await session.update((d) => {
+    d = newSession;
+    return d;
+  });
+  console.log('Session: ', session.id, session.data);
 
-  const body = `<html><head>
-    <meta http-equiv="refresh" content="0; url=${baseUrl}" />
-  </head><body></body></html>`;
-
-  return redirect('/', { headers });
-  // return new Response(body, { headers });
+  // return sendRedirect(event, '/', 302);
+  return event.respondWith(new Response(JSON.stringify({ success: true })));
 }

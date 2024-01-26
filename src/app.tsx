@@ -1,8 +1,9 @@
 import { Link, MetaProvider, Title } from '@solidjs/meta';
-import { Route, Router } from '@solidjs/router';
+import { Router } from '@solidjs/router';
+import { FileRoutes } from '@solidjs/start';
 import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
-import { ErrorBoundary, Suspense, lazy, onMount } from 'solid-js';
+import { ErrorBoundary, Suspense, onMount } from 'solid-js';
 import { isServer } from 'solid-js/web';
 import { Toaster } from 'solid-toast';
 import { Auth0, MainLayout } from '~/components';
@@ -63,16 +64,7 @@ export default function App() {
           );
         }}
       >
-        <Route path="/" component={lazy(() => import('./routes/index'))} />
-        <Route path="/profile" component={lazy(() => import('./routes/profile'))} />
-        <Route
-          path="/clients"
-          component={lazy(() => import('./routes/clients/index'))}
-        />
-        <Route
-          path="/clients/:id"
-          component={lazy(() => import('./routes/clients/[id]'))}
-        />
+        <FileRoutes />
       </Router>
     </QueryClientProvider>
   );

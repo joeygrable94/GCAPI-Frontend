@@ -27,13 +27,15 @@ export default createHandler(
     onRequest: [
       defineRequestMiddleware(async (event) => {
         const id = Math.random().toString();
-        console.time(`request ${id} ${event.path}`);
+        console.time(`Request ${id} ${event.path}`);
+        console.log('Middleware Request: ', event.path);
         (event as any).id = id;
       })
     ],
     onBeforeResponse: [
       defineResponseMiddleware(async (event) => {
-        console.timeEnd(`request ${(event as any).id} ${event.path}`);
+        console.log('Middleware Response: ', event.path);
+        console.timeEnd(`Request ${(event as any).id} ${event.path}`);
       })
     ]
   }
