@@ -7,6 +7,9 @@
   "scripts": {
     "generate-client": "openapi --input http://0.0.0.0:8888/api/docs/openapi.json --output ./src/backend --useOptions --useUnionTypes --indent 2 --client axios",
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "dev-csr": "vite dev",
+    "build-csr": "vite build",
+    "start-csr": "vite start",
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start"
