@@ -36,7 +36,9 @@ const Navigation: Component<NavigationProps> = (props) => {
             </Nav.Link>
             <div style={{ 'margin-left': 'auto' }}></div>
             <NavDropdown title="Account" menuVariant={bg()}>
-              <Nav.Link href="login">Login</Nav.Link>
+              <NavDropdown.Item as={A} href="/login">
+                Login
+              </NavDropdown.Item>
               <NavDropdown.Item as={A} href="/profile">
                 Profile
               </NavDropdown.Item>
