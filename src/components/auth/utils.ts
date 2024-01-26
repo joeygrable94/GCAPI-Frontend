@@ -68,10 +68,6 @@ export async function completeAuthorization(
   newAuthState.refreshToken = jsonAuthToken.refresh_token ?? undefined;
   newAuthState.tokenType = jsonAuthToken.accessToken_type;
   newAuthState.idToken = jsonAuthToken.id_token;
-  newAuthState.scope = jsonAuthToken.scope;
-  newAuthState.userId = userInfo.sub;
-  newAuthState.email = userInfo.email;
-  newAuthState.picture = userInfo.picture;
   return [true, newAuthState];
 }
 
