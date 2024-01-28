@@ -8,6 +8,7 @@ import {
   createContext,
   createEffect,
   createSignal,
+  onMount,
   splitProps,
   useContext
 } from 'solid-js';
@@ -16,9 +17,10 @@ import { getRequestEvent, isServer } from 'solid-js/web';
 import { getCookie } from 'vinxi/server';
 import { OpenAPI } from '~/backend';
 import {
-  SecureLocalStorage as SLS,
   error,
-  getCookie as getCookieClient
+  getCookie as getCookieClient,
+  log,
+  setCookie as setCookieClient
 } from '~/utils';
 import { defaultAuthState } from './constants';
 import {
@@ -49,7 +51,7 @@ function createAuthState(props: AuthProps): AuthContext {
   const [organization, setOrg] = createSignal<Organization | undefined>();
   const [scopes, setScopes] = createSignal<string[]>(['openid', 'profile', 'email']);
   const logoutUrl: string =
-    auth0config.logoutUrl || `http://${import.meta.env.VITE_APP_BASE_URL}/`;
+    auth0config.logoutUrl || `http://${import.meta.env.VITE_APP_BASE_URL}/auth/logout`;
   if (import.meta.env.VITE_AUTH0_OFFLINE_ACCESS === 'true')
     setScopes((s) => [...s, 'offline_access']);
   const webAuth0Config: auth0.AuthOptions = {
@@ -65,44 +67,64 @@ function createAuthState(props: AuthProps): AuthContext {
     let token: string | undefined;
     let decrypted: string | undefined;
     if (isServer) {
+      // check for token on server
+      if (import.meta.env.VITE_DEBUG) log('Getting stored state from server...');
       token = getCookie(getRequestEvent()!, 'gcapi_auth');
       if (token?.length) {
         decrypted = AES.decrypt(token, import.meta.env.VITE_SESSION_SECRET).toString(
           encUTF8
         );
+        if (decrypted) {
+          return JSON.parse(decrypted) as IAuthState;
+        }
       }
+      if (import.meta.env.VITE_DEBUG) log('Loading default state from server...');
+      return defaultAuthState;
     } else {
+      // check for token in client cookies then local storage
       token = getCookieClient('gcapi_auth');
       decrypted = AES.decrypt(token, import.meta.env.VITE_SESSION_SECRET).toString(
         encUTF8
       );
+      if (decrypted) {
+        if (import.meta.env.VITE_DEBUG)
+          log('Getting stored state from client cookies...');
+        return JSON.parse(decrypted) as IAuthState;
+      }
+      if (import.meta.env.VITE_DEBUG) log('Loading default state from client...');
+      return defaultAuthState;
     }
-    if (decrypted) {
-      return JSON.parse(decrypted) as IAuthState;
-    } else {
-      return !isServer ? SLS.get('gcapi_auth') ?? defaultAuthState : defaultAuthState;
-    }
+  };
+  const resetAuthCookie = () => {
+    setCookieClient(
+      'gcapi_auth',
+      AES.encrypt(
+        JSON.stringify(defaultAuthState),
+        import.meta.env.VITE_SESSION_SECRET
+      ).toString(),
+      -1
+    );
   };
   const stored: IAuthState = getStoredState();
   const [state, setState] = createStore<IAuthState>(stored);
   const actions = {
     get webAuth() {
-      // if (isServer) return;
       const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
       return webAuth;
     },
     get organization() {
       return organization();
     },
-    isAuthenticated: () => !!isAuthenticated(),
     isInitialized: () => isAuthenticated() !== undefined,
+    isAuthenticated: () => !!isAuthenticated(),
     authorize: async () => {
-      // if (isServer) return;
       const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
       await webAuth.authorize({ scope: scopes().join(' ') });
     },
     login: async () => {
+      if (import.meta.env.VITE_DEBUG) log('Attempting to log in...');
       if (state.accessToken) {
+        if (import.meta.env.VITE_DEBUG) log('Logging in via state access token...');
         const jwt = state.accessToken;
         const JWKS = jose.createRemoteJWKSet(
           new URL(`https://${auth0config.domain}/.well-known/jwks.json`)
@@ -113,10 +135,12 @@ function createAuthState(props: AuthProps): AuthContext {
             issuer: `https://${auth0config.domain}/`,
             audience: auth0config.audience
           });
+          if (import.meta.env.VITE_DEBUG) log('Login successful!');
           setIsAuthenticated(true);
         } catch (err: any) {
-          error(err);
+          resetAuthCookie();
           if (err.name === 'JWTExpired' || err.code === 'ERR_JWT_EXPIRED') {
+            if (import.meta.env.VITE_DEBUG) error('Login expired error:', err);
             const refreshToken = state.refreshToken;
             if (refreshToken) {
               const tokens = await refresh(refreshToken);
@@ -127,16 +151,16 @@ function createAuthState(props: AuthProps): AuthContext {
               setIsAuthenticated(false);
             }
           } else {
-            error(err);
+            if (import.meta.env.VITE_DEBUG) error('Login error:', err);
             setIsAuthenticated(false);
           }
         }
       } else {
+        if (import.meta.env.VITE_DEBUG) log('The state has no access token set...');
         setIsAuthenticated(false);
       }
     },
     logout: async () => {
-      // if (isServer) return;
       const webAuth: WebAuth = new auth0.WebAuth(webAuth0Config);
       await webAuth.logout({
         returnTo: logoutUrl,
@@ -148,18 +172,37 @@ function createAuthState(props: AuthProps): AuthContext {
   const verifyAuthCode = async () => {
     if (acState() === undefined) return;
     if (authCode() === undefined) return;
-    let newAuthState: UpdatedAuthState = await completeAuthorization(
+    const cookies = getCookieClient(`com.auth0.auth.${state}`);
+    const verification = JSON.parse(cookies);
+    const url = isServer
+      ? new URL('http://localhost.com/')
+      : new URL(window.location.href);
+    if (import.meta.env.VITE_DEBUG) log('Verifying auth code...');
+    let [authenticated, newAuthState]: UpdatedAuthState = await completeAuthorization(
       authCode()!,
-      acState()!
+      acState()!,
+      verification,
+      url
     );
-    setIsAuthenticated(newAuthState[0]);
-    setState(newAuthState[1]);
+    setIsAuthenticated(authenticated);
+    setState(newAuthState);
     setAuthCode(undefined);
     setAcState(undefined);
     return navigate('/', { replace: true });
   };
+  if (isServer) {
+    if (import.meta.env.VITE_DEBUG) log('Login server side?');
+    if (!actions.isAuthenticated()) {
+      actions.login();
+    }
+    if (!actions.isAuthenticated()) {
+      setState(defaultAuthState);
+    }
+  }
+  onMount(async () => {
+    if (!actions.isAuthenticated()) await actions.login();
+  });
   createEffect(() => getStoredState());
-  createEffect(() => SLS.set('gcapi_auth', state));
   createEffect(async () => await verifyAuthCode());
   createEffect(() => (OpenAPI.TOKEN = state.accessToken));
 

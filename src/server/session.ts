@@ -18,7 +18,6 @@ export interface UserSessionData {
   refreshToken?: string;
   tokenType?: string;
   idToken: string | undefined;
-  user: UserInfo | undefined;
 }
 
 export function getSession(event: H3Event | undefined = undefined) {
