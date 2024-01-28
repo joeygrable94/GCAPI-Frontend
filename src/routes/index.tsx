@@ -1,4 +1,4 @@
-import { Component } from 'solid-js';
+import { Component, Show } from 'solid-js';
 import { useAuth0 } from '~/components';
 
 const Home: Component = () => {
@@ -6,7 +6,9 @@ const Home: Component = () => {
   return (
     <main>
       <h1>GCAPI Auth0 Secured Backend</h1>
-      <p>Welcome to your dashboard {authState.accessToken}.</p>
+      <Show when={authAct.isAuthenticated()}>
+        <p>Welcome to your dashboard {authState.accessToken}.</p>
+      </Show>
     </main>
   );
 };
