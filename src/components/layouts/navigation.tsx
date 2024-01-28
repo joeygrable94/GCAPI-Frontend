@@ -3,11 +3,12 @@ import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
-import { useLayoutContext } from '~/components';
+import { useAuth0, useLayoutContext } from '~/components';
 
 type NavigationProps = {};
 
 const Navigation: Component<NavigationProps> = (props) => {
+  const [authState, authAct] = useAuth0();
   const layoutContext = useLayoutContext();
   const handleToggleSessionLayout = () => {
     layoutContext.darkMode = !layoutContext.darkMode;
@@ -36,14 +37,14 @@ const Navigation: Component<NavigationProps> = (props) => {
             </Nav.Link>
             <div style={{ 'margin-left': 'auto' }}></div>
             <NavDropdown title="Account" menuVariant={bg()}>
-              <NavDropdown.Item as={A} href="/login">
-                Login
-              </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => authAct.login()}>Login</NavDropdown.Item>
               <NavDropdown.Item as={A} href="/profile">
                 Profile
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="/auth/logout">Logout</NavDropdown.Item>
+              <NavDropdown.Item onClick={() => authAct.logout()}>
+                Logout
+              </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link onClick={() => handleToggleSessionLayout()}>
               <Switch>
