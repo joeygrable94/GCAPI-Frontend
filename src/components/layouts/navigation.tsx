@@ -37,12 +37,14 @@ const Navigation: Component<NavigationProps> = (props) => {
             </Nav.Link>
             <div style={{ 'margin-left': 'auto' }}></div>
             <NavDropdown title="Account" menuVariant={bg()}>
-              <NavDropdown.Item onClick={() => authAct.login()}>Login</NavDropdown.Item>
+              <NavDropdown.Item onClick={async () => await authAct.authorize()}>
+                Login
+              </NavDropdown.Item>
               <NavDropdown.Item as={A} href="/profile">
                 Profile
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={() => authAct.logout()}>
+              <NavDropdown.Item onClick={async () => await authAct.logout()}>
                 Logout
               </NavDropdown.Item>
             </NavDropdown>
