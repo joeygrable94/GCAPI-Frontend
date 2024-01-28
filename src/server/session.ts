@@ -16,14 +16,10 @@ export type UserInfo = {
 };
 
 export interface UserSessionData {
-  accessToken: string | undefined;
-  idToken: string | undefined;
+  accessToken: string;
   refreshToken?: string;
-  scope: string | undefined;
-  tokenType?: string;
-  userInfo: UserInfo | undefined;
-  userId: string | undefined;
-  permissions: string[] | [];
+  tokenType: string;
+  idToken: string;
 }
 
 export function getSession(event: H3Event | undefined = undefined) {
