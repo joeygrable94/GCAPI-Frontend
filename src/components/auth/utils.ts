@@ -1,4 +1,4 @@
-import { error, getCookie, warn } from '~/utils';
+import { error, warn } from '~/utils';
 import { defaultAuthState } from './constants';
 import { CurrentUser, IAuthState, UpdatedAuthState, UserRole } from './types';
 
@@ -34,24 +34,37 @@ export const getUserRole = (user: CurrentUser): UserRole => {
  * @returns a new IAuthState object containing the access token and user info
  */
 export async function completeAuthorization(
-  code: string,
-  state: string
+  code: string | null,
+  state: string | null,
+  verification: any,
+  url: URL
 ): Promise<UpdatedAuthState> {
-  const cookies = getCookie(`com.auth0.auth.${state}`);
-  const verification = JSON.parse(cookies);
+  let baseUrl = import.meta.env.VITE_APP_BASE_URL;
   if (!verification) {
-    warn('No verification cookie found');
+    if (import.meta.env.VITE_DEBUG) warn('No verification cookie found');
     return [false, defaultAuthState];
   }
   if (code === undefined || code === null) {
-    error('No code found');
+    if (import.meta.env.VITE_DEBUG) error('No code found');
+    return [false, defaultAuthState];
+  }
+  if (state === undefined || state === null) {
+    if (import.meta.env.VITE_DEBUG) error('No state found');
     return [false, defaultAuthState];
   }
   if (state !== verification.state) {
-    error('Code and state do not match verification');
+    if (import.meta.env.VITE_DEBUG) error('Code and state do not match verification');
     return [false, defaultAuthState];
   }
   let redirectUrl = import.meta.env.VITE_AUTH0_REDIRECT_URI;
+  if (import.meta.env.VITE_AUTH0_REWRITE_REDIRECT === 'true') {
+    const orgName = url.hostname.split('.')[0];
+    redirectUrl = import.meta.env.VITE_AUTH0_REDIRECT_URI.replace('org_id', orgName);
+    baseUrl = import.meta.env.VITE_APP_BASE_URL.replace(
+      'https://',
+      `https://${orgName}.`
+    );
+  }
   const jsonAuthToken = await auth0FetchOAuthToken(
     code,
     state,
@@ -60,7 +73,7 @@ export async function completeAuthorization(
   );
   const userInfo = await auth0UserInfo(jsonAuthToken.access_token);
   if (userInfo === undefined) {
-    warn('No user info found');
+    if (import.meta.env.VITE_DEBUG) warn('No user info found');
     return [false, defaultAuthState];
   }
   let newAuthState = {} as IAuthState;

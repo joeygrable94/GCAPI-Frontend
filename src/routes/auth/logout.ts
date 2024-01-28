@@ -1,15 +1,14 @@
-'use server';
-import { APIEvent } from '@solidjs/start/server';
-import { getSession } from '~/server/session';
+import { APIEvent } from '@solidjs/start/server/types.js';
+import { AES } from 'crypto-js';
+import { sendRedirect, setCookie } from 'vinxi/server';
+import { defaultAuthState } from '~/components/auth/constants';
+import { getSession } from '~/server/session.js';
 
-export default async function GET(event: APIEvent) {
-  const baseUrl = import.meta.env.VITE_APP_BASE_URL;
+export async function GET(event: APIEvent) {
   const session = await getSession(event);
   await session.clear();
-
-  console.log('Auth0 logout');
-  console.log('event.path', event);
-
-  // return sendRedirect(event, '/', 302);
-  return event.respondWith(new Response(JSON.stringify({ success: true })));
+  setCookie(event, 'gcapi_auth', JSON.stringify(defaultAuthState), {
+    encode: (v) => AES.encrypt(v, import.meta.env.VITE_SESSION_SECRET).toString()
+  });
+  return sendRedirect(event, '/login', 302);
 }
