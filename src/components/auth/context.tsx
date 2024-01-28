@@ -14,7 +14,7 @@ import {
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { getRequestEvent, isServer } from 'solid-js/web';
-import { getCookie } from 'vinxi/server';
+import { getCookie, setCookie } from 'vinxi/server';
 import { OpenAPI } from '~/backend';
 import {
   error,
@@ -96,14 +96,22 @@ function createAuthState(props: AuthProps): AuthContext {
     }
   };
   const resetAuthCookie = () => {
-    setCookieClient(
-      'gcapi_auth',
-      AES.encrypt(
-        JSON.stringify(defaultAuthState),
-        import.meta.env.VITE_SESSION_SECRET
-      ).toString(),
-      -1
-    );
+    if (isServer) {
+      if (import.meta.env.VITE_DEBUG) log('Reset authorization on server...');
+      setCookie(getRequestEvent()!, 'gcapi_auth', JSON.stringify(defaultAuthState), {
+        encode: (v) => AES.encrypt(v, import.meta.env.VITE_SESSION_SECRET).toString()
+      });
+    } else {
+      if (import.meta.env.VITE_DEBUG) log('Reset authorization on client...');
+      setCookieClient(
+        'gcapi_auth',
+        AES.encrypt(
+          JSON.stringify(defaultAuthState),
+          import.meta.env.VITE_SESSION_SECRET
+        ).toString(),
+        86400
+      );
+    }
   };
   const stored: IAuthState = getStoredState();
   const [state, setState] = createStore<IAuthState>(stored);
@@ -200,6 +208,7 @@ function createAuthState(props: AuthProps): AuthContext {
     }
   }
   onMount(async () => {
+    if (import.meta.env.VITE_DEBUG) log('Login client side?');
     if (!actions.isAuthenticated()) await actions.login();
   });
   createEffect(() => getStoredState());
