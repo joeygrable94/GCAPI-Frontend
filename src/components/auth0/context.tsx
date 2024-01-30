@@ -1,0 +1,146 @@
+import auth0, { WebAuth } from 'auth0-js';
+import * as jose from 'jose';
+import {
+  createContext,
+  createEffect,
+  createSignal,
+  splitProps,
+  useContext
+} from 'solid-js';
+import { createStore } from 'solid-js/store';
+import { getRequestEvent, isServer } from 'solid-js/web';
+import { setCookie } from 'vinxi/server';
+import { OpenAPI } from '~/backend';
+import { error, log, setCookie as setCookieClient } from '~/utils';
+import { AUTH_COOKIE_MAX_AGE, defaultAuthConfig } from './constants';
+import {
+  AuthConfig,
+  AuthConfigActions,
+  AuthConfigProps,
+  AuthContext,
+  Organization
+} from './types';
+import { refresh } from './utils';
+
+export const AuthConfigContext = createContext<AuthContext>();
+
+export const AuthProvider = (props: AuthConfigProps) => {
+  const [authConfig] = splitProps(props, [
+    'initialAuth',
+    'domain',
+    'clientId',
+    'audience',
+    'redirectUri',
+    'logoutUrl',
+    'organization',
+    'invitation'
+  ]);
+  const [auth, setAuth] = createStore<AuthConfig>(authConfig.initialAuth);
+  const [isAuthenticated, setIsAuthenticated] = createSignal<boolean | undefined>();
+  const [organization, setOrg] = createSignal<Organization | undefined>();
+  const [scopes, setScopes] = createSignal<string[]>(['openid', 'profile', 'email']);
+  if (import.meta.env.VITE_AUTH0_OFFLINE_ACCESS === 'true')
+    setScopes((s) => [...s, 'offline_access']);
+  const baseUrl: string = import.meta.env.VITE_APP_BASE_URL;
+  const logoutUrl: string = authConfig.logoutUrl || `http://${baseUrl}/auth/logout`;
+  const webauthConfig: auth0.AuthOptions = {
+    _sendTelemetry: false,
+    domain: authConfig.domain,
+    clientID: authConfig.clientId,
+    audience: authConfig.audience,
+    redirectUri: authConfig.redirectUri,
+    responseType: 'code'
+  };
+  if (authConfig.organization) setOrg(authConfig.organization);
+  const actions: AuthConfigActions = {
+    get webAuth() {
+      const webAuth: WebAuth = new auth0.WebAuth(webauthConfig);
+      return webAuth;
+    },
+    get organization() {
+      return organization();
+    },
+    isInitialized: () => isAuthenticated() !== undefined,
+    isAuthenticated: () => !!isAuthenticated(),
+    authorize: async () => {
+      const webAuth: WebAuth = new auth0.WebAuth(webauthConfig);
+      await webAuth.authorize({ scope: scopes().join(' ') });
+    },
+    login: async () => {
+      if (import.meta.env.VITE_DEBUG) log('Attempting to log in...');
+      if (auth.accessToken) {
+        if (import.meta.env.VITE_DEBUG) log('Logging in via state access token...');
+        const jwt = auth.accessToken;
+        const JWKS = jose.createRemoteJWKSet(
+          new URL(`https://${authConfig.domain}/.well-known/jwks.json`)
+        );
+        try {
+          // Throws if the token is invalid
+          await jose.jwtVerify(jwt, JWKS, {
+            issuer: `https://${authConfig.domain}/`,
+            audience: authConfig.audience
+          });
+          if (import.meta.env.VITE_DEBUG) log('Login successful!');
+          setIsAuthenticated(true);
+        } catch (err: any) {
+          if (err.name === 'JWTExpired' || err.code === 'ERR_JWT_EXPIRED') {
+            if (import.meta.env.VITE_DEBUG) error('Login expired error:', err);
+            const refreshToken = auth.refreshToken;
+            if (refreshToken) {
+              const tokens = await refresh(refreshToken);
+              setAuth('accessToken', tokens.access_token);
+              setAuth('idToken', tokens.id_token);
+              setIsAuthenticated(true);
+            } else {
+              setIsAuthenticated(false);
+              setAuth(defaultAuthConfig);
+            }
+          } else {
+            if (import.meta.env.VITE_DEBUG) error('Login error:', err);
+            setIsAuthenticated(false);
+            setAuth(defaultAuthConfig);
+          }
+        }
+      } else {
+        if (import.meta.env.VITE_DEBUG) log('The state has no access token set...');
+        setIsAuthenticated(false);
+      }
+    },
+    logout: async () => {
+      const webAuth: WebAuth = new auth0.WebAuth(webauthConfig);
+      await webAuth.logout({
+        returnTo: logoutUrl,
+        clientID: authConfig.clientId
+      });
+      setAuth(defaultAuthConfig);
+    }
+  };
+  // Set backend api token
+  createEffect(() => (OpenAPI.TOKEN = auth.accessToken));
+  // Save cookie
+  createEffect(() => {
+    const serialized = JSON.stringify(auth);
+    if (isServer) {
+      if (import.meta.env.VITE_DEBUG) log('Reset authorization on server...');
+      setCookie(getRequestEvent()!, 'gcapi_auth', serialized);
+    } else {
+      if (import.meta.env.VITE_DEBUG) log('Reset authorization on client...');
+      setCookieClient('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
+    }
+  });
+  // Set state & return context provider
+  const state: AuthContext = [auth, actions];
+  return (
+    <AuthConfigContext.Provider value={state}>
+      {props.children}
+    </AuthConfigContext.Provider>
+  );
+};
+
+export default AuthProvider;
+
+export function useAuth(): AuthContext {
+  const ctx = useContext(AuthConfigContext);
+  if (!ctx) throw new Error('<AuthProvider> not found wrapping the <App />.');
+  return ctx as AuthContext;
+}
