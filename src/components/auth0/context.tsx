@@ -59,6 +59,9 @@ export const AuthProvider = (props: AuthConfigProps) => {
   };
   if (authConfig.organization) setOrg(authConfig.organization);
   const [currentUser, { refetch }] = createResource(
+    () => {
+      return auth.accessToken.length && OpenAPI.TOKEN?.length;
+    },
     UsersService.usersCurrentApiV1UsersMeGet,
     {
       initialValue: undefined

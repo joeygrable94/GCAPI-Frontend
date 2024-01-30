@@ -9,6 +9,7 @@ import { Toaster } from 'solid-toast';
 import { AuthConfig, AuthProvider, MainLayout, useAuthCookie } from '~/components';
 import '~/sass/index.scss';
 import { viewportHeightStyles } from '~/utils';
+import { OpenAPI } from './backend';
 
 function useCookieConfig(): { auth: AuthConfig } {
   const authCookie = useAuthCookie();
@@ -18,7 +19,6 @@ function useCookieConfig(): { auth: AuthConfig } {
 }
 
 export default function App() {
-  const cookies = useCookieConfig();
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -27,22 +27,24 @@ export default function App() {
       }
     }
   });
+  const cookies = useCookieConfig();
+  OpenAPI.TOKEN = cookies.auth.accessToken;
   onMount(() => (!isServer ? viewportHeightStyles() : undefined));
   return (
-    <QueryClientProvider client={queryClient}>
-      <SolidQueryDevtools />
-      <AuthProvider
-        initialAuth={cookies.auth}
-        domain={import.meta.env.VITE_AUTH0_DOMAIN}
-        clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-        audience={import.meta.env.VITE_AUTH0_AUDIENCE}
-        redirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
-        logoutUrl={import.meta.env.VITE_AUTH0_LOGOUT_URL}
-        organization={{
-          id: import.meta.env.VITE_AUTH0_ORGANIZATION_ID,
-          name: import.meta.env.VITE_AUTH0_ORGANIZATION
-        }}
-      >
+    <AuthProvider
+      initialAuth={cookies.auth}
+      domain={import.meta.env.VITE_AUTH0_DOMAIN}
+      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+      audience={import.meta.env.VITE_AUTH0_AUDIENCE}
+      redirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
+      logoutUrl={import.meta.env.VITE_AUTH0_LOGOUT_URL}
+      organization={{
+        id: import.meta.env.VITE_AUTH0_ORGANIZATION_ID,
+        name: import.meta.env.VITE_AUTH0_ORGANIZATION
+      }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <SolidQueryDevtools />
         <Router
           root={(props) => {
             return (
@@ -74,7 +76,7 @@ export default function App() {
         >
           <FileRoutes />
         </Router>
-      </AuthProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </AuthProvider>
   );
 }
