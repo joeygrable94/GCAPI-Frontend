@@ -1,5 +1,6 @@
 import { WebAuth } from 'auth0-js';
 import { Accessor, ParentProps } from 'solid-js';
+import { UserRead, UserReadAsAdmin, UserReadAsManager } from '~/backend';
 
 export type AuthOrganization = { id: string; name: string };
 
@@ -11,6 +12,7 @@ export type AuthConfig = {
 };
 
 export interface AuthConfigActions {
+  currentUser: UserReadAsAdmin | UserReadAsManager | UserRead | undefined;
   webAuth: WebAuth;
   organization: AuthOrganization | undefined;
   isInitialized: Accessor<boolean>;
