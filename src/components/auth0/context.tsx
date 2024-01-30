@@ -120,16 +120,23 @@ export const AuthProvider = (props: AuthConfigProps) => {
       setAuth(defaultAuthConfig);
     }
   };
-  // Set backend api token
-  createEffect(() => (OpenAPI.TOKEN = auth.accessToken));
-  // Save cookie
+  // initialize server login
+  if (isServer && !actions.isAuthenticated()) actions.login();
   createEffect(() => {
+    // initialize client login
+    if (!actions.isAuthenticated()) actions.login();
+    // Set backend api token
+    if (import.meta.env.VITE_DEBUG) log('Setting OpenAPI token...');
+    OpenAPI.TOKEN = auth.accessToken;
+    // Save cookie
     const serialized = JSON.stringify(auth);
     if (isServer) {
-      if (import.meta.env.VITE_DEBUG) log('Reset authorization on server...');
-      setCookie(getRequestEvent()!, 'gcapi_auth', serialized);
+      if (import.meta.env.VITE_DEBUG) log('Set server auth cookie...');
+      setCookie(getRequestEvent()!, 'gcapi_auth', serialized, {
+        maxAge: AUTH_COOKIE_MAX_AGE
+      });
     } else {
-      if (import.meta.env.VITE_DEBUG) log('Reset authorization on client...');
+      if (import.meta.env.VITE_DEBUG) log('Set client auth cookie...');
       setCookieClient('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
     }
   });
@@ -144,7 +151,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
 
 export default AuthProvider;
 
-export function useAuth(): AuthContextProvider {
+export function useAuth0(): AuthContextProvider {
   const ctx = useContext(AuthConfigContext);
   if (!ctx) throw new Error('<AuthProvider> not found wrapping the <App />.');
   return ctx as AuthContextProvider;

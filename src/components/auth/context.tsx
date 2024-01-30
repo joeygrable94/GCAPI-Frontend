@@ -83,13 +83,15 @@ function createAuthState(props: AuthProps): AuthContext {
     } else {
       // check for token in client cookies then local storage
       token = getCookieClient('gcapi_auth');
-      decrypted = AES.decrypt(token, import.meta.env.VITE_SESSION_SECRET).toString(
-        encUTF8
-      );
-      if (decrypted) {
-        if (import.meta.env.VITE_DEBUG)
-          log('Getting stored state from client cookies...');
-        return JSON.parse(decrypted) as IAuthState;
+      if (token?.length) {
+        decrypted = AES.decrypt(token, import.meta.env.VITE_SESSION_SECRET).toString(
+          encUTF8
+        );
+        if (decrypted) {
+          if (import.meta.env.VITE_DEBUG)
+            log('Getting stored state from client cookies...');
+          return JSON.parse(decrypted) as IAuthState;
+        }
       }
       if (import.meta.env.VITE_DEBUG) log('Loading default state from client...');
       return defaultAuthState;
@@ -181,6 +183,7 @@ function createAuthState(props: AuthProps): AuthContext {
     if (acState() === undefined) return;
     if (authCode() === undefined) return;
     const cookies = getCookieClient(`com.auth0.auth.${state}`);
+    if (!cookies) return;
     const verification = JSON.parse(cookies);
     const url = isServer
       ? new URL('http://localhost.com/')
@@ -227,7 +230,7 @@ const Auth0: ParentComponent<AuthProps> = (props) => {
 
 export default Auth0;
 
-export function useAuth0(): AuthContext {
+export function useAuth(): AuthContext {
   const ctx = useContext(Auth0Context);
   if (!ctx) throw new Error('<Auth0> not found wrapping the <App />.');
   return ctx as AuthContext;

@@ -1,14 +1,14 @@
 import { Button } from 'solid-bootstrap';
 import { JSX, ParentComponent, Show, createEffect } from 'solid-js';
-import { useAuth } from './context';
+import { useAuth0 } from './context';
 
-type AuthAccessProps = {
+type AuthorizedAccessProps = {
   fallback?: JSX.Element;
   children: JSX.Element;
 };
 
-const AuthAccess: ParentComponent<AuthAccessProps> = (props) => {
-  const [authState, authAct] = useAuth();
+const AuthorizedAccess: ParentComponent<AuthorizedAccessProps> = (props) => {
+  const [authState, authAct] = useAuth0();
   createEffect(() => {
     if (!authAct.isAuthenticated()) {
       authAct.login();
@@ -30,4 +30,4 @@ const AuthAccess: ParentComponent<AuthAccessProps> = (props) => {
   );
 };
 
-export default AuthAccess;
+export default AuthorizedAccess;
