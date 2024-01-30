@@ -17,12 +17,12 @@ import {
   AuthConfig,
   AuthConfigActions,
   AuthConfigProps,
-  AuthContext,
-  Organization
+  AuthContextProvider,
+  AuthOrganization
 } from './types';
-import { refresh } from './utils';
+import { refreshAuthorization } from './utils';
 
-export const AuthConfigContext = createContext<AuthContext>();
+export const AuthConfigContext = createContext<AuthContextProvider>();
 
 export const AuthProvider = (props: AuthConfigProps) => {
   const [authConfig] = splitProps(props, [
@@ -37,7 +37,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
   ]);
   const [auth, setAuth] = createStore<AuthConfig>(authConfig.initialAuth);
   const [isAuthenticated, setIsAuthenticated] = createSignal<boolean | undefined>();
-  const [organization, setOrg] = createSignal<Organization | undefined>();
+  const [organization, setOrg] = createSignal<AuthOrganization | undefined>();
   const [scopes, setScopes] = createSignal<string[]>(['openid', 'profile', 'email']);
   if (import.meta.env.VITE_AUTH0_OFFLINE_ACCESS === 'true')
     setScopes((s) => [...s, 'offline_access']);
@@ -87,7 +87,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
             if (import.meta.env.VITE_DEBUG) error('Login expired error:', err);
             const refreshToken = auth.refreshToken;
             if (refreshToken) {
-              const tokens = await refresh(refreshToken);
+              const tokens = await refreshAuthorization(refreshToken);
               setAuth('accessToken', tokens.access_token);
               setAuth('idToken', tokens.id_token);
               setIsAuthenticated(true);
@@ -129,7 +129,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
     }
   });
   // Set state & return context provider
-  const state: AuthContext = [auth, actions];
+  const state: AuthContextProvider = [auth, actions];
   return (
     <AuthConfigContext.Provider value={state}>
       {props.children}
@@ -139,8 +139,8 @@ export const AuthProvider = (props: AuthConfigProps) => {
 
 export default AuthProvider;
 
-export function useAuth(): AuthContext {
+export function useAuth(): AuthContextProvider {
   const ctx = useContext(AuthConfigContext);
   if (!ctx) throw new Error('<AuthProvider> not found wrapping the <App />.');
-  return ctx as AuthContext;
+  return ctx as AuthContextProvider;
 }
