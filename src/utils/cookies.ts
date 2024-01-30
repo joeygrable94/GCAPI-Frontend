@@ -22,7 +22,7 @@ export const setCookie = (name: string, value: string, daysToExpire: number): vo
  * @param name of the cookie to retrieve
  * @returns value of the cookie
  */
-export const getCookie = (name: string): string => {
+export const getCookie = (name: string): string | undefined => {
   const cookies = document.cookie.split(';');
   for (let i = 0; i < cookies.length; i++) {
     const cookie = cookies[i].trim();
@@ -30,5 +30,5 @@ export const getCookie = (name: string): string => {
       return urlDecoder(cookie.substring(name.length + 1));
     }
   }
-  return '';
+  return undefined;
 };
