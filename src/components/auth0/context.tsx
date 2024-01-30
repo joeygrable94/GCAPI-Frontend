@@ -9,9 +9,14 @@ import {
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { getRequestEvent, isServer } from 'solid-js/web';
-import { setCookie } from 'vinxi/server';
+import { getCookie, setCookie } from 'vinxi/server';
 import { OpenAPI } from '~/backend';
-import { error, log, setCookie as setCookieClient } from '~/utils';
+import {
+  error,
+  getCookie as getCookieClient,
+  log,
+  setCookie as setCookieClient
+} from '~/utils';
 import { AUTH_COOKIE_MAX_AGE, defaultAuthConfig } from './constants';
 import {
   AuthConfig,
@@ -143,4 +148,17 @@ export function useAuth(): AuthContextProvider {
   const ctx = useContext(AuthConfigContext);
   if (!ctx) throw new Error('<AuthProvider> not found wrapping the <App />.');
   return ctx as AuthContextProvider;
+}
+
+export function useAuthCookie(name: string = 'gcapi_auth') {
+  let token: string | undefined;
+  if (isServer) {
+    token = getCookie(getRequestEvent()!, name);
+  } else {
+    token = getCookieClient(name);
+  }
+  if (token?.length) {
+    return JSON.parse(token) as AuthConfig;
+  }
+  return defaultAuthConfig;
 }
