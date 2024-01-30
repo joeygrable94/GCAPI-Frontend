@@ -5,11 +5,11 @@ import { urlDecoder, urlEncoder } from '~/utils';
  *
  * @param name of the cookie
  * @param value to store in the cookie
- * @param daysToExpire until the cookie expires
+ * @param expires until the cookie expires
  */
-export const setCookie = (name: string, value: string, daysToExpire: number): void => {
+export const setCookie = (name: string, value: string, expires: number): void => {
   const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() + daysToExpire);
+  expirationDate.setDate(expirationDate.getDate() + expires);
 
   const cookieValue =
     urlEncoder(value) + '; expires=' + expirationDate.toUTCString() + '; path=/';
