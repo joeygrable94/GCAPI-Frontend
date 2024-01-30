@@ -6,11 +6,19 @@ import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
 import { ErrorBoundary, Suspense, onMount } from 'solid-js';
 import { isServer } from 'solid-js/web';
 import { Toaster } from 'solid-toast';
-import { Auth0, MainLayout } from '~/components';
+import { AuthConfig, AuthProvider, MainLayout, useAuthCookie } from '~/components';
 import '~/sass/index.scss';
 import { viewportHeightStyles } from '~/utils';
 
+function useCookieConfig(): { auth: AuthConfig } {
+  const authCookie = useAuthCookie();
+  return {
+    auth: authCookie
+  };
+}
+
 export default function App() {
+  const cookies = useCookieConfig();
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -23,22 +31,23 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SolidQueryDevtools />
-      <Router
-        root={(props) => {
-          return (
-            <Suspense>
-              <ErrorBoundary fallback={<>Auth0 Error</>}>
-                <Auth0
-                  domain={import.meta.env.VITE_AUTH0_DOMAIN}
-                  clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-                  audience={import.meta.env.VITE_AUTH0_AUDIENCE}
-                  redirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
-                  logoutUrl={import.meta.env.VITE_AUTH0_LOGOUT_URL}
-                  organization={{
-                    id: import.meta.env.VITE_AUTH0_ORGANIZATION_ID,
-                    name: import.meta.env.VITE_AUTH0_ORGANIZATION
-                  }}
-                >
+      <AuthProvider
+        initialAuth={cookies.auth}
+        domain={import.meta.env.VITE_AUTH0_DOMAIN}
+        clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+        audience={import.meta.env.VITE_AUTH0_AUDIENCE}
+        redirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
+        logoutUrl={import.meta.env.VITE_AUTH0_LOGOUT_URL}
+        organization={{
+          id: import.meta.env.VITE_AUTH0_ORGANIZATION_ID,
+          name: import.meta.env.VITE_AUTH0_ORGANIZATION
+        }}
+      >
+        <Router
+          root={(props) => {
+            return (
+              <Suspense>
+                <ErrorBoundary fallback={<>Auth0 Error</>}>
                   <MetaProvider>
                     <Title>GCAPI</Title>
                     <Link
@@ -58,14 +67,14 @@ export default function App() {
                       </MainLayout>
                     </ErrorBoundary>
                   </MetaProvider>
-                </Auth0>
-              </ErrorBoundary>
-            </Suspense>
-          );
-        }}
-      >
-        <FileRoutes />
-      </Router>
+                </ErrorBoundary>
+              </Suspense>
+            );
+          }}
+        >
+          <FileRoutes />
+        </Router>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
