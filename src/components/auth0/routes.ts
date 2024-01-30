@@ -1,10 +1,7 @@
 'use server';
-import { cache } from '@solidjs/router';
 import { APIEvent } from '@solidjs/start/server/types';
 import { parseCookies, sendRedirect, setCookie } from 'vinxi/server';
-import { ApiError, OpenAPI, UsersService } from '~/backend';
 import { UserSessionData, getSession } from '~/server/session';
-import { error } from '~/utils';
 import { defaultAuthConfig } from './constants';
 import { completeAuthorizationRequest } from './utils';
 
@@ -49,15 +46,3 @@ export async function getLogoutRequest(event: APIEvent) {
   setCookie(event, 'gcapi_auth', JSON.stringify(defaultAuthConfig));
   return sendRedirect(event, '/login', 302);
 }
-
-export const getCurrentUser = cache(async () => {
-  try {
-    if (OpenAPI.TOKEN) {
-      return await UsersService.usersCurrentApiV1UsersMeGet();
-    }
-    throw new Error('No backend api token');
-  } catch (e: ApiError | Error | any) {
-    error('Error getting current user', e?.message);
-    return undefined;
-  }
-}, 'currentUser');

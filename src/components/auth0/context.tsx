@@ -100,6 +100,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
           });
           if (import.meta.env.VITE_DEBUG) log('Login successful!');
           setIsAuthenticated(true);
+          await refetch();
         } catch (err: any) {
           if (err.name === 'JWTExpired' || err.code === 'ERR_JWT_EXPIRED') {
             if (import.meta.env.VITE_DEBUG) error('Login expired error:', err);
@@ -109,6 +110,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
               setAuth('accessToken', tokens.access_token);
               setAuth('idToken', tokens.id_token);
               setIsAuthenticated(true);
+              await refetch();
             } else {
               setIsAuthenticated(false);
               setAuth(defaultAuthConfig);
@@ -133,8 +135,8 @@ export const AuthProvider = (props: AuthConfigProps) => {
       setAuth(defaultAuthConfig);
     }
   };
-  // initialize server login and refetch user
-  if (isServer && !actions.isAuthenticated()) actions.login();
+  // initialize server login
+  if (isServer && !actions.isAuthenticated()) actions.login().then(() => undefined);
   // initialize client login
   createEffect(async () => {
     if (!actions.isAuthenticated()) await actions.login();
