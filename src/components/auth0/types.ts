@@ -2,6 +2,12 @@ import { WebAuth } from 'auth0-js';
 import { Accessor, ParentProps } from 'solid-js';
 import { UserRead, UserReadAsAdmin, UserReadAsManager } from '~/backend';
 
+export type GuestUser = {
+  username: string;
+};
+
+export type CurrentUser = UserReadAsAdmin | UserReadAsManager | UserRead;
+
 export type AuthOrganization = { id: string; name: string };
 
 export type AuthConfig = {

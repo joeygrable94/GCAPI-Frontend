@@ -1,25 +1,25 @@
 import { error, warn } from '~/utils';
 import { defaultAuthState } from './constants';
-import { CurrentUser, IAuthState, UpdatedAuthState, UserRole } from './types';
+import { ACurrentUser, IAuthState, UpdatedAuthState, UserRole } from './types';
 
 /**
  * @summary Returns a boolean if the input user is an Admin
  */
-export const isAdmin = (user: CurrentUser) => {
+export const isAdmin = (user: ACurrentUser) => {
   if (user === undefined) return false;
   let userKeys: string[] = Object.keys(user);
   if (userKeys.includes('is_superuser')) return true;
   return false;
 };
 
-export const isManager = (user: CurrentUser) => {
+export const isManager = (user: ACurrentUser) => {
   if (user === undefined) return false;
   let userKeys: string[] = Object.keys(user);
   if (userKeys.includes('scopes') && !userKeys.includes('is_superuser')) return true;
   return false;
 };
 
-export const getUserRole = (user: CurrentUser): UserRole => {
+export const getUserRole = (user: ACurrentUser): UserRole => {
   if (user === undefined) return 'user';
   if (isAdmin(user)) return 'admin';
   if (isManager(user)) return 'manager';
