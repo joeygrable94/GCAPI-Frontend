@@ -21,6 +21,7 @@ export async function getLoginRequest(event: APIEvent) {
   if (!isAuthenticated) {
     console.error('Auth state is not valid');
     await session.clear();
+    setCookie(event, 'gcapi_auth', JSON.stringify(defaultAuthConfig));
     return sendRedirect(event, '/login', 401);
   } else {
     console.log('Updating auth session');

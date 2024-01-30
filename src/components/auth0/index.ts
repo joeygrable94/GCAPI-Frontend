@@ -1,6 +1,6 @@
-// export { default as AuthorizedAccess } from './access';
+export { default as AuthAccessRequired } from './access';
 export * from './constants';
-export { default as AuthProvider, useAuth, useAuthCookie } from './context';
+export { default as AuthProvider, useAuth0, useAuthCookie } from './context';
 export * from './routes';
 export * from './types';
 export * from './utils';
