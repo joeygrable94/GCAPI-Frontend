@@ -1,7 +1,6 @@
 import { useParams } from '@solidjs/router';
-import { Component } from 'solid-js';
 
-const ClientById: Component = () => {
+export default function ClientById() {
   const params = useParams();
 
   return (
@@ -9,6 +8,4 @@ const ClientById: Component = () => {
       <p>Fetch Client by ID: {params.id}</p>
     </>
   );
-};
-
-export default ClientById;
+}
