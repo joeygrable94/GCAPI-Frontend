@@ -1,6 +1,8 @@
 import { WebAuth } from 'auth0-js';
 import { Accessor, ParentProps } from 'solid-js';
 
+export type AuthOrganization = { id: string; name: string };
+
 export type AuthConfig = {
   accessToken: string;
   refreshToken: string;
@@ -10,7 +12,7 @@ export type AuthConfig = {
 
 export interface AuthConfigActions {
   webAuth: WebAuth;
-  organization: Organization | undefined;
+  organization: AuthOrganization | undefined;
   isInitialized: Accessor<boolean>;
   isAuthenticated: Accessor<boolean>;
   authorize: () => Promise<void>;
@@ -20,9 +22,7 @@ export interface AuthConfigActions {
 
 export type UpdatedAuthConfig = [boolean, AuthConfig];
 
-export type AuthContext = [AuthConfig, AuthConfigActions];
-
-export type Organization = { id: string; name: string };
+export type AuthContextProvider = [AuthConfig, AuthConfigActions];
 
 export interface AuthConfigProps extends ParentProps {
   initialAuth: AuthConfig;
@@ -32,5 +32,5 @@ export interface AuthConfigProps extends ParentProps {
   redirectUri: string;
   logoutUrl: string;
   invitation?: string;
-  organization?: Organization;
+  organization?: AuthOrganization;
 }

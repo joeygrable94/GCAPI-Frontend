@@ -9,7 +9,7 @@ import { AuthConfig, UpdatedAuthConfig } from './types';
  * @param state string of the state to be used to get the access token
  * @returns a new AuthConfig object containing the access token and user info
  */
-export async function completeAuthorization(
+export async function completeAuthorizationRequest(
   code: string | null,
   state: string | null,
   verification: any,
@@ -41,13 +41,13 @@ export async function completeAuthorization(
       `https://${orgName}.`
     );
   }
-  const jsonAuthToken = await auth0FetchOAuthToken(
+  const jsonAuthToken = await fetchOAuthToken(
     code,
     state,
     redirectUrl,
     verification.organization
   );
-  const userInfo = await auth0UserInfo(jsonAuthToken.access_token);
+  const userInfo = await fetchAuthUserInfo(jsonAuthToken.access_token);
   if (userInfo === undefined) {
     if (import.meta.env.VITE_DEBUG) warn('No user info found');
     return [false, defaultAuthConfig];
@@ -66,7 +66,7 @@ export async function completeAuthorization(
  * @param refreshToken string of the refresh token to be used to refresh the access token
  * @returns json object containing the new access token and refresh token
  */
-export async function refresh(refreshToken: string) {
+export async function refreshAuthorization(refreshToken: string) {
   const endpoint = new URL(`https://${import.meta.env.VITE_AUTH0_DOMAIN}/oauth/token`);
 
   const formData = new URLSearchParams();
@@ -89,7 +89,7 @@ export async function refresh(refreshToken: string) {
  * @param accessToken string of the access token to be used to get the user info
  * @returns json object containing the user info
  */
-export async function auth0UserInfo(accessToken: string) {
+export async function fetchAuthUserInfo(accessToken: string) {
   const endpoint = new URL(`https://${import.meta.env.VITE_AUTH0_DOMAIN}/userinfo`);
 
   const userInfo = await fetch(endpoint, {
@@ -115,7 +115,7 @@ export async function auth0UserInfo(accessToken: string) {
  * @param organization optional string of the organization to be used to get the access token
  * @returns json object containing the access token and refresh token
  */
-export async function auth0FetchOAuthToken(
+export async function fetchOAuthToken(
   code: string,
   state: string,
   redirectUrl: string,
