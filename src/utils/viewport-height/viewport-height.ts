@@ -16,7 +16,7 @@ import { onCleanup, onMount } from 'solid-js';
  *
  * * In CSS:
  * body,
- * #root,
+ * #app,
  * .viewport-height {
  *   height: 100vh;
  *   height: calc(var(--vh, 1vh) * 100);
@@ -24,7 +24,7 @@ import { onCleanup, onMount } from 'solid-js';
  */
 
 const setViewportHeight = () => {
-  "use client";
+  'use client';
   let vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 };
