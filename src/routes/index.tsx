@@ -7,7 +7,7 @@ const Home: Component = () => {
     <main>
       <h1>GCAPI Auth0 Secured Backend</h1>
       <Show when={authAct.isAuthenticated()}>
-        <p>Welcome to your dashboard {authState.accessToken}.</p>
+        <p>Welcome to your dashboard {authAct.currentUser?.email}.</p>
       </Show>
     </main>
   );
