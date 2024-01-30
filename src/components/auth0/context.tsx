@@ -131,21 +131,20 @@ export const AuthProvider = (props: AuthConfigProps) => {
     }
   };
   // initialize server login and refetch user
-  if (isServer && !actions.isAuthenticated()) {
-    actions.login();
-    if (import.meta.env.VITE_DEBUG) log('Fetching current user...');
-    refetch();
-  }
-  createEffect(() => {
-    // initialize client login
-    if (!actions.isAuthenticated()) actions.login();
-    // Set backend api token
+  if (isServer && !actions.isAuthenticated()) actions.login();
+  // initialize client login
+  createEffect(async () => {
+    if (!actions.isAuthenticated()) await actions.login();
+  });
+  // Set backend api token and fetch user
+  createEffect(async () => {
     if (import.meta.env.VITE_DEBUG) log('Setting OpenAPI token...');
-    OpenAPI.TOKEN = auth.accessToken;
-    // refetch current user
+    OpenAPI.TOKEN = await auth.accessToken;
     if (import.meta.env.VITE_DEBUG) log('Fetching current user...');
-    refetch();
-    // Save cookie
+    await refetch();
+  });
+  // Save cookie
+  createEffect(() => {
     const serialized = JSON.stringify(auth);
     if (isServer) {
       if (import.meta.env.VITE_DEBUG) log('Set server auth cookie...');
