@@ -3,6 +3,7 @@ import * as jose from 'jose';
 import {
   createContext,
   createEffect,
+  createResource,
   createSignal,
   splitProps,
   useContext
@@ -10,7 +11,7 @@ import {
 import { createStore } from 'solid-js/store';
 import { getRequestEvent, isServer } from 'solid-js/web';
 import { getCookie, setCookie } from 'vinxi/server';
-import { OpenAPI } from '~/backend';
+import { OpenAPI, UsersService } from '~/backend';
 import {
   error,
   getCookie as getCookieClient,
@@ -57,7 +58,16 @@ export const AuthProvider = (props: AuthConfigProps) => {
     responseType: 'code'
   };
   if (authConfig.organization) setOrg(authConfig.organization);
+  const [currentUser, { refetch }] = createResource(
+    UsersService.usersCurrentApiV1UsersMeGet,
+    {
+      initialValue: undefined
+    }
+  );
   const actions: AuthConfigActions = {
+    get currentUser() {
+      return currentUser();
+    },
     get webAuth() {
       const webAuth: WebAuth = new auth0.WebAuth(webauthConfig);
       return webAuth;
@@ -120,14 +130,21 @@ export const AuthProvider = (props: AuthConfigProps) => {
       setAuth(defaultAuthConfig);
     }
   };
-  // initialize server login
-  if (isServer && !actions.isAuthenticated()) actions.login();
+  // initialize server login and refetch user
+  if (isServer && !actions.isAuthenticated()) {
+    actions.login();
+    if (import.meta.env.VITE_DEBUG) log('Fetching current user...');
+    refetch();
+  }
   createEffect(() => {
     // initialize client login
     if (!actions.isAuthenticated()) actions.login();
     // Set backend api token
     if (import.meta.env.VITE_DEBUG) log('Setting OpenAPI token...');
     OpenAPI.TOKEN = auth.accessToken;
+    // refetch current user
+    if (import.meta.env.VITE_DEBUG) log('Fetching current user...');
+    refetch();
     // Save cookie
     const serialized = JSON.stringify(auth);
     if (isServer) {
