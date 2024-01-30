@@ -35,30 +35,30 @@ const Navigation: Component<NavigationProps> = (props) => {
             <Nav.Link as={A} href="/">
               Home
             </Nav.Link>
-            <Show when={authAct.isAuthenticated()}>
+            <Show when={authAct.currentUser !== undefined}>
               <Nav.Link as={A} href="/clients">
                 Clients
               </Nav.Link>
             </Show>
             <div style={{ 'margin-left': 'auto' }}></div>
-            <Switch>
-              <Match when={!authAct.isAuthenticated()}>
+            <Show
+              when={authAct.currentUser !== undefined}
+              fallback={
                 <Nav.Link onClick={async () => await authAct.authorize()}>
                   Login
                 </Nav.Link>
-              </Match>
-              <Match when={authAct.isAuthenticated()}>
-                <NavDropdown title="Account" menuVariant={bg()}>
-                  <NavDropdown.Item as={A} href="/profile">
-                    Profile
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item onClick={async () => await authAct.logout()}>
-                    Logout
-                  </NavDropdown.Item>
-                </NavDropdown>
-              </Match>
-            </Switch>
+              }
+            >
+              <NavDropdown title="Account" menuVariant={bg()}>
+                <NavDropdown.Item as={A} href="/profile">
+                  Profile
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={async () => await authAct.logout()}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Show>
             <Nav.Link onClick={() => handleToggleSessionLayout()}>
               <Switch>
                 <Match when={layoutContext.darkMode === true}>
