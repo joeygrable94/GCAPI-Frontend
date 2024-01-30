@@ -2,10 +2,21 @@ import { A } from '@solidjs/router';
 import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
-import { Component, Match, Show, Switch, createEffect, createSignal } from 'solid-js';
-import { useAuth0, useLayoutContext } from '~/components';
+import {
+  Component,
+  Match,
+  Show,
+  Switch,
+  createEffect,
+  createSignal,
+  onMount
+} from 'solid-js';
+import { CurrentUser, GuestUser, useAuth0, useLayoutContext } from '~/components';
+import { log } from '~/utils';
 
-type NavigationProps = {};
+type NavigationProps = {
+  user: CurrentUser | GuestUser;
+};
 
 const Navigation: Component<NavigationProps> = (props) => {
   const [authState, authAct] = useAuth0();
@@ -15,6 +26,14 @@ const Navigation: Component<NavigationProps> = (props) => {
   };
   const [bg, setBg] = createSignal<'light' | 'dark'>('light');
   createEffect(() => setBg(layoutContext.darkMode === true ? 'dark' : 'light'));
+
+  log('Nav default', props.user);
+  onMount(() => {
+    log('Nav mnt', props.user);
+  });
+  createEffect(() => {
+    log('Nav fx', props.user);
+  });
   return (
     <Navbar bg={bg()} variant={bg()} expand="lg" style={{ padding: 0 }}>
       <Container>
@@ -35,14 +54,14 @@ const Navigation: Component<NavigationProps> = (props) => {
             <Nav.Link as={A} href="/">
               Home
             </Nav.Link>
-            <Show when={authAct.currentUser !== undefined}>
+            <Show when={props.user.username !== 'guest' || authAct.isAuthenticated()}>
               <Nav.Link as={A} href="/clients">
                 Clients
               </Nav.Link>
             </Show>
             <div style={{ 'margin-left': 'auto' }}></div>
             <Show
-              when={authAct.currentUser !== undefined}
+              when={props.user.username !== 'guest' || authAct.isAuthenticated()}
               fallback={
                 <Nav.Link onClick={async () => await authAct.authorize()}>
                   Login

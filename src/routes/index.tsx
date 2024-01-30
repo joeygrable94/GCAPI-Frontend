@@ -1,14 +1,17 @@
-import { Component, Show } from 'solid-js';
-import { useAuth0 } from '~/components';
+import { RouteDefinition, createAsync } from '@solidjs/router';
+import { Component } from 'solid-js';
+import { CurrentUser, getCurrentUser } from '~/components';
+
+export const route = {
+  load: () => getCurrentUser()
+} satisfies RouteDefinition;
 
 const Home: Component = () => {
-  const [authState, authAct] = useAuth0();
+  const data = createAsync<CurrentUser>(getCurrentUser);
   return (
     <main>
       <h1>GCAPI Auth0 Secured Backend</h1>
-      <Show when={authAct.isAuthenticated()}>
-        <p>Welcome to your dashboard {authAct.currentUser?.email}.</p>
-      </Show>
+      {data() && <p>Welcome {data()?.username}.</p>}
     </main>
   );
 };

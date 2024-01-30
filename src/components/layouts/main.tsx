@@ -1,10 +1,20 @@
 import { isServer } from '@tanstack/solid-query';
 import { Container } from 'solid-bootstrap';
 import { ErrorBoundary, ParentComponent, createEffect } from 'solid-js';
-import { LayoutContext, createLayoutMutable, saveDarkMode } from '~/components';
+import {
+  CurrentUser,
+  GuestUser,
+  LayoutContext,
+  createLayoutMutable,
+  saveDarkMode
+} from '~/components';
 import Navigation from './navigation';
 
-const MainLayout: ParentComponent = (props) => {
+type MainLayoutProps = {
+  user: CurrentUser | GuestUser;
+};
+
+const MainLayout: ParentComponent<MainLayoutProps> = (props) => {
   let rootDiv: HTMLElement | null = null;
   const layout = createLayoutMutable({});
   createEffect(() => {
@@ -22,7 +32,7 @@ const MainLayout: ParentComponent = (props) => {
   return (
     <LayoutContext.Provider value={layout}>
       <ErrorBoundary fallback={<>Layout Navigation Error</>}>
-        <Navigation />
+        <Navigation user={props.user} />
       </ErrorBoundary>
       <Container>
         <ErrorBoundary fallback={<>Layout Content Error</>}>
