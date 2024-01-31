@@ -16,12 +16,7 @@ import { createStore } from 'solid-js/store';
 import { getRequestEvent, isServer } from 'solid-js/web';
 import { getCookie, setCookie } from 'vinxi/server';
 import { OpenAPI } from '~/backend';
-import {
-  error,
-  getCookie as getCookieClient,
-  log,
-  setCookie as setCookieClient
-} from '~/utils';
+import { error, getClientCookie, log, setClientCookie } from '~/utils';
 import { defaultAuthState } from './constants';
 import {
   AuthContext,
@@ -82,7 +77,7 @@ function createAuthState(props: AuthProps): AuthContext {
       return defaultAuthState;
     } else {
       // check for token in client cookies then local storage
-      token = getCookieClient('gcapi_auth');
+      token = getClientCookie('gcapi_auth');
       if (token?.length) {
         decrypted = AES.decrypt(token, import.meta.env.VITE_SESSION_SECRET).toString(
           encUTF8
@@ -105,7 +100,7 @@ function createAuthState(props: AuthProps): AuthContext {
       });
     } else {
       if (import.meta.env.VITE_DEBUG) log('Reset authorization on client...');
-      setCookieClient(
+      setClientCookie(
         'gcapi_auth',
         AES.encrypt(
           JSON.stringify(defaultAuthState),
@@ -182,7 +177,7 @@ function createAuthState(props: AuthProps): AuthContext {
   const verifyAuthCode = async () => {
     if (acState() === undefined) return;
     if (authCode() === undefined) return;
-    const cookies = getCookieClient(`com.auth0.auth.${state}`);
+    const cookies = getClientCookie(`com.auth0.auth.${state}`);
     if (!cookies) return;
     const verification = JSON.parse(cookies);
     const url = isServer
