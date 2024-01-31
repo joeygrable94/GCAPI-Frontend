@@ -37,12 +37,13 @@ const MainLayout: ParentComponent<MainLayoutProps> = (props) => {
   return (
     <div
       ref={pageDiv}
+      id="page"
       class="viewport-height"
       data-bs-theme={layout.darkMode ? 'dark' : 'light'}
     >
       <LayoutContext.Provider value={layout}>
         <ErrorBoundary fallback={<>Layout Navigation Error</>}>
-          <Navigation user={props.user} />
+          <Navigation user={props.user} darkMode={props.darkMode} />
         </ErrorBoundary>
         <Container>
           <ErrorBoundary fallback={<>Layout Content Error</>}>
