@@ -4,5 +4,6 @@
 /* eslint-disable */
 export type UserUpdate = {
   username?: (string | null);
+  picture?: (string | null);
 };
 

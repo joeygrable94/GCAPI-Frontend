@@ -3,10 +3,18 @@ import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Show, Switch, createEffect, createSignal } from 'solid-js';
-import { CurrentUser, useAuth0, useLayoutContext, useUser } from '~/components';
+import {
+  CurrentUser,
+  isAdmin,
+  isManager,
+  useAuth0,
+  useLayoutContext,
+  useUser
+} from '~/components';
 
 type NavigationProps = {
   user: CurrentUser;
+  darkMode?: boolean | undefined;
 };
 
 const Navigation: Component<NavigationProps> = (props) => {
@@ -16,7 +24,7 @@ const Navigation: Component<NavigationProps> = (props) => {
   const handleToggleSessionLayout = () => {
     layoutContext.darkMode = !layoutContext.darkMode;
   };
-  const [bg, setBg] = createSignal<'light' | 'dark'>('light');
+  const [bg, setBg] = createSignal<'light' | 'dark'>(props.darkMode ? 'dark' : 'light');
   const initialUser = () => props.user.username !== 'guest';
   createEffect(() => setBg(layoutContext.darkMode === true ? 'dark' : 'light'));
   return (
@@ -36,12 +44,16 @@ const Navigation: Component<NavigationProps> = (props) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav style={{ width: '100%', 'justify-content': 'flex-start' }}>
-            <Show when={initialUser() || authAct.isAuthenticated()}>
+            <Show
+              when={initialUser()}
+              fallback={
+                <Nav.Link as={A} href="/">
+                  Home
+                </Nav.Link>
+              }
+            >
               <Show
-                when={
-                  authAct.isAuthenticated() &&
-                  (userAct.isAdmin() || userAct.isManager())
-                }
+                when={(initialUser() && isAdmin(props.user)) || isManager(props.user)}
               >
                 <Nav.Link as={A} href="/users">
                   Users
@@ -53,7 +65,7 @@ const Navigation: Component<NavigationProps> = (props) => {
             </Show>
             <div style={{ 'margin-left': 'auto' }}></div>
             <Show
-              when={userAct.isGuest() || authAct.isAuthenticated()}
+              when={initialUser()}
               fallback={
                 <Nav.Link onClick={async () => await authAct.authorize()}>
                   Login
