@@ -40,8 +40,8 @@ export class WebsitePageSpeedInsightsService {
   }: {
     page?: (number | null),
     size?: (number | null),
-    websiteId?: null,
-    pageId?: null,
+    websiteId?: (string | null),
+    pageId?: (string | null),
     strategy?: (Array<string> | null),
   }): CancelablePromise<Paginated_WebsitePageSpeedInsightsRead_> {
     return __request(OpenAPI, {
@@ -91,8 +91,8 @@ export class WebsitePageSpeedInsightsService {
     requestBody: WebsitePageSpeedInsightsBase,
     page?: (number | null),
     size?: (number | null),
-    websiteId?: null,
-    pageId?: null,
+    websiteId?: (string | null),
+    pageId?: (string | null),
     strategy?: (Array<string> | null),
   }): CancelablePromise<WebsitePageSpeedInsightsRead> {
     return __request(OpenAPI, {
