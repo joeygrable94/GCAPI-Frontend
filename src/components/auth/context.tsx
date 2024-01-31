@@ -201,9 +201,6 @@ function createAuthState(props: AuthProps): AuthContext {
     if (!actions.isAuthenticated()) {
       actions.login();
     }
-    if (!actions.isAuthenticated()) {
-      setState(defaultAuthState);
-    }
   }
   onMount(async () => {
     if (import.meta.env.VITE_DEBUG) log('Login client side?');

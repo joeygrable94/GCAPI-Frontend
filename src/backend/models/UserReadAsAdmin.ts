@@ -9,6 +9,7 @@ export type UserReadAsAdmin = {
   auth_id: string;
   email: string;
   username: string;
+  picture: string;
   is_active: boolean;
   is_verified: boolean;
   is_superuser: boolean;
