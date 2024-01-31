@@ -4,11 +4,11 @@ import { getCookie } from 'vinxi/server';
 import { ApiError, OpenAPI, UsersService } from '~/backend';
 import { error } from '~/utils';
 import { defaultAuthConfig, defaultGuestUser } from './constants';
-import { AuthConfig, CurrentUser, GuestUser } from './types';
+import { AuthConfig, AuthorizedUser, CurrentUser } from './types';
 
 export const getCurrentUserOrGuest = cache(async () => {
   'use server';
-  let currentUser: CurrentUser | GuestUser = defaultGuestUser;
+  let currentUser: CurrentUser = defaultGuestUser;
   try {
     const cookie = getCookie(getRequestEvent()!, 'gcapi_auth');
     const parsed = JSON.parse(
@@ -36,5 +36,5 @@ export const getCurrentUser = cache(async () => {
     error('Error fetching current user:', err.message);
     throw redirect('/login');
   }
-  return currentUser;
+  return currentUser as AuthorizedUser;
 }, 'currentUser');

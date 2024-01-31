@@ -3,7 +3,6 @@ import * as jose from 'jose';
 import {
   createContext,
   createEffect,
-  createResource,
   createSignal,
   splitProps,
   useContext
@@ -11,7 +10,7 @@ import {
 import { createStore } from 'solid-js/store';
 import { getRequestEvent, isServer } from 'solid-js/web';
 import { getCookie, setCookie } from 'vinxi/server';
-import { OpenAPI, UsersService } from '~/backend';
+import { OpenAPI } from '~/backend';
 import {
   error,
   getCookie as getCookieClient,
@@ -58,19 +57,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
     responseType: 'code'
   };
   if (authConfig.organization) setOrg(authConfig.organization);
-  const [currentUser, { refetch }] = createResource(
-    () => {
-      return auth.accessToken.length && OpenAPI.TOKEN?.length;
-    },
-    UsersService.usersCurrentApiV1UsersMeGet,
-    {
-      initialValue: undefined
-    }
-  );
   const actions: AuthConfigActions = {
-    get currentUser() {
-      return currentUser();
-    },
     get webAuth() {
       const webAuth: WebAuth = new auth0.WebAuth(webauthConfig);
       return webAuth;
@@ -100,7 +87,6 @@ export const AuthProvider = (props: AuthConfigProps) => {
           });
           if (import.meta.env.VITE_DEBUG) log('Login successful!');
           setIsAuthenticated(true);
-          await refetch();
         } catch (err: any) {
           if (err.name === 'JWTExpired' || err.code === 'ERR_JWT_EXPIRED') {
             if (import.meta.env.VITE_DEBUG) error('Login expired error:', err);
@@ -110,7 +96,6 @@ export const AuthProvider = (props: AuthConfigProps) => {
               setAuth('accessToken', tokens.access_token);
               setAuth('idToken', tokens.id_token);
               setIsAuthenticated(true);
-              await refetch();
             } else {
               setIsAuthenticated(false);
               setAuth(defaultAuthConfig);
@@ -146,7 +131,6 @@ export const AuthProvider = (props: AuthConfigProps) => {
     if (import.meta.env.VITE_DEBUG) log('Setting OpenAPI token...');
     OpenAPI.TOKEN = await auth.accessToken;
     if (import.meta.env.VITE_DEBUG) log('Fetching current user...');
-    await refetch();
   });
   // Save cookie
   createEffect(() => {
