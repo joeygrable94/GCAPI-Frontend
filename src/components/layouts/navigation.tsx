@@ -4,7 +4,6 @@ import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Show, Switch, createEffect, createSignal } from 'solid-js';
 import { CurrentUser, useAuth0, useLayoutContext, useUser } from '~/components';
-import { log } from '~/utils';
 
 type NavigationProps = {
   user: CurrentUser;
@@ -20,8 +19,6 @@ const Navigation: Component<NavigationProps> = (props) => {
   const [bg, setBg] = createSignal<'light' | 'dark'>('light');
   const initialUser = () => props.user.username !== 'guest';
   createEffect(() => setBg(layoutContext.darkMode === true ? 'dark' : 'light'));
-
-  log('Nav default', initialUser(), authState.accessToken.length);
   return (
     <Navbar bg={bg()} variant={bg()} expand="lg" style={{ padding: 0 }}>
       <Container>
