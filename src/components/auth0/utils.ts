@@ -1,4 +1,4 @@
-import { error, warn } from '~/utils';
+import { error, log, warn } from '~/utils';
 import { defaultAuthConfig } from './constants';
 import { AuthConfig, CurrentUser, UpdatedAuthConfig, UserRole } from './types';
 
@@ -87,6 +87,7 @@ export async function completeAuthorizationRequest(
     if (import.meta.env.VITE_DEBUG) warn('No user info found');
     return [false, defaultAuthConfig];
   }
+  if (import.meta.env.VITE_DEBUG) log('User info:', userInfo);
   let newAuthState = {} as AuthConfig;
   newAuthState.accessToken = jsonAuthToken.access_token;
   newAuthState.refreshToken = jsonAuthToken.refresh_token ?? undefined;

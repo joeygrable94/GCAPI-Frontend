@@ -4,6 +4,7 @@
 /* eslint-disable */
 export type UserUpdateAsManager = {
   username?: (string | null);
+  picture?: (string | null);
   is_active?: (boolean | null);
   is_verified?: (boolean | null);
 };

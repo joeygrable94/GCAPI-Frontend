@@ -9,5 +9,6 @@ export type UserRead = {
   auth_id: string;
   email: string;
   username: string;
+  picture: string;
 };
 

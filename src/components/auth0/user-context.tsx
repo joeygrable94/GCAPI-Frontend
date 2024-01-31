@@ -7,6 +7,7 @@ import {
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { UsersService } from '~/backend';
+import { log } from '~/utils';
 import { defaultGuestUser } from './constants';
 import {
   AuthorizedUser,
@@ -62,6 +63,7 @@ export const UserProvider = (props: UserConfigProps) => {
     isGuest: () => isUserGuest()
   };
   const store: UserContextProvider = [state, actions];
+  createEffect(() => log('UserProvider', currentUser()));
   createEffect(() => {
     if (currentUser() === undefined) {
       setIsUserGuest(true);
