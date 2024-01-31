@@ -36,8 +36,8 @@ export class WebsitesService {
   }: {
     page?: (number | null),
     size?: (number | null),
-    clientId?: null,
-    websiteId?: null,
+    clientId?: (string | null),
+    websiteId?: (string | null),
   }): CancelablePromise<Paginated_WebsiteRead_> {
     return __request(OpenAPI, {
       method: 'GET',

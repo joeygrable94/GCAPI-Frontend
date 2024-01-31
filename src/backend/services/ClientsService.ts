@@ -35,7 +35,7 @@ export class ClientsService {
   }: {
     page?: (number | null),
     size?: (number | null),
-    userId?: null,
+    userId?: (string | null),
   }): CancelablePromise<Paginated_ClientRead_> {
     return __request(OpenAPI, {
       method: 'GET',

@@ -39,8 +39,8 @@ export class WebsitePageKeywordCorpusService {
   }: {
     page?: (number | null),
     size?: (number | null),
-    websiteId?: null,
-    pageId?: null,
+    websiteId?: (string | null),
+    pageId?: (string | null),
   }): CancelablePromise<Paginated_WebsiteKeywordCorpusRead_> {
     return __request(OpenAPI, {
       method: 'GET',

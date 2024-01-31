@@ -37,8 +37,8 @@ export class WebsiteSitemapsService {
   }: {
     page?: (number | null),
     size?: (number | null),
-    websiteId?: null,
-    sitemapId?: null,
+    websiteId?: (string | null),
+    sitemapId?: (string | null),
   }): CancelablePromise<Paginated_WebsiteMapRead_> {
     return __request(OpenAPI, {
       method: 'GET',
