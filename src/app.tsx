@@ -21,7 +21,7 @@ import { OpenAPI } from './backend';
 
 type CookieConfig = {
   auth: AuthConfig;
-  darkMode: boolean;
+  darkMode: boolean | undefined;
 };
 
 function useCookieConfig(): CookieConfig {
