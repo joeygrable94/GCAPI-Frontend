@@ -1,6 +1,6 @@
 import { RouteDefinition, createAsync } from '@solidjs/router';
 import { Component } from 'solid-js';
-import { CurrentUser, getCurrentUser } from '~/components';
+import { AuthorizedUser, getCurrentUser } from '~/components';
 import { formatDateString } from '~/utils';
 
 export const route = {
@@ -8,7 +8,7 @@ export const route = {
 } satisfies RouteDefinition;
 
 const Profile: Component = () => {
-  const data = createAsync<CurrentUser | undefined>(getCurrentUser);
+  const data = createAsync<AuthorizedUser>(getCurrentUser);
   return (
     <main>
       <h1>{data() && data()!.email}</h1>

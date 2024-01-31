@@ -7,7 +7,7 @@ const Login: Component = () => {
 
   return (
     <main>
-      <h1>Please Log In</h1>
+      <h1>Please Log In or Register</h1>
       <Button onClick={async () => await authAct.authorize()}>Login</Button>
     </main>
   );

@@ -31,21 +31,20 @@ import {
   xCircle
 } from 'solid-heroicons/outline';
 import { For, createEffect, createSignal } from 'solid-js';
-import { ClientRead } from '~/backend';
 import { useLayoutContext } from '~/components';
 import { formatDateString, log } from '~/utils';
 import { Filter } from './column-filter';
 
-type ClientsDataTableProps = {
-  data: ClientRead[] | undefined;
+type DataTableProps = {
+  data: any[] | undefined;
 };
 
-const ClientsDataTable = (props: ClientsDataTableProps) => {
+const DataTable = (props: DataTableProps) => {
   const layout = useLayoutContext();
-  const [data, setData] = createSignal<ClientRead[]>(props.data ?? []);
+  const [data, setData] = createSignal<any[]>(props.data ?? []);
   const [sorting, setSorting] = createSignal<SortingState>([]);
-  const columnHelper = createColumnHelper<ClientRead>();
-  const columns: ColumnDef<ClientRead>[] = [
+  const columnHelper = createColumnHelper<any>();
+  const columns: ColumnDef<any>[] = [
     columnHelper.group({
       header: 'Info',
       columns: [
@@ -287,4 +286,4 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
   );
 };
 
-export default ClientsDataTable;
+export default DataTable;

@@ -8,8 +8,8 @@ import {
   AuthConfig,
   AuthProvider,
   CurrentUser,
-  GuestUser,
   MainLayout,
+  UserProvider,
   defaultGuestUser,
   getCurrentUserOrGuest,
   useAuthCookie
@@ -50,27 +50,29 @@ export default function App() {
         >
           <Router
             root={(props) => {
-              const user = createAsync<CurrentUser | GuestUser>(getCurrentUserOrGuest);
+              const user = createAsync<CurrentUser>(getCurrentUserOrGuest);
               return (
-                <MetaProvider>
-                  <Title>GCAPI</Title>
-                  <Link
-                    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-                    rel="stylesheet"
-                    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-                    crossorigin="anonymous"
-                  />
-                  <ErrorBoundary fallback={<>Main Layout Error</>}>
-                    <MainLayout user={user() || defaultGuestUser}>
-                      <Suspense>
-                        <ErrorBoundary fallback={<>Page Route Error</>}>
-                          {props.children}
-                        </ErrorBoundary>
-                      </Suspense>
-                      <Toaster position="bottom-right" />
-                    </MainLayout>
-                  </ErrorBoundary>
-                </MetaProvider>
+                <UserProvider initialUser={user() || defaultGuestUser}>
+                  <MetaProvider>
+                    <Title>GCAPI</Title>
+                    <Link
+                      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+                      rel="stylesheet"
+                      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+                      crossorigin="anonymous"
+                    />
+                    <ErrorBoundary fallback={<>Main Layout Error</>}>
+                      <MainLayout user={user() || defaultGuestUser}>
+                        <Suspense>
+                          <ErrorBoundary fallback={<>Page Route Error</>}>
+                            {props.children}
+                          </ErrorBoundary>
+                        </Suspense>
+                        <Toaster position="bottom-right" />
+                      </MainLayout>
+                    </ErrorBoundary>
+                  </MetaProvider>
+                </UserProvider>
               );
             }}
           >

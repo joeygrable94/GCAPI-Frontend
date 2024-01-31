@@ -8,6 +8,7 @@ import {
   createUniqueId,
   onMount
 } from 'solid-js';
+import { useLayoutContext } from '../theme';
 
 /**
  * @summary Filter component for table columns.
@@ -19,6 +20,7 @@ export function Filter({
   column: Column<any, any>;
   table: Table<any>;
 }) {
+  const layout = useLayoutContext();
   const filterId = createUniqueId();
   const [firstValue, setFirstValue] = createSignal<any>(null);
   const columnFilterValue = () => {
