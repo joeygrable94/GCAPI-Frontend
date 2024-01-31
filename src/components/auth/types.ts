@@ -3,7 +3,7 @@ import { Accessor, JSX } from 'solid-js';
 import { UserRead, UserReadAsAdmin, UserReadAsManager } from '~/backend';
 
 export type ACurrentUser = UserReadAsAdmin | UserReadAsManager | UserRead | undefined;
-export type UserRole = 'admin' | 'manager' | 'user';
+export type AUserRole = 'admin' | 'manager' | 'user';
 
 export type Organization = { id: string; name: string };
 

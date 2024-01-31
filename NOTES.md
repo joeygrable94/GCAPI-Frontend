@@ -15,9 +15,9 @@
 
 ## Dependencies
 
-### Theme & Styles
+### Routing
 
-- [Solid Boostrap](https://solid-libs.github.io/solid-bootstrap/)
+- [Solid Router](https://docs.solidjs.com/guides/how-to-guides/routing-in-solid/solid-router)
 
 ### Data Management
 
@@ -28,6 +28,10 @@
 ### Auth
 
 - [Auth0 JS](https://auth0.com/docs/libraries/auth0js)
+
+### Theme & Styles
+
+- [Solid Boostrap](https://solid-libs.github.io/solid-bootstrap/)
 
 ----
 

@@ -31,31 +31,33 @@ import {
   xCircle
 } from 'solid-heroicons/outline';
 import { For, createEffect, createSignal } from 'solid-js';
-import { ClientRead } from '~/backend';
+import { UserReadAsAdmin, UserReadAsManager } from '~/backend';
 import { useLayoutContext } from '~/components';
 import { formatDateString, log } from '~/utils';
 import { Filter } from './column-filter';
 
-type ClientsDataTableProps = {
-  data: ClientRead[] | undefined;
+type UsersDataTableProps = {
+  data: UserReadAsAdmin[] | UserReadAsManager[] | undefined;
 };
 
-const ClientsDataTable = (props: ClientsDataTableProps) => {
+const UsersDataTable = (props: UsersDataTableProps) => {
   const layout = useLayoutContext();
-  const [data, setData] = createSignal<ClientRead[]>(props.data ?? []);
+  const [data, setData] = createSignal<UserReadAsAdmin[] | UserReadAsManager[]>(
+    props.data ?? []
+  );
   const [sorting, setSorting] = createSignal<SortingState>([]);
-  const columnHelper = createColumnHelper<ClientRead>();
-  const columns: ColumnDef<ClientRead>[] = [
+  const columnHelper = createColumnHelper<UserReadAsAdmin | UserReadAsManager>();
+  const columns: ColumnDef<UserReadAsAdmin | UserReadAsManager>[] = [
     columnHelper.group({
       header: 'Info',
       columns: [
-        columnHelper.accessor('title', {
-          header: () => 'Title',
+        columnHelper.accessor('email', {
+          header: () => 'Email',
           footer: (props) => props.column.id,
           cell: (info) => info.getValue()
         }),
-        columnHelper.accessor('description', {
-          header: () => 'Description',
+        columnHelper.accessor('username', {
+          header: () => 'Username',
           footer: (props) => props.column.id,
           cell: (info) => info.getValue()
         }),
@@ -70,8 +72,25 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
             );
           }
         }),
+        columnHelper.accessor('is_verified', {
+          header: () => 'Is Verified',
+          footer: (props) => props.column.id,
+          cell: (info) => {
+            return info.getValue() ? (
+              <Icon path={checkBadge} class="icon" />
+            ) : (
+              <Icon path={xCircle} class="icon" />
+            );
+          }
+        }),
         columnHelper.accessor('created_on', {
           header: () => 'Created On',
+          footer: (props) => props.column.id,
+          cell: (info) =>
+            info.getValue() ? formatDateString(new Date(info.getValue())) : 'N/A'
+        }),
+        columnHelper.accessor('updated_on', {
+          header: () => 'Updated On',
           footer: (props) => props.column.id,
           cell: (info) =>
             info.getValue() ? formatDateString(new Date(info.getValue())) : 'N/A'
@@ -95,11 +114,11 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
                 gap={1}
                 class="d-flex flex-row justify-content-around"
               >
-                <a href={`/clients/${info.row.original.id}`}>
+                <a href={`/users/${info.row.original.id}`}>
                   <Icon path={eye} class="icon" aria-label="View Client" />
                 </a>
                 <a
-                  href={`#edit-client_${info.row.original.id}`}
+                  href={`#edit-user_${info.row.original.id}`}
                   onClick={() => handleEdit()}
                 >
                   <Icon path={pencilSquare} class="icon" aria-label="Edit Client" />
@@ -134,6 +153,9 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
   };
   const handleChangePageSize = (e: any) => {
     table.setPageSize(Number(e.target.value));
+  };
+  const handleRowClicked = (data: UserReadAsAdmin | UserReadAsManager) => {
+    log('Clicked row: ', data.id, data.email);
   };
   createEffect(() => {
     if (props.data === undefined) return;
@@ -192,7 +214,7 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
         <tbody>
           <For each={table.getRowModel().rows}>
             {(row) => (
-              <tr>
+              <tr onClick={() => handleRowClicked(row.original)}>
                 <For each={row.getVisibleCells()}>
                   {(cell) => (
                     <>
@@ -214,28 +236,28 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
         <ButtonToolbar class="w-20 inline-block">
           <ButtonGroup>
             <Button
-              variant="outline-dark"
+              variant={layout.darkMode ? 'outline-light' : 'outline-dark'}
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
               <Icon path={chevronDoubleLeft} class="icon" />
             </Button>
             <Button
-              variant="outline-dark"
+              variant={layout.darkMode ? 'outline-light' : 'outline-dark'}
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
               <Icon path={chevronLeft} class="icon" />
             </Button>
             <Button
-              variant="outline-dark"
+              variant={layout.darkMode ? 'outline-light' : 'outline-dark'}
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
               <Icon path={chevronRight} class="icon" />
             </Button>
             <Button
-              variant="outline-dark"
+              variant={layout.darkMode ? 'outline-light' : 'outline-dark'}
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
@@ -249,14 +271,14 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
         </Form.Group>
         <Form.Group class="w-30 inline-block d-flex justify-content-end align-items-center">
           <Form.Label
-            id="clients-table-pagination-go-to-page-label"
-            htmlFor="clients-table-pagination-go-to-page-input"
+            id="users-table-pagination-go-to-page-label"
+            htmlFor="users-table-pagination-go-to-page-input"
             class="d-flex justify-content-end align-items-center w-100 mb-0 px-1"
           >
             Go To
           </Form.Label>
           <Form.Control
-            id="clients-table-pagination-go-to-page-input"
+            id="users-table-pagination-go-to-page-input"
             class="w-10"
             type="number"
             size="sm"
@@ -264,14 +286,14 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
             onChange={goToPageNumber}
           />
           <Form.Label
-            id="clients-table-pagination-size-label"
-            htmlFor="clients-table-pagination-size-select"
+            id="users-table-pagination-size-label"
+            htmlFor="users-table-pagination-size-select"
             class="d-flex justify-content-end align-items-center w-100 mb-0 px-1"
           >
             Page Size
           </Form.Label>
           <Form.Select
-            id="clients-table-pagination-size-select"
+            id="users-table-pagination-size-select"
             class="w-10"
             size="sm"
             value={table.getState().pagination.pageSize}
@@ -287,4 +309,4 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
   );
 };
 
-export default ClientsDataTable;
+export default UsersDataTable;

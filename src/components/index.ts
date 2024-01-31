@@ -4,3 +4,4 @@ export * from './clients';
 export * from './data-tables';
 export * from './layouts';
 export * from './theme';
+export * from './users';
