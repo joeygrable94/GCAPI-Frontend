@@ -1,6 +1,41 @@
 import { error, warn } from '~/utils';
 import { defaultAuthConfig } from './constants';
-import { AuthConfig, UpdatedAuthConfig } from './types';
+import { AuthConfig, CurrentUser, UpdatedAuthConfig, UserRole } from './types';
+
+/**
+ * @summary Returns a boolean if the input user is an Admin
+ */
+export const isAdmin = (user: CurrentUser) => {
+  if (isGuest(user) || isUser(user) || isManager(user)) return false;
+  return Object.keys(user).includes('is_superuser');
+};
+
+export const isManager = (user: CurrentUser) => {
+  if (isGuest(user) || isUser(user)) return false;
+  return (
+    Object.keys(user).includes('scopes') && !Object.keys(user).includes('is_superuser')
+  );
+};
+
+export const isUser = (user: CurrentUser) => {
+  if (isGuest(user)) return false;
+  return (
+    !Object.keys(user).includes('scopes') && !Object.keys(user).includes('is_superuser')
+  );
+};
+
+export const isGuest = (user: CurrentUser) => {
+  if (user === undefined) return false;
+  return user.username === 'guest';
+};
+
+export const getUserRole = (user: CurrentUser): UserRole => {
+  if (isGuest(user)) return 'guest';
+  else if (isUser(user)) return 'user';
+  else if (isAdmin(user)) return 'admin';
+  else if (isManager(user)) return 'manager';
+  else return 'guest';
+};
 
 /**
  * @summary Completes the authorization process by getting the access token and user info
