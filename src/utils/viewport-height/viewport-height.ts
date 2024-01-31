@@ -11,7 +11,7 @@ import { onCleanup, onMount } from 'solid-js';
  *
  * * HTML:
  * <body>
- *   <div id="root"></div>
+ *   <div id="app"></div>
  * </body>
  *
  * * In CSS:

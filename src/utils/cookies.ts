@@ -7,7 +7,7 @@ import { urlDecoder, urlEncoder } from '~/utils';
  * @param value to store in the cookie
  * @param expires until the cookie expires
  */
-export const setCookie = (name: string, value: string, expires: number): void => {
+export const setClientCookie = (name: string, value: string, expires: number): void => {
   const expirationDate = new Date();
   expirationDate.setDate(expirationDate.getDate() + expires);
 
@@ -22,7 +22,7 @@ export const setCookie = (name: string, value: string, expires: number): void =>
  * @param name of the cookie to retrieve
  * @returns value of the cookie
  */
-export const getCookie = (name: string): string | undefined => {
+export const getClientCookie = (name: string): string | undefined => {
   const cookies = document.cookie.split(';');
   for (let i = 0; i < cookies.length; i++) {
     const cookie = cookies[i].trim();

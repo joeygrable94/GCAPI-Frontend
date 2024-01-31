@@ -8,15 +8,20 @@ import {
   createLayoutMutable,
   saveDarkMode
 } from '~/components';
+import { log } from '~/utils';
 import Navigation from './navigation';
 
 type MainLayoutProps = {
   user: CurrentUser | GuestUser;
+  darkMode?: boolean;
 };
 
 const MainLayout: ParentComponent<MainLayoutProps> = (props) => {
   let rootDiv: HTMLElement | null = null;
-  const layout = createLayoutMutable({});
+  const layout = createLayoutMutable({
+    darkMode: props.darkMode ?? false
+  });
+  log('layout', layout.darkMode);
   createEffect(() => {
     if (isServer) return;
     saveDarkMode(layout.darkMode);

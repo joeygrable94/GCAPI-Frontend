@@ -12,16 +12,24 @@ import {
   UserProvider,
   defaultGuestUser,
   getCurrentUserOrGuest,
-  useAuthCookie
+  useAuthCookie,
+  useDarkModeCookie
 } from '~/components';
 import '~/sass/index.scss';
 import { viewportHeightStyles } from '~/utils';
 import { OpenAPI } from './backend';
 
-function useCookieConfig(): { auth: AuthConfig } {
+type CookieConfig = {
+  auth: AuthConfig;
+  darkMode: boolean;
+};
+
+function useCookieConfig(): CookieConfig {
   const authCookie = useAuthCookie();
+  const darkModeCookie = useDarkModeCookie();
   return {
-    auth: authCookie
+    auth: authCookie,
+    darkMode: darkModeCookie
   };
 }
 
@@ -62,7 +70,10 @@ export default function App() {
                       crossorigin="anonymous"
                     />
                     <ErrorBoundary fallback={<>Main Layout Error</>}>
-                      <MainLayout user={user() || defaultGuestUser}>
+                      <MainLayout
+                        user={user() || defaultGuestUser}
+                        darkMode={cookies.darkMode}
+                      >
                         <Suspense>
                           <ErrorBoundary fallback={<>Page Route Error</>}>
                             {props.children}
