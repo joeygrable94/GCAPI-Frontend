@@ -11,12 +11,7 @@ import { createStore } from 'solid-js/store';
 import { getRequestEvent, isServer } from 'solid-js/web';
 import { getCookie, setCookie } from 'vinxi/server';
 import { OpenAPI } from '~/backend';
-import {
-  error,
-  getCookie as getCookieClient,
-  log,
-  setCookie as setCookieClient
-} from '~/utils';
+import { error, getClientCookie, log, setClientCookie } from '~/utils';
 import { AUTH_COOKIE_MAX_AGE, defaultAuthConfig } from './constants';
 import {
   AuthConfig,
@@ -142,7 +137,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
       });
     } else {
       if (import.meta.env.VITE_DEBUG) log('Set client auth cookie...');
-      setCookieClient('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
+      setClientCookie('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
     }
   });
   // Set state & return context provider
@@ -167,7 +162,7 @@ export function useAuthCookie(name: string = 'gcapi_auth') {
   if (isServer) {
     token = getCookie(getRequestEvent()!, name);
   } else {
-    token = getCookieClient(name);
+    token = getClientCookie(name);
   }
   if (token?.length) {
     return JSON.parse(token) as AuthConfig;
