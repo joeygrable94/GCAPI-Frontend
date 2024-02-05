@@ -25,5 +25,6 @@ export default defineConfig({
   start: {
     ssr: true,
     islands: false
+    // middleware: "./src/middleware.ts"
   }
 });

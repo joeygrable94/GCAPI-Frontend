@@ -8,10 +8,16 @@ import {
 import { createStore } from 'solid-js/store';
 import { AuthorizedUser, CurrentUser } from '~/providers/auth';
 import { UsersService } from '~/shared/api';
-import { log } from '~/shared/utils';
 import { defaultGuestUser } from '../auth/constants';
 import { UserActions, UserConfigProps, UserContextProvider, UserState } from './types';
-import { getUserRole, isGuest } from './utils';
+import {
+  getUserRole,
+  isAdmin,
+  isGuest,
+  isManager,
+  isSuperAdmin,
+  isUser
+} from './utils';
 
 export const UserConfigContext = createContext<UserContextProvider>();
 
@@ -45,19 +51,21 @@ export const UserProvider = (props: UserConfigProps) => {
     role: getUserRole(currentUser())
   });
   const actions: UserActions = {
+    isSuperAdmin: () => {
+      return isSuperAdmin(state.user);
+    },
     isAdmin: () => {
-      return state.role === 'admin';
+      return isAdmin(state.user);
     },
     isManager: () => {
-      return state.role === 'admin';
+      return isManager(state.user);
     },
     isUser: () => {
-      return state.role === 'user';
+      return isUser(state.user);
     },
     isGuest: () => isUserGuest()
   };
   const store: UserContextProvider = [state, actions];
-  createEffect(() => log('UserProvider', currentUser()));
   createEffect(() => {
     if (currentUser() === undefined) {
       setIsUserGuest(true);

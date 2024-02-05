@@ -9,6 +9,7 @@ export type UserState = {
 };
 
 export interface UserActions {
+  isSuperAdmin: () => boolean;
   isAdmin: () => boolean;
   isManager: () => boolean;
   isUser: () => boolean;

@@ -1,5 +1,17 @@
 import { CurrentUser } from '~/providers/auth';
+import { UserReadAsAdmin } from '~/shared/api';
 import { UserRole } from './types';
+
+/**
+ * @summary Returns a boolean if the input user is a Super User Admin
+ */
+export const isSuperAdmin = (user: CurrentUser) => {
+  if (isGuest(user) || isUser(user) || isManager(user)) return false;
+  if (Object.keys(user).includes('is_superuser')) {
+    return (user as UserReadAsAdmin).is_superuser;
+  }
+  return false;
+};
 
 /**
  * @summary Returns a boolean if the input user is an Admin
