@@ -1,17 +1,21 @@
-import { RouteDefinition, createAsync } from '@solidjs/router';
-import { Component } from 'solid-js';
-import { UsersDataTable, listUsers } from '~/components';
+import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
+import { ssrFetchUsersList } from '~/entities/users';
+import { UsersDataTable } from '~/widgets/users';
 
 export const route = {
-  load: () => listUsers()
+  load({ location, params }) {
+    void ssrFetchUsersList(+location.query.page || 1, +location.query.size || 10);
+  }
 } satisfies RouteDefinition;
 
-const Users: Component = () => {
-  const data = createAsync(listUsers);
+const Users = (props: RouteSectionProps) => {
+  const page = () => +props.location.query.page || 1;
+  const size = () => +props.location.query.page || 1;
+  const data = createAsync(() => ssrFetchUsersList(page(), size()));
   return (
     <main>
-      <h1>Users</h1>
-      <UsersDataTable data={data()?.results} />
+      <h1 class="my-2">Users</h1>
+      <UsersDataTable initialData={data()} />
     </main>
   );
 };

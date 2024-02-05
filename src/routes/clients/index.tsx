@@ -1,17 +1,23 @@
-import { RouteDefinition, createAsync } from '@solidjs/router';
-import { Component } from 'solid-js';
-import { ClientsDataTable, listClients } from '~/components';
+import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
+import { ssrFetchClientsList } from '~/entities/clients';
+import { ActionsMenuClients } from '~/features/clients';
+import { ClientsDataTable } from '~/widgets/clients';
 
 export const route = {
-  load: () => listClients()
+  load({ location, params }) {
+    void ssrFetchClientsList(+location.query.page || 1, +location.query.size || 10);
+  }
 } satisfies RouteDefinition;
 
-const Clients: Component = () => {
-  const data = createAsync(listClients);
+const Clients = (props: RouteSectionProps) => {
+  const page = () => +props.location.query.page || 1;
+  const size = () => +props.location.query.page || 1;
+  const data = createAsync(() => ssrFetchClientsList(page(), size()));
   return (
     <main>
-      <h1>Clients</h1>
-      <ClientsDataTable data={data()?.results} />
+      <h1 class="my-2">Clients</h1>
+      <ActionsMenuClients />
+      <ClientsDataTable initialData={data()} />
     </main>
   );
 };
