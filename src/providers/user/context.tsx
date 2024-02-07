@@ -70,11 +70,14 @@ export const UserProvider = (props: UserConfigProps) => {
   const store: UserContextProvider = [state, actions];
   // initialize server user state
   if (isServer) {
-    if (import.meta.env.VITE_DEBUG) log('Server user initial state...', currentUser());
+    if (import.meta.env.VITE_DEBUG)
+      log('Server user initial state...', props.initialUser);
   } else {
-    if (import.meta.env.VITE_DEBUG) log('Client user initial state...', currentUser());
+    if (import.meta.env.VITE_DEBUG)
+      log('Client user initial state...', props.initialUser);
   }
   createEffect(() => {
+    if (import.meta.env.VITE_DEBUG) log('Client user set state...', currentUser());
     if (currentUser() === undefined) {
       setIsUserGuest(true);
       return;

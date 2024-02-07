@@ -118,9 +118,9 @@ export const AuthProvider = (props: AuthConfigProps) => {
   if (isServer) {
     if (import.meta.env.VITE_DEBUG)
       log('Server auth initial state...', auth.accessToken.length);
-    // if (!actions.isAuthenticated()) {
-    //   actions.login().then(() => log('Server login complete...'));
-    // }
+    if (!actions.isAuthenticated()) {
+      actions.login().then(() => log('Server login complete...'));
+    }
   } else {
     if (import.meta.env.VITE_DEBUG)
       log('Client auth initial state...', auth.accessToken.length);
