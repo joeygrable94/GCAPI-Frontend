@@ -1,3 +1,4 @@
+'use server';
 import { APIEvent } from '@solidjs/start/server/types.js';
 import { getLogoutRequest } from '~/providers/auth';
 

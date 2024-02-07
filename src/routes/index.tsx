@@ -9,14 +9,14 @@ import {
   UserRole
 } from '~/features/auth/permission';
 import { CurrentUser } from '~/providers/auth';
-import { getCurrentUserOrLogin } from '~/providers/user';
+import { getCurrentUserOrGuest } from '~/providers/user';
 
 export const route = {
-  load: () => getCurrentUserOrLogin()
+  load: () => getCurrentUserOrGuest()
 } satisfies RouteDefinition;
 
 const Home: Component = () => {
-  const data = createAsync<CurrentUser>(getCurrentUserOrLogin);
+  const data = createAsync<CurrentUser>(getCurrentUserOrGuest);
   return (
     <main>
       <h1 class="my-2">GCAPI Auth0 Secured Backend</h1>
