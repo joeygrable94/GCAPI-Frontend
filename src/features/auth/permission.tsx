@@ -1,6 +1,6 @@
-import { Component, JSX, Match, ParentComponent, Switch } from 'solid-js';
-import { useUser } from '~/providers/user';
-import { Slot, getSlots } from '~/shared/utils';
+// import { Component, JSX, Match, ParentComponent, Switch } from 'solid-js';
+// import { useUser } from '~/providers/user';
+// import { Slot, getSlots } from '~/shared/utils';
 
 /* Usage:
 
@@ -23,6 +23,7 @@ import { Slot, getSlots } from '~/shared/utils';
 </PermissionRequired>
  */
 
+/*
 interface PermissionsRequiredProps {
   children: JSX.Element;
 }
@@ -62,3 +63,4 @@ export const UserRole: ParentComponent = (props) => {
 export const GuestRole: ParentComponent = (props) => {
   return <Slot name="guest">{props.children}</Slot>;
 };
+*/
