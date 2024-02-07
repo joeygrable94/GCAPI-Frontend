@@ -42,4 +42,4 @@ export const getCurrentUserOrLogin = cache(async () => {
     throw redirect('/login');
   }
   return currentUser as AuthorizedUser;
-}, 'currentUser');
+}, 'currentUserOrLogin');

@@ -1,6 +1,6 @@
 'use server';
 import { redirect } from '@solidjs/router';
-import { H3Event, useSession } from '@solidjs/start/server';
+import { APIEvent, H3Event, useSession } from '@solidjs/start/server';
 import { getRequestEvent } from 'solid-js/web';
 
 export type UserInfo = {
@@ -20,7 +20,7 @@ export interface UserSessionData {
   idToken: string | undefined;
 }
 
-export function getSession(event: H3Event | undefined = undefined) {
+export function getSession(event: H3Event | APIEvent | undefined = undefined) {
   let reqEvent = event ?? getRequestEvent()!;
   return useSession<UserSessionData>(reqEvent!, {
     password: import.meta.env.VITE_SESSION_SECRET,

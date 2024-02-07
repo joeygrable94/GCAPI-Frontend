@@ -29,7 +29,7 @@ import {
 } from '~/features/data-tables';
 import { useLayoutContext } from '~/providers/theme';
 import { Paginated_WebsiteRead_, WebsiteRead } from '~/shared/api';
-import { formatDateString, log } from '~/shared/utils';
+import { formatDateString } from '~/shared/utils';
 import { ModalEditWebsite } from '~/widgets/websites';
 
 type WebsitesDataTableProps = {
@@ -154,7 +154,6 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
     table.resetColumnFilters(true);
   };
   createEffect(() => {
-    log(query.data);
     if (query.data !== undefined) {
       setFetchTodal(query.data.total);
       setData(query.data.results.map((r) => r));

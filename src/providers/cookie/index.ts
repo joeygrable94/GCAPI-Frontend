@@ -1,5 +1,6 @@
-import { AuthConfig, useAuthCookie } from '~/providers/auth';
-import { useDarkModeCookie } from '~/providers/theme';
+import { AuthConfig } from '~/providers/auth';
+import { useAuthCookie } from '~/providers/auth/session';
+import { useDarkModeCookie } from '~/providers/theme/session';
 
 type CookieConfig = {
   auth: AuthConfig;

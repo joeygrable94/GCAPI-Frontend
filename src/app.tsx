@@ -1,3 +1,4 @@
+// @refresh reload
 import { Link, MetaProvider, Title } from '@solidjs/meta';
 import { RouteDefinition, Router, createAsync } from '@solidjs/router';
 import { FileRoutes } from '@solidjs/start';
@@ -9,17 +10,17 @@ import { useCookieConfig } from '~/providers/cookie';
 import { MainLayout } from '~/providers/layout';
 import { QueryProvider } from '~/providers/tanstack-query';
 import { UserProvider, getCurrentUserOrGuest } from '~/providers/user';
-import { OpenAPI } from '~/shared/api';
 import '~/shared/sass/index.scss';
 import { viewportHeightStyles } from '~/shared/utils';
 
 export const route = {
-  load: () => getCurrentUserOrGuest()
+  load: () => {
+    void getCurrentUserOrGuest();
+  }
 } satisfies RouteDefinition;
 
 export default function App() {
   const cookies = useCookieConfig();
-  OpenAPI.TOKEN = cookies.auth.accessToken;
   onMount(() => (!isServer ? viewportHeightStyles() : undefined));
   return (
     <QueryProvider>

@@ -9,7 +9,7 @@ import {
   WebsitesService
 } from '~/shared/api';
 import { defaultPagination } from '~/shared/lib/tanstack-query';
-import { log, logError } from '~/shared/utils';
+import { logError } from '~/shared/utils';
 
 /**
  * @summary Fetches a list of websites on the server.
@@ -48,7 +48,6 @@ export async function fetchWebsitesList<QueryFunction>(
   const page = queryKey[1];
   const size = queryKey[2];
   const clientId = queryKey[3];
-  log(clientId);
   try {
     const response = await WebsitesService.websitesListApiV1WebsitesGet({
       page: page,

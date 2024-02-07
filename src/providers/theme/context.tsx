@@ -1,7 +1,6 @@
 import { createContext, useContext } from 'solid-js';
 import { createMutable } from 'solid-js/store';
-import { getRequestEvent, isServer } from 'solid-js/web';
-import { getCookie } from 'vinxi/server';
+import { isServer } from 'solid-js/web';
 import { getClientCookie, setClientCookie } from '~/shared/utils';
 import { THEME_COOKIE_MAX_AGE } from './constants';
 import { InputLayoutOptions, LayoutOptions } from './types';
@@ -40,15 +39,3 @@ export function useLayoutContext() {
 }
 
 export default LayoutContext;
-
-export function useDarkModeCookie(name: string = 'darkMode'): boolean | undefined {
-  let darkMode: string | undefined;
-  if (isServer) {
-    darkMode = getCookie(getRequestEvent()!, name);
-  } else {
-    darkMode = getClientCookie(name);
-  }
-  if (darkMode?.length) {
-    return darkMode === 'true' ? true : false;
-  }
-}

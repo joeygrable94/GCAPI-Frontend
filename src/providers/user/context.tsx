@@ -6,8 +6,10 @@ import {
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
+import { isServer } from 'solid-js/web';
 import { AuthorizedUser, CurrentUser } from '~/providers/auth';
 import { UsersService } from '~/shared/api';
+import { log } from '~/shared/utils';
 import { defaultGuestUser } from '../auth/constants';
 import { UserActions, UserConfigProps, UserContextProvider, UserState } from './types';
 import {
@@ -66,6 +68,12 @@ export const UserProvider = (props: UserConfigProps) => {
     isGuest: () => isUserGuest()
   };
   const store: UserContextProvider = [state, actions];
+  // initialize server user state
+  if (isServer) {
+    if (import.meta.env.VITE_DEBUG) log('Server user initial state...', currentUser());
+  } else {
+    if (import.meta.env.VITE_DEBUG) log('Client user initial state...', currentUser());
+  }
   createEffect(() => {
     if (currentUser() === undefined) {
       setIsUserGuest(true);

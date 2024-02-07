@@ -8,10 +8,9 @@ import {
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { getRequestEvent, isServer } from 'solid-js/web';
-import { getCookie, setCookie } from 'vinxi/server';
+import { isServer } from 'solid-js/web';
 import { OpenAPI } from '~/shared/api';
-import { getClientCookie, log, logError, setClientCookie } from '~/shared/utils';
+import { log, logError, setClientCookie } from '~/shared/utils';
 import { AUTH_COOKIE_MAX_AGE, defaultAuthConfig } from './constants';
 import {
   AuthConfig,
@@ -116,30 +115,31 @@ export const AuthProvider = (props: AuthConfigProps) => {
     }
   };
   // initialize server login
-  if (isServer && !actions.isAuthenticated())
-    actions.login().then(() => log('Server login complete...'));
+  if (isServer) {
+    if (import.meta.env.VITE_DEBUG)
+      log('Server auth initial state...', auth.accessToken.length);
+    // if (!actions.isAuthenticated()) {
+    //   actions.login().then(() => log('Server login complete...'));
+    // }
+  } else {
+    if (import.meta.env.VITE_DEBUG)
+      log('Client auth initial state...', auth.accessToken.length);
+  }
   // initialize client login
   createEffect(async () => {
     if (!actions.isAuthenticated()) await actions.login();
   });
-  // Set backend api token and fetch user
+  // Set backend api token
+  OpenAPI.TOKEN = authConfig.initialAuth.accessToken;
   createEffect(async () => {
     if (import.meta.env.VITE_DEBUG) log('Setting OpenAPI token...');
     OpenAPI.TOKEN = await auth.accessToken;
-    if (import.meta.env.VITE_DEBUG) log('Fetching current user...');
   });
   // Save cookie
   createEffect(() => {
     const serialized = JSON.stringify(auth);
-    if (isServer) {
-      if (import.meta.env.VITE_DEBUG) log('Set server auth cookie...');
-      setCookie(getRequestEvent()!, 'gcapi_auth', serialized, {
-        maxAge: AUTH_COOKIE_MAX_AGE
-      });
-    } else {
-      if (import.meta.env.VITE_DEBUG) log('Set client auth cookie...');
-      setClientCookie('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
-    }
+    setClientCookie('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
+    if (import.meta.env.VITE_DEBUG) log('Set client auth cookie...');
   });
   // Set state & return context provider
   const state: AuthContextProvider = [auth, actions];
@@ -156,17 +156,4 @@ export function useAuth0(): AuthContextProvider {
   const ctx = useContext(AuthConfigContext);
   if (!ctx) throw new Error('<AuthProvider> not found wrapping the <App />.');
   return ctx as AuthContextProvider;
-}
-
-export function useAuthCookie(name: string = 'gcapi_auth') {
-  let token: string | undefined;
-  if (isServer) {
-    token = getCookie(getRequestEvent()!, name);
-  } else {
-    token = getClientCookie(name);
-  }
-  if (token?.length) {
-    return JSON.parse(token) as AuthConfig;
-  }
-  return defaultAuthConfig;
 }

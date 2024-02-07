@@ -2,7 +2,7 @@
 import { APIEvent } from '@solidjs/start/server/types';
 import { parseCookies, sendRedirect, setCookie } from 'vinxi/server';
 import { UserSessionData, getSession } from '~/shared/server/session';
-import { logError } from '~/shared/utils';
+import { log, logError } from '~/shared/utils';
 import { defaultAuthConfig } from './constants';
 import { completeAuthorizationRequest } from './utils';
 
@@ -25,14 +25,15 @@ export async function getLoginRequest(event: APIEvent) {
     setCookie(event, 'gcapi_auth', JSON.stringify(defaultAuthConfig));
     return sendRedirect(event, '/login', 401);
   } else {
-    console.log('Updating auth session');
+    log('Updating auth session');
     const newSession = {
       accessToken: authState.accessToken,
       refreshToken: authState.refreshToken,
       tokenType: authState.tokenType,
       idToken: authState.idToken
     } as UserSessionData;
-    await session.update((d) => {
+    await session.update((d: UserSessionData) => {
+      log('Updating session data', d, newSession);
       d = newSession;
       return d;
     });
