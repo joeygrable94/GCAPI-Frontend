@@ -11,15 +11,12 @@ export function isSysLayoutDark() {
 
 export function saveDarkMode(value: boolean) {
   setClientCookie('darkMode', value ? 'true' : 'false', THEME_COOKIE_MAX_AGE);
-  localStorage.setItem('darkMode', value ? 'true' : 'false');
 }
 
 export function getSavedDarkMode() {
   const cookie = getClientCookie('darkMode');
   if (cookie === 'true') return true;
-  const value = localStorage.getItem('darkMode');
-  if (value === 'true') return true;
-  if (value === 'false') return false;
+  return false;
 }
 
 export const defaultLayoutOptions: LayoutOptions = {

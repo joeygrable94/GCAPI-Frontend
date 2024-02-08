@@ -3,7 +3,6 @@ import { Link, MetaProvider, Title } from '@solidjs/meta';
 import { Router } from '@solidjs/router';
 import { FileRoutes } from '@solidjs/start';
 import { ErrorBoundary, Suspense, onMount } from 'solid-js';
-import { isServer } from 'solid-js/web';
 import { Toaster } from 'solid-toast';
 import { AuthProvider } from '~/providers/auth';
 import { useCookieConfig } from '~/providers/cookie';
@@ -14,7 +13,7 @@ import { viewportHeightStyles } from '~/shared/utils';
 
 export default function App() {
   const cookies = useCookieConfig();
-  onMount(() => (!isServer ? viewportHeightStyles() : undefined));
+  onMount(() => viewportHeightStyles());
   return (
     <QueryProvider>
       <AuthProvider

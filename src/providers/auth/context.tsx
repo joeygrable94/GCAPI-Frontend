@@ -4,11 +4,11 @@ import {
   createContext,
   createEffect,
   createSignal,
+  onMount,
   splitProps,
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { isServer } from 'solid-js/web';
 import { OpenAPI } from '~/shared/api';
 import { log, logError, setClientCookie } from '~/shared/utils';
 import { AUTH_COOKIE_MAX_AGE, defaultAuthConfig } from './constants';
@@ -114,19 +114,8 @@ export const AuthProvider = (props: AuthConfigProps) => {
       setAuth(defaultAuthConfig);
     }
   };
-  // initialize server login
-  if (isServer) {
-    if (import.meta.env.VITE_DEBUG)
-      log('Server auth initial state...', auth.accessToken.length);
-    if (!actions.isAuthenticated()) {
-      actions.login().then(() => log('Server login complete...'));
-    }
-  } else {
-    if (import.meta.env.VITE_DEBUG)
-      log('Client auth initial state...', auth.accessToken.length);
-  }
   // initialize client login
-  createEffect(async () => {
+  onMount(async () => {
     if (!actions.isAuthenticated()) await actions.login();
   });
   // Set backend api token

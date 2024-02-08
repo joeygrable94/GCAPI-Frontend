@@ -25,7 +25,6 @@ export async function getLoginRequest(event: APIEvent) {
     setCookie(event, 'gcapi_auth', JSON.stringify(defaultAuthConfig));
     return sendRedirect(event, '/login', 401);
   } else {
-    log('Updating auth session');
     const newSession = {
       accessToken: authState.accessToken,
       refreshToken: authState.refreshToken,
