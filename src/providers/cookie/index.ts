@@ -1,6 +1,4 @@
-import { AuthConfig } from '~/providers/auth';
-import { useAuthCookie } from '~/providers/auth/session';
-import { useDarkModeCookie } from '~/providers/theme/session';
+import { AuthConfig, defaultAuthConfig } from '~/providers/auth';
 
 type CookieConfig = {
   auth: AuthConfig;
@@ -8,8 +6,8 @@ type CookieConfig = {
 };
 
 export function useCookieConfig(): CookieConfig {
-  const authCookie = useAuthCookie();
-  const darkModeCookie = useDarkModeCookie();
+  const authCookie = defaultAuthConfig;
+  const darkModeCookie = false;
   return {
     auth: authCookie,
     darkMode: darkModeCookie

@@ -4,20 +4,19 @@ import { Router } from '@solidjs/router';
 import { FileRoutes } from '@solidjs/start';
 import { ErrorBoundary, Suspense, onMount } from 'solid-js';
 import { Toaster } from 'solid-toast';
-import { AuthProvider } from '~/providers/auth';
-import { useCookieConfig } from '~/providers/cookie';
+import { AuthProvider, defaultAuthConfig } from '~/providers/auth';
 import { MainLayout } from '~/providers/layout';
 import { QueryProvider } from '~/providers/tanstack-query';
 import '~/shared/sass/index.scss';
 import { viewportHeightStyles } from '~/shared/utils';
 
 export default function App() {
-  const cookies = useCookieConfig();
+  // const cookies = useCookieConfig();
   onMount(() => viewportHeightStyles());
   return (
     <QueryProvider>
       <AuthProvider
-        initialAuth={cookies.auth}
+        initialAuth={defaultAuthConfig}
         domain={import.meta.env.VITE_AUTH0_DOMAIN}
         clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
         audience={import.meta.env.VITE_AUTH0_AUDIENCE}
@@ -41,7 +40,7 @@ export default function App() {
                 />
                 <Suspense>
                   <ErrorBoundary fallback={<>Main Layout Error</>}>
-                    <MainLayout darkMode={cookies.darkMode}>
+                    <MainLayout darkMode={false}>
                       <Suspense>
                         <ErrorBoundary fallback={<>Page Route Error</>}>
                           {props.children}

@@ -1,7 +1,7 @@
 'use server';
 import { redirect } from '@solidjs/router';
-import { APIEvent, H3Event, useSession } from '@solidjs/start/server';
 import { getRequestEvent } from 'solid-js/web';
+import { useSession } from 'vinxi/http';
 
 export type UserInfo = {
   sub: string;
@@ -20,11 +20,11 @@ export interface UserSessionData {
   idToken: string | undefined;
 }
 
-export function getSession(event: H3Event | APIEvent | undefined = undefined) {
-  let reqEvent = event ?? getRequestEvent()!;
+export function getSession() {
+  let reqEvent = getRequestEvent()!;
   return useSession<UserSessionData>(reqEvent!, {
-    password: import.meta.env.VITE_SESSION_SECRET,
-    name: 'gcapi_auth',
+    password: process.env.VITE_SESSION_SECRET || import.meta.env.VITE_SESSION_SECRET,
+    name: 'gcapi_auth_session',
     cookie: {
       path: '/',
       httpOnly: true,

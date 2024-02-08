@@ -1,13 +1,5 @@
 import { cache } from '@solidjs/router';
-import { getRequestEvent } from 'solid-js/web';
-import { getCookie } from 'vinxi/server';
-import { AuthConfig, defaultAuthConfig } from '~/providers/auth';
-import {
-  ApiError,
-  OpenAPI,
-  Paginated_WebsiteRead_,
-  WebsitesService
-} from '~/shared/api';
+import { ApiError, Paginated_WebsiteRead_, WebsitesService } from '~/shared/api';
 import { defaultPagination } from '~/shared/lib/tanstack-query';
 import { logError } from '~/shared/utils';
 
@@ -19,11 +11,6 @@ export const ssrFetchWebsitesList = cache(
     'use server';
     let websites: Paginated_WebsiteRead_ = defaultPagination;
     try {
-      const cookie = getCookie(getRequestEvent()!, 'gcapi_auth');
-      const parsed = JSON.parse(
-        cookie ?? JSON.stringify(defaultAuthConfig)
-      ) as AuthConfig;
-      OpenAPI.TOKEN = parsed.accessToken;
       websites = await WebsitesService.websitesListApiV1WebsitesGet({
         page: page,
         size: size,
