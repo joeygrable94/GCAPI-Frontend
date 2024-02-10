@@ -5,11 +5,15 @@ import { urlDecoder, urlEncoder } from '~/shared/utils';
  *
  * @param name of the cookie
  * @param value to store in the cookie
- * @param expires until the cookie expires
+ * @param daysToExpire until the cookie expires
  */
-export const setClientCookie = (name: string, value: string, expires: number): void => {
+export const setClientCookie = (
+  name: string,
+  value: string,
+  daysToExpire: number
+): void => {
   const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() + expires);
+  expirationDate.setDate(expirationDate.getDate() + daysToExpire);
 
   const cookieValue =
     urlEncoder(value) + '; expires=' + expirationDate.toUTCString() + '; path=/';
@@ -22,7 +26,7 @@ export const setClientCookie = (name: string, value: string, expires: number): v
  * @param name of the cookie to retrieve
  * @returns value of the cookie
  */
-export const getClientCookie = (name: string): string | undefined => {
+export const getClientCookie = (name: string): string => {
   const cookies = document.cookie.split(';');
   for (let i = 0; i < cookies.length; i++) {
     const cookie = cookies[i].trim();
@@ -30,5 +34,27 @@ export const getClientCookie = (name: string): string | undefined => {
       return urlDecoder(cookie.substring(name.length + 1));
     }
   }
-  return undefined;
+  return '';
+};
+
+/**
+ * @summary parse the cookie string and return an object
+ *
+ * @param name of the cookie
+ */
+export const parseCookieByName = <T = any>(
+  cookie: string,
+  name: string
+): T | undefined => {
+  const cookieObj: Record<string, string> = {};
+  cookie.split(';').forEach((pair) => {
+    if (pair === '') return;
+    const [key, value] = pair.split('=');
+    cookieObj[key.trim()] = value.trim();
+  });
+  try {
+    return JSON.parse(cookieObj[name]) as T;
+  } catch (error) {
+    return undefined;
+  }
 };

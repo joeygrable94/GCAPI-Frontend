@@ -1,15 +1,20 @@
 import { getRequestEvent, isServer } from 'solid-js/web';
-import { getCookie } from 'vinxi/server';
-import { getClientCookie } from '~/shared/utils';
+import { getClientCookie, parseCookieByName } from '~/shared/utils';
 
-export function useDarkModeCookie(name: string = 'darkMode'): boolean | undefined {
-  let darkMode: string | undefined;
-  if (isServer) {
-    darkMode = getCookie(getRequestEvent()!, name);
+export function useDarkModeCookie(name: string = 'darkMode'): boolean {
+  let darkMode: boolean = false;
+  if (!isServer) {
+    let dmcc = getClientCookie(name);
+    if (dmcc?.length) {
+      darkMode = dmcc === 'true' ? true : false;
+    }
   } else {
-    darkMode = getClientCookie(name);
+    let event = getRequestEvent();
+    let cookie = parseCookieByName<boolean>(
+      event?.request.headers.get('cookie') || '',
+      name
+    );
+    darkMode = cookie ? cookie : false;
   }
-  if (darkMode?.length) {
-    return darkMode === 'true' ? true : false;
-  }
+  return darkMode;
 }

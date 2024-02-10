@@ -4,7 +4,7 @@ import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
 import { useAuth0 } from '~/providers/auth';
-import { useLayoutContext } from '~/providers/theme';
+import { useThemeContext } from '~/providers/theme';
 
 type PrimaryNavigationProps = {
   darkMode?: boolean | undefined;
@@ -12,7 +12,7 @@ type PrimaryNavigationProps = {
 
 const PrimaryNavigation: Component<PrimaryNavigationProps> = (props) => {
   const [authState, authAct] = useAuth0();
-  const layoutContext = useLayoutContext();
+  const layoutContext = useThemeContext();
   const handleToggleSessionLayout = () => {
     layoutContext.darkMode = !layoutContext.darkMode;
   };

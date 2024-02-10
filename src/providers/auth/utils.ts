@@ -48,6 +48,7 @@ export async function completeAuthorizationRequest(
     redirectUrl,
     verification.organization
   );
+  if (import.meta.env.VITE_DEBUG) log('Auth token:', jsonAuthToken);
   const userInfo = await fetchAuthUserInfo(jsonAuthToken.access_token);
   if (userInfo === undefined) {
     if (import.meta.env.VITE_DEBUG) warn('No user info found');

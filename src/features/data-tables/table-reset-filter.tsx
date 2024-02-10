@@ -1,7 +1,7 @@
 import { Table } from '@tanstack/solid-table';
 import { Button, Stack } from 'solid-bootstrap';
 import { Accessor, Show } from 'solid-js';
-import { useLayoutContext } from '~/providers/theme';
+import { useThemeContext } from '~/providers/theme';
 
 /**
  * @summary Filter component for table columns.
@@ -15,7 +15,7 @@ export function TableResetFilter({
   isFiltering: Accessor<boolean>;
   resetFilter: () => void;
 }) {
-  const layout = useLayoutContext();
+  const layout = useThemeContext();
   return (
     <Show when={isFiltering()}>
       <Stack

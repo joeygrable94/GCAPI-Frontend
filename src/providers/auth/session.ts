@@ -1,18 +1,22 @@
 import { getRequestEvent, isServer } from 'solid-js/web';
-import { getCookie } from 'vinxi/server';
-import { getClientCookie } from '~/shared/utils';
+import { getClientCookie, parseCookieByName } from '~/shared/utils';
 import { defaultAuthConfig } from './constants';
 import { AuthConfig } from './types';
 
-export function useAuthCookie(name: string = 'gcapi_auth') {
-  let token: string | undefined;
-  if (isServer) {
-    token = getCookie(getRequestEvent()!, name);
+export function useAuthCookie(name: string = 'gcapi_auth'): AuthConfig {
+  let auth: AuthConfig = defaultAuthConfig;
+  if (!isServer) {
+    let authcookie = getClientCookie(name);
+    if (authcookie?.length) {
+      auth = JSON.parse(authcookie) as AuthConfig;
+    }
   } else {
-    token = getClientCookie(name);
+    let event = getRequestEvent();
+    let cookie = parseCookieByName<AuthConfig>(
+      event?.request.headers.get('cookie') || '',
+      name
+    );
+    auth = cookie ? cookie : defaultAuthConfig;
   }
-  if (token?.length) {
-    return JSON.parse(token) as AuthConfig;
-  }
-  return defaultAuthConfig;
+  return auth;
 }

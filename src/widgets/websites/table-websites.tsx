@@ -27,10 +27,10 @@ import {
   TablePagination,
   TableResetFilter
 } from '~/features/data-tables';
-import { useLayoutContext } from '~/providers/theme';
+import { useThemeContext } from '~/providers/theme';
 import { Paginated_WebsiteRead_, WebsiteRead } from '~/shared/api';
 import { formatDateString } from '~/shared/utils';
-import { ModalEditWebsite } from '~/widgets/websites';
+import { ModalDeleteWebsite, ModalEditWebsite } from '~/widgets/websites';
 
 type WebsitesDataTableProps = {
   initialData: Paginated_WebsiteRead_ | undefined;
@@ -38,7 +38,7 @@ type WebsitesDataTableProps = {
 };
 
 const WebsitesDataTable = (props: WebsitesDataTableProps) => {
-  const layout = useLayoutContext();
+  const layout = useThemeContext();
   const [fetchPage, setFetchPage] = createSignal(props.initialData?.page ?? 1);
   const [fetchSize, setFetchSize] = createSignal(props.initialData?.size ?? 10);
   const [fetchClientId, setFetchClientId] = createSignal(props.clientId ?? null);
@@ -100,6 +100,7 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
           footer: (props) => props.column.id,
           cell: (info) => {
             const [openEdit, setOpenEdit] = createSignal(false);
+            const [openDelete, setOpenDelete] = createSignal(false);
             return (
               <Stack
                 direction="horizontal"
@@ -123,6 +124,22 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
                   website={info.row.original}
                   open={openEdit}
                   setOpen={setOpenEdit}
+                  refetch={query.refetch}
+                />
+                <a
+                  href={`#delete-website_${info.row.original.id}`}
+                  onClick={() => setOpenDelete(true)}
+                >
+                  <Icon
+                    path={xCircle}
+                    class="icon"
+                    aria-label={`Delete Website ${info.row.original.domain}`}
+                  />
+                </a>
+                <ModalDeleteWebsite
+                  website={info.row.original}
+                  open={openDelete}
+                  setOpen={setOpenDelete}
                   refetch={query.refetch}
                 />
               </Stack>

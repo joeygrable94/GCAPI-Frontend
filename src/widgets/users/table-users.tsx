@@ -27,7 +27,7 @@ import {
   TablePagination,
   TableResetFilter
 } from '~/features/data-tables';
-import { useLayoutContext } from '~/providers/theme';
+import { useThemeContext } from '~/providers/theme';
 import {
   Paginated_UserReadAsAdmin_,
   Paginated_UserReadAsManager_,
@@ -42,7 +42,7 @@ type UsersDataTableProps = {
 };
 
 const UsersDataTable = (props: UsersDataTableProps) => {
-  const layout = useLayoutContext();
+  const layout = useThemeContext();
   const [fetchPage, setFetchPage] = createSignal(props.initialData?.page ?? 1);
   const [fetchSize, setFetchSize] = createSignal(props.initialData?.size ?? 10);
   const [fetchTotal, setFetchTodal] = createSignal(props.initialData?.total ?? 0);

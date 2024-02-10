@@ -27,17 +27,18 @@ import {
   TablePagination,
   TableResetFilter
 } from '~/features/data-tables';
-import { useLayoutContext } from '~/providers/theme';
+import { useThemeContext } from '~/providers/theme';
 import { ClientRead, Paginated_ClientRead_ } from '~/shared/api';
 import { formatDateString } from '~/shared/utils';
 import { ModalEditClient } from '~/widgets/clients';
+import ModalDeleteClient from './modal-delete';
 
 type ClientsDataTableProps = {
   initialData: Paginated_ClientRead_ | undefined;
 };
 
 const ClientsDataTable = (props: ClientsDataTableProps) => {
-  const layout = useLayoutContext();
+  const layout = useThemeContext();
   const [fetchPage, setFetchPage] = createSignal(props.initialData?.page ?? 1);
   const [fetchSize, setFetchSize] = createSignal(props.initialData?.size ?? 10);
   const [fetchTotal, setFetchTodal] = createSignal(props.initialData?.total ?? 0);
@@ -97,6 +98,7 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
           footer: (props) => props.column.id,
           cell: (info) => {
             const [openEdit, setOpenEdit] = createSignal(false);
+            const [openDelete, setOpenDelete] = createSignal(false);
             return (
               <Stack
                 direction="horizontal"
@@ -120,6 +122,22 @@ const ClientsDataTable = (props: ClientsDataTableProps) => {
                   client={info.row.original}
                   open={openEdit}
                   setOpen={setOpenEdit}
+                  refetch={query.refetch}
+                />
+                <a
+                  href={`#delete-client_${info.row.original.id}`}
+                  onClick={() => setOpenDelete(true)}
+                >
+                  <Icon
+                    path={xCircle}
+                    class="icon"
+                    aria-label={`Delete Client ${info.row.original.title}`}
+                  />
+                </a>
+                <ModalDeleteClient
+                  client={info.row.original}
+                  open={openDelete}
+                  setOpen={setOpenDelete}
                   refetch={query.refetch}
                 />
               </Stack>
