@@ -56,10 +56,10 @@ export async function completeAuthorizationRequest(
   }
   if (import.meta.env.VITE_DEBUG) log('User info:', userInfo);
   let newAuthState = {} as AuthConfig;
-  newAuthState.accessToken = jsonAuthToken.access_token;
+  newAuthState.accessToken = jsonAuthToken.access_token ?? '';
   newAuthState.refreshToken = jsonAuthToken.refresh_token ?? '';
   newAuthState.tokenType = jsonAuthToken.token_type ?? 'Bearer';
-  newAuthState.idToken = jsonAuthToken.id_token;
+  newAuthState.idToken = jsonAuthToken.id_token ?? '';
   return [true, newAuthState];
 }
 

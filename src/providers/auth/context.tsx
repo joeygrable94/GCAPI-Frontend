@@ -1,4 +1,4 @@
-import auth0, { WebAuth } from 'auth0-js';
+import auth0 from 'auth0-js';
 import * as jose from 'jose';
 import {
   createContext,
@@ -53,18 +53,19 @@ export const AuthProvider = (props: AuthConfigProps) => {
   if (authConfig.organization) setOrg(authConfig.organization);
   const actions: AuthConfigActions = {
     get webAuth() {
-      const webAuth: WebAuth = new auth0.WebAuth(webauthConfig);
-      return webAuth;
+      return webauthConfig;
+    },
+    get logoutUrl() {
+      return logoutUrl;
     },
     get organization() {
       return organization();
     },
+    get scopes() {
+      return scopes();
+    },
     isInitialized: () => isAuthenticated() !== undefined,
     isAuthenticated: () => !!isAuthenticated(),
-    authorize: async () => {
-      const webAuth: WebAuth = new auth0.WebAuth(webauthConfig);
-      await webAuth.authorize({ scope: scopes().join(' ') });
-    },
     login: async () => {
       if (import.meta.env.VITE_DEBUG) log('Attempting to log in...');
       if (auth.accessToken) {
@@ -106,11 +107,6 @@ export const AuthProvider = (props: AuthConfigProps) => {
       }
     },
     logout: async () => {
-      const webAuth: WebAuth = new auth0.WebAuth(webauthConfig);
-      await webAuth.logout({
-        returnTo: logoutUrl,
-        clientID: authConfig.clientId
-      });
       setAuth(defaultAuthConfig);
     }
   };
@@ -124,12 +120,6 @@ export const AuthProvider = (props: AuthConfigProps) => {
     if (import.meta.env.VITE_DEBUG) log('Setting OpenAPI token...');
     OpenAPI.TOKEN = await auth.accessToken;
   });
-  // // Save cookie
-  // createEffect(() => {
-  //   const serialized = JSON.stringify(auth);
-  //   setClientCookie('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
-  //   if (import.meta.env.VITE_DEBUG) log('Set client auth cookie...');
-  // });
   // Set state & return context provider
   const state: AuthContextProvider = [auth, actions];
   return (

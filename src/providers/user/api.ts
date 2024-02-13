@@ -1,6 +1,6 @@
 import { cache, redirect } from '@solidjs/router';
 import { getRequestEvent } from 'solid-js/web';
-import { parseCookies } from 'vinxi/server';
+import { parseCookies } from 'vinxi/http';
 import {
   AuthConfig,
   AuthorizedUser,
@@ -20,7 +20,7 @@ export const getCurrentUserOrGuest = cache(async () => {
     const parsed: AuthConfig = cookies['gcapi_auth']
       ? JSON.parse(cookies['gcapi_auth'])
       : defaultAuthConfig;
-    OpenAPI.TOKEN = parsed.accessToken;
+    OpenAPI.TOKEN = await parsed.accessToken;
     currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
   } catch (err: ApiError | Error | any) {
     logError('No user currently logged in:', err.message);
@@ -37,7 +37,7 @@ export const getCurrentUserOrLogin = cache(async () => {
     const parsed: AuthConfig = cookies['gcapi_auth']
       ? JSON.parse(cookies['gcapi_auth'])
       : defaultAuthConfig;
-    OpenAPI.TOKEN = parsed.accessToken;
+    OpenAPI.TOKEN = await parsed.accessToken;
     currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
   } catch (err: ApiError | Error | any) {
     logError('Error fetching current user:', err.message);

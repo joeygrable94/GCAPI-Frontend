@@ -1,4 +1,3 @@
-import { WebAuth } from 'auth0-js';
 import { Accessor, ParentProps } from 'solid-js';
 import { UserRead, UserReadAsAdmin, UserReadAsManager } from '~/shared/api';
 
@@ -18,11 +17,12 @@ export type AuthConfig = {
 };
 
 export interface AuthConfigActions {
-  webAuth: WebAuth;
+  webAuth: auth0.AuthOptions;
+  logoutUrl: string;
   organization: AuthOrganization | undefined;
+  scopes: string[];
   isInitialized: Accessor<boolean>;
   isAuthenticated: Accessor<boolean>;
-  authorize: () => Promise<void>;
   login: () => Promise<void>;
   logout: () => Promise<void>;
 }

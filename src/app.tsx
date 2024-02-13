@@ -6,17 +6,19 @@ import { QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
 import { Container } from 'solid-bootstrap';
 import { ErrorBoundary, Suspense, onMount } from 'solid-js';
+import { isServer } from 'solid-js/web';
 import { Toaster } from 'solid-toast';
 import { PrimaryNavigation } from '~/features/nav';
 import { AuthProvider } from '~/providers/auth';
-import { useCookieConfig } from '~/providers/cookie';
+import { useClientCookieConfig } from '~/providers/cookie/config.client';
+import { useServerCookieConfig } from '~/providers/cookie/config.server';
 import { ThemeProvider } from '~/providers/theme';
 import { queryClient } from '~/shared/lib/tanstack-query';
 import '~/shared/sass/index.scss';
 import { viewportHeightStyles } from '~/shared/utils';
 
 export default function App() {
-  const cookies = useCookieConfig();
+  const cookies = isServer ? useServerCookieConfig() : useClientCookieConfig();
   onMount(() => viewportHeightStyles());
   return (
     <QueryClientProvider client={queryClient}>

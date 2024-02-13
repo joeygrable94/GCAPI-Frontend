@@ -1,6 +1,6 @@
 'use server';
 import { APIEvent } from '@solidjs/start/server/types';
-import { parseCookies, sendRedirect, setCookie } from 'vinxi/server';
+import { parseCookies, sendRedirect, setCookie } from 'vinxi/http';
 import { defaultAuthConfig } from '~/providers/auth';
 import { completeAuthorizationRequest } from '~/providers/auth/utils';
 import { logError } from '~/shared/utils';

@@ -1,10 +1,10 @@
 import { StartServer, createHandler } from '@solidjs/start/server';
-import { useCookieConfig } from './providers/cookie';
+import { useServerCookieConfig } from '~/providers/cookie/config.server';
 
 export default createHandler(() => (
   <StartServer
     document={({ assets, children, scripts }) => {
-      const cookies = useCookieConfig();
+      const cookies = useServerCookieConfig();
       return (
         <html lang="en" data-bs-theme={cookies.darkMode ? 'dark' : 'light'}>
           <head>

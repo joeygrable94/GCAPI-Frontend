@@ -1,14 +1,12 @@
 import { cache, redirect } from '@solidjs/router';
-<<<<<<< HEAD
-=======
 import { getRequestEvent } from 'solid-js/web';
-import { parseCookies } from 'vinxi/server';
+import { parseCookies } from 'vinxi/http';
 import { AuthConfig, defaultAuthConfig } from '~/providers/auth';
->>>>>>> base-ss0_4
 import {
   ApiError,
   ClientRead,
   ClientsService,
+  OpenAPI,
   Paginated_ClientRead_
 } from '~/shared/api';
 import { defaultPagination } from '~/shared/lib/tanstack-query';
@@ -27,15 +25,12 @@ export const ssrFetchClientsList = cache(
       results: []
     };
     try {
-<<<<<<< HEAD
-=======
       const event = getRequestEvent();
       const cookies = parseCookies(event!);
       const parsed: AuthConfig = cookies['gcapi_auth']
         ? JSON.parse(cookies['gcapi_auth'])
         : defaultAuthConfig;
-      OpenAPI.TOKEN = parsed.accessToken;
->>>>>>> base-ss0_4
+      OpenAPI.TOKEN = await parsed.accessToken;
       clients = await ClientsService.clientsListApiV1ClientsGet({
         page,
         size
@@ -74,15 +69,12 @@ export const ssrFetchClientById = cache(async (id: string) => {
   'use server';
   let client: ClientRead;
   try {
-<<<<<<< HEAD
-=======
     const event = getRequestEvent();
     const cookies = parseCookies(event!);
     const parsed: AuthConfig = cookies['gcapi_auth']
       ? JSON.parse(cookies['gcapi_auth'])
       : defaultAuthConfig;
-    OpenAPI.TOKEN = parsed.accessToken;
->>>>>>> base-ss0_4
+    OpenAPI.TOKEN = await parsed.accessToken;
     client = await ClientsService.clientsReadApiV1ClientsClientIdGet({ clientId: id });
   } catch (err: ApiError | Error | any) {
     logError('Error fetching client:', err.message);

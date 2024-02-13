@@ -1,8 +1,7 @@
 import { createContext, useContext } from 'solid-js';
 import { createMutable } from 'solid-js/store';
 import { isServer } from 'solid-js/web';
-import { getClientCookie, setClientCookie } from '~/shared/utils';
-import { THEME_COOKIE_MAX_AGE } from './constants';
+import { getClientCookie, setClientCookie } from '~/providers/cookie/session.client';
 import { InputThemeOptions, ThemeOptions } from './types';
 
 export function isSysThemeDark() {
@@ -26,7 +25,7 @@ export function useThemeContext() {
 }
 
 export function saveDarkMode(value: boolean) {
-  setClientCookie('darkMode', value ? 'true' : 'false', THEME_COOKIE_MAX_AGE);
+  setClientCookie('darkMode', value ? 'true' : 'false');
 }
 
 export function getSavedDarkMode() {

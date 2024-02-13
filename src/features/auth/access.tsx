@@ -1,6 +1,8 @@
+'use client';
 import { Button } from 'solid-bootstrap';
 import { JSX, ParentComponent, Show, createEffect } from 'solid-js';
-import { useAuth0 } from '../../providers/auth/context';
+import { webAuthAuthorize } from '~/providers/auth/api.client';
+import { useAuth0 } from '~/providers/auth/context';
 
 type AuthorizedAccessProps = {
   fallback?: JSX.Element;
@@ -9,6 +11,9 @@ type AuthorizedAccessProps = {
 
 const AuthorizedAccess: ParentComponent<AuthorizedAccessProps> = (props) => {
   const [authState, authAct] = useAuth0();
+  const loginAction = async () => {
+    await webAuthAuthorize(authAct.webAuth, authAct.scopes);
+  };
   createEffect(() => {
     if (!authAct.isAuthenticated()) {
       authAct.login();
@@ -18,11 +23,7 @@ const AuthorizedAccess: ParentComponent<AuthorizedAccessProps> = (props) => {
     <Show when={authAct.isInitialized()}>
       <Show
         when={authAct.isAuthenticated()}
-        fallback={
-          props.fallback ?? (
-            <Button onClick={async () => await authAct.authorize()}>Login</Button>
-          )
-        }
+        fallback={props.fallback ?? <Button onClick={loginAction}>Login</Button>}
       >
         <Show when={authState.accessToken.length > 0}>{props.children}</Show>
       </Show>

@@ -1,17 +1,17 @@
 import { A } from '@solidjs/router';
+import { clientOnly } from '@solidjs/start';
 import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
-import { useAuth0 } from '~/providers/auth';
 import { useThemeContext } from '~/providers/theme';
+const AuthNav = clientOnly(() => import('./auth-nav'));
 
 type PrimaryNavigationProps = {
   darkMode?: boolean | undefined;
 };
 
 const PrimaryNavigation: Component<PrimaryNavigationProps> = (props) => {
-  const [authState, authAct] = useAuth0();
   const layoutContext = useThemeContext();
   const handleToggleSessionLayout = () => {
     layoutContext.darkMode = !layoutContext.darkMode;
@@ -45,18 +45,12 @@ const PrimaryNavigation: Component<PrimaryNavigationProps> = (props) => {
               Websites
             </Nav.Link>
             <div style={{ 'margin-left': 'auto' }}></div>
-            {/* <Nav.Link onClick={async () => await authAct.authorize()}>Login</Nav.Link> */}
             <NavDropdown title="Account" menuVariant={bg()}>
               <NavDropdown.Item as={A} href="/users/profile">
                 Profile
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={async () => await authAct.authorize()}>
-                Login
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={async () => await authAct.logout()}>
-                Logout
-              </NavDropdown.Item>
+              <AuthNav />
             </NavDropdown>
             <Nav.Link onClick={() => handleToggleSessionLayout()}>
               <Switch>
