@@ -1,6 +1,6 @@
 import { cache, redirect } from '@solidjs/router';
 import { getRequestEvent } from 'solid-js/web';
-import { getCookie } from 'vinxi/server';
+import { parseCookies } from 'vinxi/server';
 import {
   AuthConfig,
   AuthorizedUser,
@@ -15,10 +15,11 @@ export const getCurrentUserOrGuest = cache(async () => {
   'use server';
   let currentUser: CurrentUser = defaultGuestUser;
   try {
-    const cookie = getCookie(getRequestEvent()!, 'gcapi_auth');
-    const parsed = JSON.parse(
-      cookie ?? JSON.stringify(defaultAuthConfig)
-    ) as AuthConfig;
+    const event = getRequestEvent();
+    const cookies = parseCookies(event!);
+    const parsed: AuthConfig = cookies['gcapi_auth']
+      ? JSON.parse(cookies['gcapi_auth'])
+      : defaultAuthConfig;
     OpenAPI.TOKEN = parsed.accessToken;
     currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
   } catch (err: ApiError | Error | any) {
@@ -31,10 +32,11 @@ export const getCurrentUserOrLogin = cache(async () => {
   'use server';
   let currentUser: CurrentUser;
   try {
-    const cookie = getCookie(getRequestEvent()!, 'gcapi_auth');
-    const parsed = JSON.parse(
-      cookie ?? JSON.stringify(defaultAuthConfig)
-    ) as AuthConfig;
+    const event = getRequestEvent();
+    const cookies = parseCookies(event!);
+    const parsed: AuthConfig = cookies['gcapi_auth']
+      ? JSON.parse(cookies['gcapi_auth'])
+      : defaultAuthConfig;
     OpenAPI.TOKEN = parsed.accessToken;
     currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
   } catch (err: ApiError | Error | any) {

@@ -10,8 +10,8 @@ import {
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { OpenAPI } from '~/shared/api';
-import { log, logError, setClientCookie } from '~/shared/utils';
-import { AUTH_COOKIE_MAX_AGE, defaultAuthConfig } from './constants';
+import { log, logError } from '~/shared/utils';
+import { defaultAuthConfig } from './constants';
 import {
   AuthConfig,
   AuthConfigActions,
@@ -124,12 +124,12 @@ export const AuthProvider = (props: AuthConfigProps) => {
     if (import.meta.env.VITE_DEBUG) log('Setting OpenAPI token...');
     OpenAPI.TOKEN = await auth.accessToken;
   });
-  // Save cookie
-  createEffect(() => {
-    const serialized = JSON.stringify(auth);
-    setClientCookie('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
-    if (import.meta.env.VITE_DEBUG) log('Set client auth cookie...');
-  });
+  // // Save cookie
+  // createEffect(() => {
+  //   const serialized = JSON.stringify(auth);
+  //   setClientCookie('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
+  //   if (import.meta.env.VITE_DEBUG) log('Set client auth cookie...');
+  // });
   // Set state & return context provider
   const state: AuthContextProvider = [auth, actions];
   return (

@@ -1,6 +1,6 @@
 import { cache } from '@solidjs/router';
 import { getRequestEvent } from 'solid-js/web';
-import { getCookie } from 'vinxi/server';
+import { parseCookies } from 'vinxi/server';
 import { AuthConfig, defaultAuthConfig } from '~/providers/auth';
 import {
   ApiError,
@@ -19,10 +19,11 @@ export const ssrFetchWebsitesList = cache(
     'use server';
     let websites: Paginated_WebsiteRead_ = defaultPagination;
     try {
-      const cookie = getCookie(getRequestEvent()!, 'gcapi_auth');
-      const parsed = JSON.parse(
-        cookie ?? JSON.stringify(defaultAuthConfig)
-      ) as AuthConfig;
+      const event = getRequestEvent();
+      const cookies = parseCookies(event!);
+      const parsed: AuthConfig = cookies['gcapi_auth']
+        ? JSON.parse(cookies['gcapi_auth'])
+        : defaultAuthConfig;
       OpenAPI.TOKEN = parsed.accessToken;
       websites = await WebsitesService.websitesListApiV1WebsitesGet({
         page: page,
