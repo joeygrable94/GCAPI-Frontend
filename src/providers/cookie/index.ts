@@ -1,15 +1,21 @@
-import { AuthConfig, defaultAuthConfig } from '~/providers/auth';
+import { AuthConfig, CurrentUser } from '~/providers/auth';
+import { useAuthCookie } from '~/providers/auth/session';
+import { useDarkModeCookie } from '~/providers/theme/session';
+import { useUserCookie } from '~/providers/user/session';
 
 type CookieConfig = {
+  darkMode: boolean;
   auth: AuthConfig;
-  darkMode: boolean | undefined;
+  user: CurrentUser;
 };
 
 export function useCookieConfig(): CookieConfig {
-  const authCookie = defaultAuthConfig;
-  const darkModeCookie = false;
+  const darkModeCookie = useDarkModeCookie();
+  const authCookie = useAuthCookie();
+  const userCookie = useUserCookie();
   return {
+    darkMode: darkModeCookie,
     auth: authCookie,
-    darkMode: darkModeCookie
+    user: userCookie
   };
 }

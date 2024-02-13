@@ -9,8 +9,9 @@ import { createStore } from 'solid-js/store';
 import { isServer } from 'solid-js/web';
 import { AuthorizedUser, CurrentUser } from '~/providers/auth';
 import { UsersService } from '~/shared/api';
-import { log } from '~/shared/utils';
+import { log, setClientCookie } from '~/shared/utils';
 import { defaultGuestUser } from '../auth/constants';
+import { USER_COOKIE_MAX_AGE } from './constants';
 import { UserActions, UserConfigProps, UserContextProvider, UserState } from './types';
 import {
   getUserRole,
@@ -36,7 +37,9 @@ export const UserProvider = (props: UserConfigProps) => {
     () => !isUserGuest(),
     async () => {
       try {
-        return (await UsersService.usersCurrentApiV1UsersMeGet()) as AuthorizedUser;
+        let user = (await UsersService.usersCurrentApiV1UsersMeGet()) as AuthorizedUser;
+        log('UserProvider user...', user);
+        return user;
       } catch (error) {
         return defaultGuestUser;
       }
@@ -83,6 +86,13 @@ export const UserProvider = (props: UserConfigProps) => {
       return;
     }
     setIsUserGuest(isGuest(currentUser() as CurrentUser));
+  });
+  // Save cookie
+  createEffect(() => {
+    log('user state...', state.user);
+    const serialized = JSON.stringify(state.user);
+    setClientCookie('gcapi_user', serialized, USER_COOKIE_MAX_AGE);
+    if (import.meta.env.VITE_DEBUG) log('Set client user cookie...');
   });
   return (
     <UserConfigContext.Provider value={store}>
