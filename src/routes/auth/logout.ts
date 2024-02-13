@@ -1,11 +1,9 @@
 'use server';
 import { APIEvent } from '@solidjs/start/server/types';
-import { sendRedirect } from 'vinxi/server';
-import { getSession } from '~/shared/server/session';
+import { sendRedirect, setCookie } from 'vinxi/server';
+import { defaultAuthConfig } from '~/providers/auth';
 
 export async function GET(event: APIEvent) {
-  const session = await getSession();
-  console.log(session.id, session.data);
-  await session.clear();
+  setCookie(event, 'gcapi_auth', JSON.stringify(defaultAuthConfig));
   return sendRedirect(event, '/login', 302);
 }

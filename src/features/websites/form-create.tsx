@@ -4,7 +4,7 @@ import { Button, Form } from 'solid-bootstrap';
 import { Component, Setter } from 'solid-js';
 import { z } from 'zod';
 import { FormFieldInfo } from '~/features/data-forms';
-import { useLayoutContext } from '~/providers/theme';
+import { useThemeContext } from '~/providers/theme';
 import { ApiError, WebsitesService } from '~/shared/api';
 import { log, logError } from '~/shared/utils';
 
@@ -13,7 +13,7 @@ type FormCreateWebsiteProps = {
 };
 
 const FormCreateWebsite: Component<FormCreateWebsiteProps> = (props) => {
-  const layout = useLayoutContext();
+  const layout = useThemeContext();
   const Frm = createForm(() => ({
     defaultValues: {
       domain: '',

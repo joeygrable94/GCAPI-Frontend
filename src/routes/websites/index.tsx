@@ -12,7 +12,7 @@ export const route = {
 
 const Websites = (props: RouteSectionProps) => {
   const page = () => +props.location.query.page || 1;
-  const size = () => +props.location.query.page || 1;
+  const size = () => +props.location.query.page || 10;
   const clientId = () => +props.location.query.clientId || null;
   const data = createAsync(() => ssrFetchWebsitesList(page(), size(), null));
   return (

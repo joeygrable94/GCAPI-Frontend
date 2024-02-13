@@ -3,10 +3,26 @@ import { createMutable } from 'solid-js/store';
 import { isServer } from 'solid-js/web';
 import { getClientCookie, setClientCookie } from '~/shared/utils';
 import { THEME_COOKIE_MAX_AGE } from './constants';
-import { InputLayoutOptions, LayoutOptions } from './types';
+import { InputThemeOptions, ThemeOptions } from './types';
 
-export function isSysLayoutDark() {
+export function isSysThemeDark() {
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+export const defaultThemeOptions: ThemeOptions = {
+  darkMode: isServer ? false : getSavedDarkMode() ?? isSysThemeDark()
+};
+
+const ThemeContext = createContext(defaultThemeOptions);
+
+export function createThemeMutable(input: InputThemeOptions) {
+  return createMutable({
+    darkMode: input.darkMode ?? defaultThemeOptions.darkMode
+  }) as ThemeOptions;
+}
+
+export function useThemeContext() {
+  return useContext(ThemeContext);
 }
 
 export function saveDarkMode(value: boolean) {
@@ -19,20 +35,4 @@ export function getSavedDarkMode() {
   return false;
 }
 
-export const defaultLayoutOptions: LayoutOptions = {
-  darkMode: isServer ? false : getSavedDarkMode() ?? isSysLayoutDark()
-};
-
-const LayoutContext = createContext(defaultLayoutOptions);
-
-export function createLayoutMutable(input: InputLayoutOptions) {
-  return createMutable({
-    darkMode: input.darkMode ?? defaultLayoutOptions.darkMode
-  }) as LayoutOptions;
-}
-
-export function useLayoutContext() {
-  return useContext(LayoutContext);
-}
-
-export default LayoutContext;
+export default ThemeContext;

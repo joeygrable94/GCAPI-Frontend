@@ -1,22 +1,30 @@
 import { StartServer, createHandler } from '@solidjs/start/server';
+import { useCookieConfig } from './providers/cookie';
 
 export default createHandler(() => (
   <StartServer
-    document={({ assets, children, scripts }) => (
-      <html lang="en">
-        <head>
-          <meta charset="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/favicon.ico" />
-          {assets}
-        </head>
-        <body>
-          <div id="app" class="viewport-height">
-            {children}
-          </div>
-          {scripts}
-        </body>
-      </html>
-    )}
+    document={({ assets, children, scripts }) => {
+      const cookies = useCookieConfig();
+      return (
+        <html lang="en" data-bs-theme={cookies.darkMode ? 'dark' : 'light'}>
+          <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="icon" href="/favicon.ico" />
+            {assets}
+          </head>
+          <body data-bs-theme={cookies.darkMode ? 'dark' : 'light'}>
+            <div
+              id="app"
+              class="viewport-height"
+              data-bs-theme={cookies.darkMode ? 'dark' : 'light'}
+            >
+              {children}
+            </div>
+            {scripts}
+          </body>
+        </html>
+      );
+    }}
   />
 ));

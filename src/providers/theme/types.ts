@@ -1,7 +1,7 @@
-export type InputLayoutOptions = {
+export type InputThemeOptions = {
   darkMode?: boolean;
 };
 
-export type LayoutOptions = {
+export type ThemeOptions = {
   darkMode: boolean;
 };

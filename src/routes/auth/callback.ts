@@ -1,13 +1,11 @@
 'use server';
 import { APIEvent } from '@solidjs/start/server/types';
-import { parseCookies, sendRedirect } from 'vinxi/server';
+import { parseCookies, sendRedirect, setCookie } from 'vinxi/server';
+import { defaultAuthConfig } from '~/providers/auth';
 import { completeAuthorizationRequest } from '~/providers/auth/utils';
-import { UserSessionData, getSession } from '~/shared/server/session';
-import { log, logError } from '~/shared/utils';
+import { logError } from '~/shared/utils';
 
 export async function GET(event: APIEvent) {
-  const session = await getSession();
-  console.log(session.id, session.data);
   const url = new URL(event.request.url);
   const code: string | null = url.searchParams.get('code');
   const state: string | null = url.searchParams.get('state');
@@ -21,20 +19,9 @@ export async function GET(event: APIEvent) {
   );
   if (!isAuthenticated) {
     logError('Auth state is not valid');
-    await session.clear();
+    setCookie(event, 'gcapi_auth', JSON.stringify(defaultAuthConfig));
     return sendRedirect(event, '/login', 401);
-  } else {
-    const newSession = {
-      accessToken: authState.accessToken,
-      refreshToken: authState.refreshToken,
-      tokenType: authState.tokenType,
-      idToken: authState.idToken
-    } as UserSessionData;
-    await session.update((d: UserSessionData) => {
-      log('Updating session data', d, newSession);
-      d = newSession;
-      return d;
-    });
   }
+  setCookie(event, 'gcapi_auth', JSON.stringify(authState));
   return sendRedirect(event, '/', 302);
 }

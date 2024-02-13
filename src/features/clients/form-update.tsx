@@ -4,7 +4,7 @@ import { Button, Form } from 'solid-bootstrap';
 import { Component, Setter } from 'solid-js';
 import { z } from 'zod';
 import { FormFieldInfo } from '~/features/data-forms';
-import { useLayoutContext } from '~/providers/theme';
+import { useThemeContext } from '~/providers/theme';
 import { ApiError, ClientRead, ClientUpdate, ClientsService } from '~/shared/api';
 import { log, logError } from '~/shared/utils';
 
@@ -14,7 +14,7 @@ type FormEditClientProps = {
 };
 
 const FormEditClient: Component<FormEditClientProps> = (props) => {
-  const layout = useLayoutContext();
+  const layout = useThemeContext();
   const Frm = createForm(() => ({
     defaultValues: {
       title: props.client.title,

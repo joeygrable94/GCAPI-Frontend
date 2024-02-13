@@ -6,16 +6,16 @@ type ToggleDarkModeProps = {};
 type ThemeMode = 'light' | 'dark';
 
 const ToggleDarkMode: Component<ToggleDarkModeProps> = (props) => {
-  const layoutContext = useThemeContext();
-  const handleToggleSessionLayout = () => {
-    layoutContext.darkMode = !layoutContext.darkMode;
-    saveDarkMode(layoutContext.darkMode);
+  const themeContext = useThemeContext();
+  const handleToggleSessionTheme = () => {
+    themeContext.darkMode = !themeContext.darkMode;
+    saveDarkMode(themeContext.darkMode);
   };
   const themeText = createMemo<ThemeMode>(() => {
-    return layoutContext.darkMode === true ? 'light' : 'dark';
+    return themeContext.darkMode === true ? 'light' : 'dark';
   });
   return (
-    <Button onClick={() => handleToggleSessionLayout()}>
+    <Button onClick={() => handleToggleSessionTheme()}>
       Toggle {themeText()} mode
     </Button>
   );

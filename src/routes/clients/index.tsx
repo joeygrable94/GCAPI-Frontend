@@ -11,7 +11,7 @@ export const route = {
 
 const Clients = (props: RouteSectionProps) => {
   const page = () => +props.location.query.page || 1;
-  const size = () => +props.location.query.page || 1;
+  const size = () => +props.location.query.page || 10;
   const data = createAsync(() => ssrFetchClientsList(page(), size()));
   return (
     <main>

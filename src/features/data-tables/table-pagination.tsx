@@ -8,7 +8,7 @@ import {
   chevronRight
 } from 'solid-heroicons/outline';
 import { Accessor, Show } from 'solid-js';
-import { useLayoutContext } from '~/providers/theme';
+import { useThemeContext } from '~/providers/theme';
 
 /**
  * @summary Filter component for table columns.
@@ -20,7 +20,7 @@ export function TablePagination({
   table: Table<any>;
   maximum: Accessor<number>;
 }) {
-  const layout = useLayoutContext();
+  const layout = useThemeContext();
   const displayPageSizeInterval = [10, 20, 30, 40, 50, 100, 1000];
   const handleChangePageSize = (e: any) => {
     table.setPageSize(Number(e.target.value));

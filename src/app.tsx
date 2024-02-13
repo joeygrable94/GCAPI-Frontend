@@ -2,21 +2,26 @@
 import { Link, MetaProvider, Title } from '@solidjs/meta';
 import { Router } from '@solidjs/router';
 import { FileRoutes } from '@solidjs/start';
+import { QueryClientProvider } from '@tanstack/solid-query';
+import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
+import { Container } from 'solid-bootstrap';
 import { ErrorBoundary, Suspense, onMount } from 'solid-js';
 import { Toaster } from 'solid-toast';
-import { AuthProvider, defaultAuthConfig } from '~/providers/auth';
-import { MainLayout } from '~/providers/layout';
-import { QueryProvider } from '~/providers/tanstack-query';
+import { PrimaryNavigation } from '~/features/nav';
+import { AuthProvider } from '~/providers/auth';
+import { useCookieConfig } from '~/providers/cookie';
+import { ThemeProvider } from '~/providers/theme';
+import { queryClient } from '~/shared/lib/tanstack-query';
 import '~/shared/sass/index.scss';
 import { viewportHeightStyles } from '~/shared/utils';
 
 export default function App() {
-  // const cookies = useCookieConfig();
+  const cookies = useCookieConfig();
   onMount(() => viewportHeightStyles());
   return (
-    <QueryProvider>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider
-        initialAuth={defaultAuthConfig}
+        initialAuth={cookies.auth}
         domain={import.meta.env.VITE_AUTH0_DOMAIN}
         clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
         audience={import.meta.env.VITE_AUTH0_AUDIENCE}
@@ -39,15 +44,20 @@ export default function App() {
                   crossorigin="anonymous"
                 />
                 <Suspense>
-                  <ErrorBoundary fallback={<>Main Layout Error</>}>
-                    <MainLayout darkMode={false}>
-                      <Suspense>
-                        <ErrorBoundary fallback={<>Page Route Error</>}>
-                          {props.children}
+                  <ErrorBoundary fallback={<>Theme Provider Error</>}>
+                    <ThemeProvider darkMode={cookies.darkMode}>
+                      <Suspense fallback={<div>Loading...</div>}>
+                        <ErrorBoundary fallback={<>Primary Navigation Error</>}>
+                          <PrimaryNavigation darkMode={cookies.darkMode} />
                         </ErrorBoundary>
                       </Suspense>
-                      <Toaster position="bottom-right" />
-                    </MainLayout>
+                      <Suspense fallback={<div>Loading...</div>}>
+                        <ErrorBoundary fallback={<>Route Children Error</>}>
+                          <Container>{props.children}</Container>
+                        </ErrorBoundary>
+                      </Suspense>
+                    </ThemeProvider>
+                    <Toaster position="bottom-right" />
                   </ErrorBoundary>
                 </Suspense>
               </MetaProvider>
@@ -57,6 +67,7 @@ export default function App() {
           <FileRoutes />
         </Router>
       </AuthProvider>
-    </QueryProvider>
+      <SolidQueryDevtools />
+    </QueryClientProvider>
   );
 }
