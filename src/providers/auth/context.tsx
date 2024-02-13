@@ -124,6 +124,12 @@ export const AuthProvider = (props: AuthConfigProps) => {
     if (import.meta.env.VITE_DEBUG) log('Setting OpenAPI token...');
     OpenAPI.TOKEN = await auth.accessToken;
   });
+  // // Save cookie
+  // createEffect(() => {
+  //   const serialized = JSON.stringify(auth);
+  //   setClientCookie('gcapi_auth', serialized, AUTH_COOKIE_MAX_AGE);
+  //   if (import.meta.env.VITE_DEBUG) log('Set client auth cookie...');
+  // });
   // Set state & return context provider
   const state: AuthContextProvider = [auth, actions];
   return (

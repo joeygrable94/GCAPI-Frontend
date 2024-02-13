@@ -1,5 +1,6 @@
 import { getRequestEvent, isServer } from 'solid-js/web';
-import { getClientCookie, parseCookieByName } from '~/shared/utils';
+import { parseCookies } from 'vinxi/server';
+import { getClientCookie } from '~/shared/utils';
 import { defaultAuthConfig } from './constants';
 import { AuthConfig } from './types';
 
@@ -11,12 +12,9 @@ export function useAuthCookie(name: string = 'gcapi_auth'): AuthConfig {
       auth = JSON.parse(authcookie) as AuthConfig;
     }
   } else {
-    let event = getRequestEvent();
-    let cookie = parseCookieByName<AuthConfig>(
-      event?.request.headers.get('cookie') || '',
-      name
-    );
-    auth = cookie ? cookie : defaultAuthConfig;
+    const event = getRequestEvent();
+    const cookies = parseCookies(event!);
+    auth = cookies[name] ? JSON.parse(cookies[name]) : defaultAuthConfig;
   }
   return auth;
 }
