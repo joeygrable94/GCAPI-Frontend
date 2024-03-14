@@ -30,7 +30,6 @@ const setViewportHeight = () => {
 };
 
 const viewportHeightStyles = () => {
-  import('./viewport-height.css');
   setViewportHeight();
   onMount(() => {
     window.addEventListener('resize', setViewportHeight);

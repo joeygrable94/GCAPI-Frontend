@@ -51,3 +51,12 @@ body {
 .clickable tr {
   cursor: pointer;
 }
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+  z-index: -9999999 !important;
+}
+
+.carousel-indicators [data-bs-target] {
+  background-color: var(--bs-body-color) !important;
+}

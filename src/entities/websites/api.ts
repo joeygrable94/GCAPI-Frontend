@@ -8,7 +8,7 @@ import {
   Paginated_WebsiteRead_,
   WebsitesService
 } from '~/shared/api';
-import { defaultPagination } from '~/shared/lib/tanstack-query';
+import { defaultPagination } from '~/shared/tanstack';
 import { logError } from '~/shared/utils';
 
 /**
@@ -17,7 +17,10 @@ import { logError } from '~/shared/utils';
 export const ssrFetchWebsitesList = cache(
   async (page: number = 1, size: number = 10, clientId: string | null) => {
     'use server';
-    let websites: Paginated_WebsiteRead_ = defaultPagination;
+    let websites: Paginated_WebsiteRead_ = defaultPagination<Paginated_WebsiteRead_>(
+      page,
+      size
+    );
     try {
       const event = getRequestEvent();
       const cookies = parseCookies(event!);
@@ -58,6 +61,6 @@ export async function fetchWebsitesList<QueryFunction>(
     return response;
   } catch (err: ApiError | Error | any) {
     logError('Error fetching users list:', err.message);
-    return defaultPagination;
+    return defaultPagination<Paginated_WebsiteRead_>(page, size);
   }
 }

@@ -1,24 +1,21 @@
 {
-  "compilerOptions": {
-    "strict": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    // "noUncheckedIndexedAccess": true,
-    "esModuleInterop": true,
-    "jsx": "preserve",
-    "jsxImportSource": "solid-js",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["vinxi/client", "vite/client", "node"],
-    "noEmit": true,
-    "isolatedModules": true,
-    "allowJs": true,
-    "baseUrl": "./",
-    "paths": {
-      "~/*": ["src/*"]
+		"jsx": "preserve",
+		"jsxImportSource": "solid-js",
+		"allowJs": true,
+		"strict": true,
+		"noEmit": true,
+		"types": ["vinxi/client", "vite/client"],
+		"isolatedModules": true,
+		"paths": {
+      "~/*": ["./src/*"]
     }
-  },
-  "include": ["./src/**/*", "./vite.config.ts"],
+	},
   "exclude": ["node_modules/"]
 }

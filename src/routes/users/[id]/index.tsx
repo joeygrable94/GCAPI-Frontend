@@ -1,7 +1,7 @@
 import { RouteDefinition, createAsync, useParams } from '@solidjs/router';
 import { Component, Show } from 'solid-js';
 import { ssrFetchUserById } from '~/entities/users';
-import { UserProfileCard } from '~/widgets/users';
+import { UserProfileCard } from '~/entities/users/ui';
 
 export const route = {
   load({ params }) {

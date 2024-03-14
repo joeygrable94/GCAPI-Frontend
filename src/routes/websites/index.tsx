@@ -1,8 +1,8 @@
 import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
 import { ssrFetchClientsList } from '~/entities/clients';
 import { ssrFetchWebsitesList } from '~/entities/websites';
+import { WebsitesDataTable } from '~/entities/websites/ui';
 import { ActionsMenuWebsites } from '~/features/websites';
-import { WebsitesDataTable } from '~/widgets/websites';
 
 export const route = {
   load({ location, params }) {

@@ -1,6 +1,6 @@
 import { Nav } from 'solid-bootstrap';
 import { Component, createSignal } from 'solid-js';
-import { ModalCreateWebsite } from '~/widgets/websites';
+import { ModalCreateWebsite } from '~/entities/websites/ui';
 
 type ActionsMenuWebsitesProps = {};
 

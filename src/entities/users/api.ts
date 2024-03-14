@@ -12,7 +12,7 @@ import {
   UserReadAsManager,
   UsersService
 } from '~/shared/api';
-import { defaultPagination } from '~/shared/lib/tanstack-query';
+import { defaultPagination } from '~/shared/tanstack';
 import { logError } from '~/shared/utils';
 
 /**
@@ -58,7 +58,10 @@ export async function fetchUsersList<QueryFunction>(
     return response;
   } catch (err: ApiError | Error | any) {
     logError('Error fetching users list:', err.message);
-    return defaultPagination;
+    return defaultPagination<Paginated_UserReadAsAdmin_ | Paginated_UserReadAsManager_>(
+      page,
+      size
+    );
   }
 }
 
