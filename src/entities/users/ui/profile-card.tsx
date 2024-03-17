@@ -1,6 +1,6 @@
 import { Card } from 'solid-bootstrap';
 import { Component } from 'solid-js';
-import { AuthorizedUser } from '~/providers/auth';
+import { AuthorizedUser } from '~/features/auth';
 import { formatDateString } from '~/shared/utils';
 
 type UserProfileCardProps = {

@@ -1,3 +1,2 @@
-export * from './table-column-filter';
-export * from './table-pagination';
-export * from './table-reset-filter';
+export * from './model';
+export * from './ui';

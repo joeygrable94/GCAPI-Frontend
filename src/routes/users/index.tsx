@@ -1,6 +1,6 @@
 import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
 import { ssrFetchUsersList } from '~/entities/users';
-import { UsersDataTable } from '~/entities/users/ui';
+import { UsersDataTable } from '~/widgets/data-tables';
 
 export const route = {
   load({ location, params }) {

@@ -1,17 +1,17 @@
 // @refresh reload
 import { Link, MetaProvider, Title } from '@solidjs/meta';
 import { Router } from '@solidjs/router';
-import { FileRoutes } from '@solidjs/start';
+import { FileRoutes } from '@solidjs/start/router';
 import { QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
 import { Container } from 'solid-bootstrap';
 import { ErrorBoundary, Suspense, onMount } from 'solid-js';
 import { isServer } from 'solid-js/web';
 import { Toaster } from 'solid-toast';
-import { AuthProvider } from '~/providers/auth';
-import { useClientCookieConfig } from '~/providers/cookie/config.client';
-import { useServerCookieConfig } from '~/providers/cookie/config.server';
-import { ThemeProvider } from '~/providers/theme';
+import { AuthProvider } from '~/features/auth';
+import { useClientCookieConfig } from '~/features/cookie/config.client';
+import { useServerCookieConfig } from '~/features/cookie/config.server';
+import { ThemeProvider } from '~/features/theme';
 import '~/shared/sass/index.scss';
 import { queryClient } from '~/shared/tanstack';
 import { viewportHeightStyles } from '~/shared/utils';

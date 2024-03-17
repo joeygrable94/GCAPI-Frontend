@@ -1,6 +1,6 @@
 import { clientOnly } from '@solidjs/start';
 import { Component } from 'solid-js';
-const LoginButton = clientOnly(() => import('../features/auth/login'));
+const LoginButton = clientOnly(() => import('~/features/auth/ui/login.button'));
 
 const Login: Component = () => {
   return (

@@ -1,7 +1,6 @@
 import { cache, redirect } from '@solidjs/router';
-import { getRequestEvent } from 'solid-js/web';
-import { parseCookies } from 'vinxi/http';
-import { AuthConfig, defaultAuthConfig } from '~/providers/auth';
+import { AuthConfig, defaultAuthConfig } from '~/features/auth';
+import { getServerCookie } from '~/features/cookie/session.server';
 import {
   ApiError,
   ClientRead,
@@ -23,11 +22,8 @@ export const ssrFetchClientsList = cache(async (page: number, size: number) => {
     results: []
   };
   try {
-    const event = getRequestEvent();
-    const cookies = parseCookies(event!);
-    const parsed: AuthConfig = cookies['gcapi_auth']
-      ? JSON.parse(cookies['gcapi_auth'])
-      : defaultAuthConfig;
+    const cookie = getServerCookie('gcapi_auth');
+    const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
     OpenAPI.TOKEN = await parsed.accessToken;
     clients = await ClientsService.clientsListApiV1ClientsGet({
       page,
@@ -46,11 +42,8 @@ export const ssrFetchClientById = cache(async (id: string) => {
   'use server';
   let client: ClientRead;
   try {
-    const event = getRequestEvent();
-    const cookies = parseCookies(event!);
-    const parsed: AuthConfig = cookies['gcapi_auth']
-      ? JSON.parse(cookies['gcapi_auth'])
-      : defaultAuthConfig;
+    const cookie = getServerCookie('gcapi_auth');
+    const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
     OpenAPI.TOKEN = await parsed.accessToken;
     client = await ClientsService.clientsReadApiV1ClientsClientIdGet({ clientId: id });
   } catch (err: ApiError | Error | any) {

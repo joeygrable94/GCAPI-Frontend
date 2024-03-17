@@ -1,16 +1,19 @@
 'use server';
-import { APIEvent } from '@solidjs/start/server/types';
-import { parseCookies, sendRedirect, setCookie } from 'vinxi/http';
-import { defaultAuthConfig } from '~/providers/auth';
-import { completeAuthorizationRequest } from '~/providers/auth/utils';
+import { redirect } from '@solidjs/router';
+import { APIHandler } from '@solidjs/start/server';
+import { completeAuthorizationRequest, defaultAuthConfig } from '~/features/auth';
+import { getServerCookie, setServerCookie } from '~/features/cookie/session.server';
 import { logError } from '~/shared/utils';
 
-export async function GET(event: APIEvent) {
+export const GET: APIHandler = async (event) => {
   const url = new URL(event.request.url);
   const code: string | null = url.searchParams.get('code');
   const state: string | null = url.searchParams.get('state');
-  const cookies = parseCookies(event);
-  const verification = JSON.parse(cookies[`com.auth0.auth.${state}`]);
+  const cookie = getServerCookie(`com.auth0.auth.${state}`);
+  if (!cookie) {
+    return redirect('/login', 401);
+  }
+  const verification = JSON.parse(cookie);
   const [isAuthenticated, authState] = await completeAuthorizationRequest(
     code,
     state,
@@ -19,9 +22,9 @@ export async function GET(event: APIEvent) {
   );
   if (!isAuthenticated) {
     logError('Auth state is not valid');
-    setCookie(event, 'gcapi_auth', JSON.stringify(defaultAuthConfig));
-    return sendRedirect(event, '/login', 401);
+    setServerCookie('gcapi_auth', JSON.stringify(defaultAuthConfig));
+    return redirect('/login', 401);
   }
-  setCookie(event, 'gcapi_auth', JSON.stringify(authState));
-  return sendRedirect(event, '/', 302);
-}
+  setServerCookie('gcapi_auth', JSON.stringify(authState));
+  return redirect('/', 302);
+};

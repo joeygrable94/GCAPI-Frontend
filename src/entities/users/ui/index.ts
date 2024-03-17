@@ -1,3 +1,3 @@
-export { default as ModalEditUser } from './modal-update';
+export { default as UsersActionsMenu } from './action-menu';
 export { default as UserProfileCard } from './profile-card';
-export { default as UsersDataTable } from './table-users';
+export { default as UserProfilePicturePreview } from './profile-picture-preview';

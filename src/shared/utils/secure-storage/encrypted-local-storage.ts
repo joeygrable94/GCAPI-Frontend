@@ -1,7 +1,7 @@
 import AES from 'crypto-js/aes';
 import encUTF8 from 'crypto-js/enc-utf8';
 import ls from 'localstorage-slim';
-import { once } from '../global';
+import { once } from '~/shared/utils';
 
 /**
  * @summary creates a secure localstorage instance

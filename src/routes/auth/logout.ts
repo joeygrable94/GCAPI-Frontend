@@ -1,9 +1,10 @@
 'use server';
-import { APIEvent } from '@solidjs/start/server/types';
-import { sendRedirect, setCookie } from 'vinxi/http';
-import { defaultAuthConfig } from '~/providers/auth';
+import { redirect } from '@solidjs/router';
+import { APIHandler } from '@solidjs/start/server';
+import { defaultAuthConfig } from '~/features/auth';
+import { setServerCookie } from '~/features/cookie/session.server';
 
-export async function GET(event: APIEvent) {
-  setCookie(event, 'gcapi_auth', JSON.stringify(defaultAuthConfig));
-  return sendRedirect(event, '/login', 302);
-}
+export const GET: APIHandler = async (event) => {
+  setServerCookie('gcapi_auth', JSON.stringify(defaultAuthConfig));
+  return redirect('/login', 302);
+};

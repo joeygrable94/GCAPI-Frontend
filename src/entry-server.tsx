@@ -1,5 +1,5 @@
 import { StartServer, createHandler } from '@solidjs/start/server';
-import { useServerCookieConfig } from '~/providers/cookie/config.server';
+import { useServerCookieConfig } from '~/features/cookie/config.server';
 
 export default createHandler(() => (
   <StartServer

@@ -1,7 +1,6 @@
 /*
 import { Badge, CloseButton, Stack } from 'solid-bootstrap';
 import { Component } from 'solid-js';
-import { useFinancialState } from '~/providers/financials';
 import { BankRead, TagRead } from '~/shared/api';
 
 interface IBankTagBadgeProps {

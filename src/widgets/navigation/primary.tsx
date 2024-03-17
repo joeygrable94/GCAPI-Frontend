@@ -1,10 +1,8 @@
 import { A } from '@solidjs/router';
 import { clientOnly } from '@solidjs/start';
 import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
-import { Icon } from 'solid-heroicons';
-import { moon, sun } from 'solid-heroicons/outline';
-import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
-import { useThemeContext } from '~/providers/theme';
+import { Component, createEffect, createSignal } from 'solid-js';
+import { NavlinkToggleDarkMode, useThemeContext } from '~/features/theme';
 const AuthNav = clientOnly(() => import('./auth-nav'));
 
 type PrimaryNavigationProps = {
@@ -52,16 +50,7 @@ const PrimaryNavigation: Component<PrimaryNavigationProps> = (props) => {
               <NavDropdown.Divider />
               <AuthNav />
             </NavDropdown>
-            <Nav.Link onClick={() => handleToggleSessionLayout()}>
-              <Switch>
-                <Match when={layoutContext.darkMode === true}>
-                  <Icon path={sun} style="width: 24px;" />
-                </Match>
-                <Match when={layoutContext.darkMode === false}>
-                  <Icon path={moon} style="width: 24px;" />
-                </Match>
-              </Switch>
-            </Nav.Link>
+            <NavlinkToggleDarkMode />
           </Nav>
         </Navbar.Collapse>
       </Container>

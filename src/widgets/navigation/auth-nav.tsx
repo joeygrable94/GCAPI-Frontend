@@ -1,8 +1,7 @@
 'use client';
 import { NavDropdown } from 'solid-bootstrap';
 import { Component } from 'solid-js';
-import { webAuthAuthorize, webAuthLogout } from '~/providers/auth/api.client';
-import { useAuth0 } from '~/providers/auth/context';
+import { useAuth0, webAuthAuthorize, webAuthLogout } from '~/features/auth';
 
 type AuthNavProps = {};
 
