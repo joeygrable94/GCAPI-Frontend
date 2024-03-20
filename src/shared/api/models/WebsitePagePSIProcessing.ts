@@ -5,7 +5,7 @@
 import type { WebsitePageRead } from './WebsitePageRead';
 export type WebsitePagePSIProcessing = {
   page: WebsitePageRead;
-  psi_mobile_task_id: string;
-  psi_desktop_task_id: string;
+  psi_mobile_task_id: (string | null);
+  psi_desktop_task_id: (string | null);
 };
 

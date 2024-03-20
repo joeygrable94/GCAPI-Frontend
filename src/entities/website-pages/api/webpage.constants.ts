@@ -1,0 +1,2 @@
+export const WEBSITEPAGE_PAGE_START = 1;
+export const WEBSITEPAGE_PAGE_SIZE = 1000;

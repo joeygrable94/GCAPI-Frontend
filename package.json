@@ -5,7 +5,7 @@
   "type": "module",
   "proxy": "http://localhost:8888",
   "scripts": {
-    "generate-client": "openapi --input http://0.0.0.0:8888/api/docs/openapi.json --output ./src/shared/api --useOptions --useUnionTypes --exportSchemas --indent 2 --client axios",
+    "generate-client": "openapi --input http://0.0.0.0:8888/api/docs/openapi.json --output ./src/shared/api --useOptions --useUnionTypes --exportSchemas true --indent 2 --client axios",
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "dev": "vinxi dev",
     "build": "vinxi build",

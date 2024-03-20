@@ -1,4 +1,9 @@
-import { ApiError, Paginated_WebsiteRead_, WebsitesService } from '~/shared/api';
+import {
+  ApiError,
+  Paginated_WebsiteRead_,
+  WebsiteRead,
+  WebsitesService
+} from '~/shared/api';
 import { defaultPagination } from '~/shared/tanstack';
 import { logError } from '~/shared/utils';
 
@@ -21,7 +26,27 @@ export async function fetchWebsitesList<QueryFunction>(
     });
     return response;
   } catch (err: ApiError | Error | any) {
-    logError('Error fetching users list:', err.message);
+    logError('Error fetching websites list:', err.message);
     return defaultPagination<Paginated_WebsiteRead_>(page, size);
+  }
+}
+
+/**
+ * @summary Fetches a website by ID on the client.
+ */
+export async function fetchWebsiteById<QueryFunction>(
+  queryContext: any
+): Promise<WebsiteRead | undefined> {
+  const queryKey = queryContext.queryKey;
+  const _key = queryKey[0];
+  const websiteId = queryKey[1];
+  try {
+    const response = await WebsitesService.websitesReadApiV1WebsitesWebsiteIdGet({
+      websiteId
+    });
+    return response;
+  } catch (err: ApiError | Error | any) {
+    logError('Error fetching website:', err.message);
+    return undefined;
   }
 }

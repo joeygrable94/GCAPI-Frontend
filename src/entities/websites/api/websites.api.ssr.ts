@@ -1,10 +1,11 @@
-import { cache } from '@solidjs/router';
+import { cache, redirect } from '@solidjs/router';
 import { AuthConfig, defaultAuthConfig } from '~/features/auth';
 import { getServerCookie } from '~/features/cookie/session.server';
 import {
   ApiError,
   OpenAPI,
   Paginated_WebsiteRead_,
+  WebsiteRead,
   WebsitesService
 } from '~/shared/api';
 import { defaultPagination } from '~/shared/tanstack';
@@ -36,3 +37,23 @@ export const ssrFetchWebsitesList = cache(
   },
   'ssrFetchWebsitesList'
 );
+
+/**
+ * @summary Fetches a website by ID on the server.
+ */
+export const ssrFetchWebsiteById = cache(async (id: string) => {
+  'use server';
+  let website: WebsiteRead;
+  try {
+    const cookie = getServerCookie('gcapi_auth');
+    const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
+    OpenAPI.TOKEN = await parsed.accessToken;
+    website = await WebsitesService.websitesReadApiV1WebsitesWebsiteIdGet({
+      websiteId: id
+    });
+  } catch (err: ApiError | Error | any) {
+    logError('Error fetching website:', err.message);
+    throw redirect('/404');
+  }
+  return website;
+}, 'ssrFetchWebsiteById');

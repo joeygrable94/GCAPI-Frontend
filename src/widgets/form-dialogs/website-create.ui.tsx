@@ -1,7 +1,9 @@
 import { createForm } from '@tanstack/solid-form';
+import { createQuery } from '@tanstack/solid-query';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Button, Col, Form, Row } from 'solid-bootstrap';
-import { Component, JSX, createSignal } from 'solid-js';
+import { Component, For, JSX, Show, createEffect, createSignal } from 'solid-js';
+import { fetchClientsList } from '~/entities/clients';
 import {
   IsValidWebsiteDomain,
   IsValidWebsiteIsActive,
@@ -10,8 +12,8 @@ import {
 } from '~/entities/websites';
 import { Dialog, DialogTriggerType } from '~/features/dialogs';
 import { FormFieldInfo } from '~/features/forms';
-import { WebsiteCreateProcessing, WebsitesService } from '~/shared/api';
-import { log } from '~/shared/utils';
+import { ClientsService, WebsiteCreateProcessing, WebsitesService } from '~/shared/api';
+import { log, logError } from '~/shared/utils';
 
 type WebsiteCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -24,31 +26,54 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
   const handleClose = () => setOpen(false);
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
+  const clientsQuery = createQuery(() => ({
+    queryKey: ['clients', 1, 1000],
+    queryFn: fetchClientsList
+  }));
+
+  createEffect(() => {
+    log('form submitted', isSubmitted());
+    log('form pending', pending());
+  });
 
   // form
   const Frm = createForm<SCreateWebsite, typeof zodValidator>(() => ({
     defaultValues: {
       domain: '',
       is_secure: true,
-      is_active: true
+      is_active: true,
+      client_id: ''
     },
     onSubmit: async ({ value, formApi }) => {
       setPending(true);
-      WebsitesService.websitesCreateApiV1WebsitesPost({
-        requestBody: value
-      })
-        .then((r: WebsiteCreateProcessing) => {
-          log('website created, processing website sitemap', r);
-          setIsSubmitted(true);
-          handleClose();
-        })
-        .catch((e) => {
-          log('error creating website', e);
-          setIsSubmitted(false);
-        })
-        .finally(() => {
-          setPending(false);
-        });
+      try {
+        let website: WebsiteCreateProcessing =
+          await WebsitesService.websitesCreateApiV1WebsitesPost({
+            requestBody: {
+              domain: value.domain,
+              is_secure: value.is_secure,
+              is_active: value.is_active
+            }
+          });
+        log('created website response', website);
+        try {
+          let clienWebsite =
+            await ClientsService.clientsAssignWebsiteApiV1ClientsClientIdWebsitePost({
+              clientId: value.client_id,
+              requestBody: {
+                client_id: value.client_id,
+                website_id: website.website.id
+              }
+            });
+          log('assigned website to client', clienWebsite);
+        } catch (e) {
+          logError('error assigning website to client', e);
+        }
+      } catch (e) {
+        logError('error creating website', e);
+      } finally {
+        setIsSubmitted(true);
+      }
     },
     validatorAdapter: zodValidator
   }));
@@ -172,6 +197,39 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
                         checked={field().state.value ?? true}
                         onInput={(e) => field().handleChange(e.target.checked)}
                       />
+                      <FormFieldInfo field={field()} />
+                    </>
+                  );
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} xs={12} class="mb-2">
+              <Frm.Field
+                name="client_id"
+                children={(field) => {
+                  return (
+                    <>
+                      <Form.Label class="mb-1">Assign Website to Client</Form.Label>
+                      <Form.Select
+                        id={field().name}
+                        name={field().name}
+                        value={field().state.value ?? ''}
+                        onChange={(e) => field().handleChange(e.target.value)}
+                        size="sm"
+                      >
+                        <Show when={clientsQuery.isSuccess}>
+                          <For each={clientsQuery.data?.results}>
+                            {(client) => (
+                              <option
+                                selected={field().state.value === client.id}
+                                value={client.id}
+                              >
+                                {client.title}
+                              </option>
+                            )}
+                          </For>
+                        </Show>
+                      </Form.Select>
                       <FormFieldInfo field={field()} />
                     </>
                   );

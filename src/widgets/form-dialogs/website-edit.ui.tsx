@@ -47,7 +47,6 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
         .then((r: WebsiteRead) => {
           log('updated website response', r);
           setIsSubmitted(true);
-          handleClose();
         })
         .catch((e) => {
           log('error updating website', e);
@@ -55,6 +54,7 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
         })
         .finally(() => {
           setPending(false);
+          handleClose();
         });
     },
     validatorAdapter: zodValidator

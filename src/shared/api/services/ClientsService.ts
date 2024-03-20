@@ -6,7 +6,9 @@ import type { ClientCreate } from '../models/ClientCreate';
 import type { ClientDelete } from '../models/ClientDelete';
 import type { ClientRead } from '../models/ClientRead';
 import type { ClientUpdate } from '../models/ClientUpdate';
+import type { ClientWebsiteCreate } from '../models/ClientWebsiteCreate';
 import type { Paginated_ClientRead_ } from '../models/Paginated_ClientRead_';
+import type { UserClientCreate } from '../models/UserClientCreate';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -176,6 +178,142 @@ export class ClientsService {
       path: {
         'client_id': clientId,
       },
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
+  /**
+   * Clients:Assign User
+   * Assigns a user to a client.
+   *
+   * Permissions:
+   * ------------
+   * `role=admin|manager` : ...
+   *
+   * Returns:
+   * --------
+   * `ClientRead` : the updated client
+   * @returns ClientRead Successful Response
+   * @throws ApiError
+   */
+  public static clientsAssignUserApiV1ClientsClientIdUserPost({
+    clientId,
+    requestBody,
+  }: {
+    clientId: any,
+    requestBody: UserClientCreate,
+  }): CancelablePromise<ClientRead> {
+    return __request(OpenAPI, {
+      method: 'POST',
+      url: '/api/v1/clients/{client_id}/user',
+      path: {
+        'client_id': clientId,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
+  /**
+   * Clients:Remove User
+   * Removes a user from a client.
+   *
+   * Permissions:
+   * ------------
+   * `role=admin|manager` : ...
+   *
+   * Returns:
+   * --------
+   * `ClientRead` : the updated client
+   * @returns ClientRead Successful Response
+   * @throws ApiError
+   */
+  public static clientsRemoveUserApiV1ClientsClientIdUserDelete({
+    clientId,
+    requestBody,
+  }: {
+    clientId: any,
+    requestBody: UserClientCreate,
+  }): CancelablePromise<ClientRead> {
+    return __request(OpenAPI, {
+      method: 'DELETE',
+      url: '/api/v1/clients/{client_id}/user',
+      path: {
+        'client_id': clientId,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
+  /**
+   * Clients:Assign Website
+   * Assigns a website to a client.
+   *
+   * Permissions:
+   * ------------
+   * `role=admin|manager` : ...
+   *
+   * Returns:
+   * --------
+   * `ClientRead` : the updated client
+   * @returns ClientRead Successful Response
+   * @throws ApiError
+   */
+  public static clientsAssignWebsiteApiV1ClientsClientIdWebsitePost({
+    clientId,
+    requestBody,
+  }: {
+    clientId: any,
+    requestBody: ClientWebsiteCreate,
+  }): CancelablePromise<ClientRead> {
+    return __request(OpenAPI, {
+      method: 'POST',
+      url: '/api/v1/clients/{client_id}/website',
+      path: {
+        'client_id': clientId,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
+      errors: {
+        422: `Validation Error`,
+      },
+    });
+  }
+  /**
+   * Clients:Remove Website
+   * Removes a website from a client.
+   *
+   * Permissions:
+   * ------------
+   * `role=admin|manager` : ...
+   *
+   * Returns:
+   * --------
+   * `ClientRead` : the updated client
+   * @returns ClientRead Successful Response
+   * @throws ApiError
+   */
+  public static clientsRemoveWebsiteApiV1ClientsClientIdWebsiteDelete({
+    clientId,
+    requestBody,
+  }: {
+    clientId: any,
+    requestBody: ClientWebsiteCreate,
+  }): CancelablePromise<ClientRead> {
+    return __request(OpenAPI, {
+      method: 'DELETE',
+      url: '/api/v1/clients/{client_id}/website',
+      path: {
+        'client_id': clientId,
+      },
+      body: requestBody,
+      mediaType: 'application/json',
       errors: {
         422: `Validation Error`,
       },

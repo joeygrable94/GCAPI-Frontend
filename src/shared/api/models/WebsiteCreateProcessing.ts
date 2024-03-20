@@ -5,6 +5,6 @@
 import type { WebsiteRead } from './WebsiteRead';
 export type WebsiteCreateProcessing = {
   website: WebsiteRead;
-  task_id: string;
+  task_id?: (string | null);
 };
 

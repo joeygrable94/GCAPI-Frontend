@@ -10,6 +10,7 @@ export type WebsitePageUpdate = {
   last_modified?: (string | null);
   change_frequency?: (SitemapPageChangeFrequency | null);
   is_active?: (boolean | null);
+  website_id?: (string | null);
   sitemap_id?: (string | null);
 };
 

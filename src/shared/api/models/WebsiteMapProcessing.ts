@@ -5,6 +5,7 @@
 export type WebsiteMapProcessing = {
   url: string;
   website_id: string;
-  task_id: string;
+  sitemap_id: string;
+  task_id?: (string | null);
 };
 
