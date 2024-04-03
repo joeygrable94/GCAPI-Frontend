@@ -1,9 +1,6 @@
 import { cache } from '@solidjs/router';
-import { AuthConfig, defaultAuthConfig } from '~/features/auth';
-import { getServerCookie } from '~/features/cookie/session.server';
 import {
   ApiError,
-  OpenAPI,
   Paginated_WebsitePageRead_,
   WebsitePagesService
 } from '~/shared/api';
@@ -24,9 +21,6 @@ export const ssrFetchWebsitePagesList = cache(
     let pages: Paginated_WebsitePageRead_ =
       defaultPagination<Paginated_WebsitePageRead_>(page, size);
     try {
-      const cookie = getServerCookie('gcapi_auth');
-      const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
-      OpenAPI.TOKEN = await parsed.accessToken;
       pages = await WebsitePagesService.websitePagesListApiV1WebpagesGet({
         page: page,
         size: size,

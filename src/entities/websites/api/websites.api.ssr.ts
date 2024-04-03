@@ -1,9 +1,6 @@
 import { cache, redirect } from '@solidjs/router';
-import { AuthConfig, defaultAuthConfig } from '~/features/auth';
-import { getServerCookie } from '~/features/cookie/session.server';
 import {
   ApiError,
-  OpenAPI,
   Paginated_WebsiteRead_,
   WebsiteRead,
   WebsitesService
@@ -22,9 +19,6 @@ export const ssrFetchWebsitesList = cache(
       size
     );
     try {
-      const cookie = getServerCookie('gcapi_auth');
-      const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
-      OpenAPI.TOKEN = await parsed.accessToken;
       websites = await WebsitesService.websitesListApiV1WebsitesGet({
         page: page,
         size: size,
@@ -45,9 +39,6 @@ export const ssrFetchWebsiteById = cache(async (id: string) => {
   'use server';
   let website: WebsiteRead;
   try {
-    const cookie = getServerCookie('gcapi_auth');
-    const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
-    OpenAPI.TOKEN = await parsed.accessToken;
     website = await WebsitesService.websitesReadApiV1WebsitesWebsiteIdGet({
       websiteId: id
     });

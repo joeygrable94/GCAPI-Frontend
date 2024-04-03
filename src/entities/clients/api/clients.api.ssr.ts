@@ -1,11 +1,8 @@
 import { cache, redirect } from '@solidjs/router';
-import { AuthConfig, defaultAuthConfig } from '~/features/auth';
-import { getServerCookie } from '~/features/cookie/session.server';
 import {
   ApiError,
   ClientRead,
   ClientsService,
-  OpenAPI,
   Paginated_ClientRead_
 } from '~/shared/api';
 import { logError } from '~/shared/utils';
@@ -22,9 +19,6 @@ export const ssrFetchClientsList = cache(async (page: number, size: number) => {
     results: []
   };
   try {
-    const cookie = getServerCookie('gcapi_auth');
-    const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
-    OpenAPI.TOKEN = await parsed.accessToken;
     clients = await ClientsService.clientsListApiV1ClientsGet({
       page,
       size
@@ -42,9 +36,6 @@ export const ssrFetchClientById = cache(async (id: string) => {
   'use server';
   let client: ClientRead;
   try {
-    const cookie = getServerCookie('gcapi_auth');
-    const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
-    OpenAPI.TOKEN = await parsed.accessToken;
     client = await ClientsService.clientsReadApiV1ClientsClientIdGet({ clientId: id });
   } catch (err: ApiError | Error | any) {
     logError('Error fetching client:', err.message);

@@ -1,9 +1,6 @@
 import { cache } from '@solidjs/router';
-import { AuthConfig, defaultAuthConfig } from '~/features/auth';
-import { getServerCookie } from '~/features/cookie/session.server';
 import {
   ApiError,
-  OpenAPI,
   Paginated_WebsiteMapRead_,
   WebsiteSitemapsService
 } from '~/shared/api';
@@ -24,9 +21,6 @@ export const ssrFetchWebsiteSitemapsList = cache(
     let sitemaps: Paginated_WebsiteMapRead_ =
       defaultPagination<Paginated_WebsiteMapRead_>(page, size);
     try {
-      const cookie = getServerCookie('gcapi_auth');
-      const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
-      OpenAPI.TOKEN = await parsed.accessToken;
       sitemaps = await WebsiteSitemapsService.websiteSitemapsListApiV1SitemapsGet({
         page: page,
         size: size,
