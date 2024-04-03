@@ -1,6 +1,5 @@
 import { cache, redirect } from '@solidjs/router';
-import { getRequestEvent } from 'solid-js/web';
-import { parseCookies } from 'vinxi/http';
+import { getEvent, parseCookies } from 'vinxi/http';
 import {
   AuthConfig,
   AuthorizedUser,
@@ -15,8 +14,8 @@ export const getCurrentUserOrGuest = cache(async () => {
   'use server';
   let currentUser: CurrentUser = defaultGuestUser;
   try {
-    const event = getRequestEvent();
-    const cookies = parseCookies(event!);
+    const event = getEvent();
+    const cookies = parseCookies(event);
     const parsed: AuthConfig = cookies['gcapi_auth']
       ? JSON.parse(cookies['gcapi_auth'])
       : defaultAuthConfig;
@@ -32,8 +31,8 @@ export const getCurrentUserOrLogin = cache(async () => {
   'use server';
   let currentUser: CurrentUser;
   try {
-    const event = getRequestEvent();
-    const cookies = parseCookies(event!);
+    const event = getEvent();
+    const cookies = parseCookies(event);
     const parsed: AuthConfig = cookies['gcapi_auth']
       ? JSON.parse(cookies['gcapi_auth'])
       : defaultAuthConfig;

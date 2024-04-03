@@ -4,7 +4,6 @@
 /* eslint-disable */
 import type { Paginated_WebsiteRead_ } from '../models/Paginated_WebsiteRead_';
 import type { WebsiteCreate } from '../models/WebsiteCreate';
-import type { WebsiteCreateProcessing } from '../models/WebsiteCreateProcessing';
 import type { WebsiteRead } from '../models/WebsiteRead';
 import type { WebsiteUpdate } from '../models/WebsiteUpdate';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -63,16 +62,15 @@ export class WebsitesService {
    *
    * Returns:
    * --------
-   * `WebsiteCreateProcessing` : the newly created website and the task id for the
-   * background task that will fetch the sitemap pages
-   * @returns WebsiteCreateProcessing Successful Response
+   * `WebsiteRead` : the newly created website
+   * @returns WebsiteRead Successful Response
    * @throws ApiError
    */
   public static websitesCreateApiV1WebsitesPost({
     requestBody,
   }: {
     requestBody: WebsiteCreate,
-  }): CancelablePromise<WebsiteCreateProcessing> {
+  }): CancelablePromise<WebsiteRead> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/api/v1/websites/',

@@ -107,7 +107,6 @@ export const TableColumnFilter: Component<ITableColumnFilterProps> = (props) => 
               type="number"
               value={(columnFilterValue() as [number, number])?.[0] ?? ''}
               onChange={setFilterMin}
-              style={{ 'min-width': '80px' }}
             />
           </FloatingLabel>
           <FloatingLabel label="Max" class="w-50 fw-normal">
@@ -116,7 +115,6 @@ export const TableColumnFilter: Component<ITableColumnFilterProps> = (props) => 
               type="number"
               value={(columnFilterValue() as [number, number])?.[1] ?? ''}
               onChange={setFilterMax}
-              style={{ 'min-width': '80px' }}
             />
           </FloatingLabel>
         </Form.Group>

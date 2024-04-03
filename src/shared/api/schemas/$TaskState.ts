@@ -5,27 +5,28 @@
 export const $TaskState = {
   properties: {
     task_id: {
-      type: 'any-of',
-      contains: [{
-        type: 'string',
-        format: 'uuid4',
-      }, {
-        type: 'string',
-      }, {
-        type: 'null',
-      }],
+      type: 'string',
       isRequired: true,
     },
     task_status: {
+      type: 'all-of',
+      contains: [{
+        type: 'TaskStatus',
+      }],
+    },
+    task_time: {
       type: 'any-of',
       contains: [{
-        type: 'string',
+        type: 'number',
+      }, {
+        type: 'null',
       }],
-      isRequired: true,
     },
     task_result: {
-      properties: {
-      },
+      type: 'any-of',
+      contains: [{
+        type: 'null',
+      }],
     },
   },
 } as const;

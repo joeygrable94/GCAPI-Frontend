@@ -1,4 +1,3 @@
-'use client';
 import { NavDropdown } from 'solid-bootstrap';
 import { Component } from 'solid-js';
 import { useAuth0, webAuthAuthorize, webAuthLogout } from '~/features/auth';
@@ -6,6 +5,7 @@ import { useAuth0, webAuthAuthorize, webAuthLogout } from '~/features/auth';
 type AuthNavProps = {};
 
 const AuthNav: Component<AuthNavProps> = (props) => {
+  'use client';
   const [authState, authAct] = useAuth0();
   const loginAction = async () => {
     await webAuthAuthorize(authAct.webAuth, authAct.scopes);

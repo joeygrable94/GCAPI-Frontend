@@ -7,8 +7,10 @@ import type { ClientDelete } from '../models/ClientDelete';
 import type { ClientRead } from '../models/ClientRead';
 import type { ClientUpdate } from '../models/ClientUpdate';
 import type { ClientWebsiteCreate } from '../models/ClientWebsiteCreate';
+import type { ClientWebsiteRead } from '../models/ClientWebsiteRead';
 import type { Paginated_ClientRead_ } from '../models/Paginated_ClientRead_';
 import type { UserClientCreate } from '../models/UserClientCreate';
+import type { UserClientRead } from '../models/UserClientRead';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -193,20 +195,20 @@ export class ClientsService {
    *
    * Returns:
    * --------
-   * `ClientRead` : the updated client
-   * @returns ClientRead Successful Response
+   * `UserClientRead` : the user client relationship that was created
+   * @returns UserClientRead Successful Response
    * @throws ApiError
    */
-  public static clientsAssignUserApiV1ClientsClientIdUserPost({
+  public static clientsAssignUserApiV1ClientsClientIdAssignUserPost({
     clientId,
     requestBody,
   }: {
     clientId: any,
     requestBody: UserClientCreate,
-  }): CancelablePromise<ClientRead> {
+  }): CancelablePromise<UserClientRead> {
     return __request(OpenAPI, {
       method: 'POST',
-      url: '/api/v1/clients/{client_id}/user',
+      url: '/api/v1/clients/{client_id}/assign/user',
       path: {
         'client_id': clientId,
       },
@@ -227,20 +229,20 @@ export class ClientsService {
    *
    * Returns:
    * --------
-   * `ClientRead` : the updated client
-   * @returns ClientRead Successful Response
+   * `UserClientRead` : the user client relationship that was deleted
+   * @returns UserClientRead Successful Response
    * @throws ApiError
    */
-  public static clientsRemoveUserApiV1ClientsClientIdUserDelete({
+  public static clientsRemoveUserApiV1ClientsClientIdRemoveUserPost({
     clientId,
     requestBody,
   }: {
     clientId: any,
     requestBody: UserClientCreate,
-  }): CancelablePromise<ClientRead> {
+  }): CancelablePromise<UserClientRead> {
     return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/api/v1/clients/{client_id}/user',
+      method: 'POST',
+      url: '/api/v1/clients/{client_id}/remove/user',
       path: {
         'client_id': clientId,
       },
@@ -261,20 +263,20 @@ export class ClientsService {
    *
    * Returns:
    * --------
-   * `ClientRead` : the updated client
-   * @returns ClientRead Successful Response
+   * `ClientWebsiteRead` : the client website relationship that was deleted
+   * @returns ClientWebsiteRead Successful Response
    * @throws ApiError
    */
-  public static clientsAssignWebsiteApiV1ClientsClientIdWebsitePost({
+  public static clientsAssignWebsiteApiV1ClientsClientIdAssignWebsitePost({
     clientId,
     requestBody,
   }: {
     clientId: any,
     requestBody: ClientWebsiteCreate,
-  }): CancelablePromise<ClientRead> {
+  }): CancelablePromise<ClientWebsiteRead> {
     return __request(OpenAPI, {
       method: 'POST',
-      url: '/api/v1/clients/{client_id}/website',
+      url: '/api/v1/clients/{client_id}/assign/website',
       path: {
         'client_id': clientId,
       },
@@ -295,20 +297,20 @@ export class ClientsService {
    *
    * Returns:
    * --------
-   * `ClientRead` : the updated client
-   * @returns ClientRead Successful Response
+   * `ClientWebsiteRead` : the client website relationship that was deleted
+   * @returns ClientWebsiteRead Successful Response
    * @throws ApiError
    */
-  public static clientsRemoveWebsiteApiV1ClientsClientIdWebsiteDelete({
+  public static clientsRemoveWebsiteApiV1ClientsClientIdRemoveWebsitePost({
     clientId,
     requestBody,
   }: {
     clientId: any,
     requestBody: ClientWebsiteCreate,
-  }): CancelablePromise<ClientRead> {
+  }): CancelablePromise<ClientWebsiteRead> {
     return __request(OpenAPI, {
-      method: 'DELETE',
-      url: '/api/v1/clients/{client_id}/website',
+      method: 'POST',
+      url: '/api/v1/clients/{client_id}/remove/website',
       path: {
         'client_id': clientId,
       },

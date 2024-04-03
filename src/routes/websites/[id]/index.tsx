@@ -7,17 +7,24 @@ import {
 } from '@solidjs/router';
 import { Show } from 'solid-js';
 import {
+  SITEMAP_PAGE_SIZE,
+  SITEMAP_PAGE_START,
   WebsiteSitemapsActionsMenu,
   ssrFetchWebsiteSitemapsList
 } from '~/entities/sitemaps';
-import { ssrFetchWebsitePagesList } from '~/entities/website-pages';
+import {
+  WEBSITEPAGE_PAGE_SIZE,
+  WEBSITEPAGE_PAGE_START,
+  WebsitePagesActionsMenu,
+  ssrFetchWebsitePagesList
+} from '~/entities/website-pages';
 import { ssrFetchWebsiteById } from '~/entities/websites';
 import {
   Paginated_WebsiteMapRead_,
   Paginated_WebsitePageRead_,
   WebsiteRead
 } from '~/shared/api';
-import { WebsiteSitemapsDataTable } from '~/widgets/data-tables';
+import { WebsitePagesDataTable, WebsiteSitemapsDataTable } from '~/widgets/data-tables';
 
 type WebsiteByIdData = {
   website: WebsiteRead;
@@ -26,12 +33,22 @@ type WebsiteByIdData = {
 };
 
 const ssrFetchWebsiteData = cache(
-  async (page: number, size: number, websiteId: string, sitemapId: string | null) => {
+  async (websiteId: string, sitemapId: string | null) => {
     'use server';
     let websiteData: WebsiteByIdData = {
       website: await ssrFetchWebsiteById(websiteId),
-      sitemaps: await ssrFetchWebsiteSitemapsList(page, size, websiteId, sitemapId),
-      pages: await ssrFetchWebsitePagesList(page, size, websiteId, sitemapId)
+      sitemaps: await ssrFetchWebsiteSitemapsList(
+        SITEMAP_PAGE_START,
+        SITEMAP_PAGE_SIZE,
+        websiteId,
+        sitemapId
+      ),
+      pages: await ssrFetchWebsitePagesList(
+        WEBSITEPAGE_PAGE_START,
+        WEBSITEPAGE_PAGE_SIZE,
+        websiteId,
+        sitemapId
+      )
     };
     return websiteData;
   },
@@ -40,33 +57,29 @@ const ssrFetchWebsiteData = cache(
 
 export const route = {
   load({ location, params }) {
-    void ssrFetchWebsiteData(
-      +location.query.page || 1,
-      +location.query.size || 10,
-      params.id,
-      location.query.sitemapId || null
-    );
+    void ssrFetchWebsiteData(params.id, location.query.sitemapId || null);
   }
 } satisfies RouteDefinition;
 
 const WebsiteById = (props: RouteSectionProps) => {
   const params = useParams();
-  const page = () => +props.location.query.page || 1;
-  const size = () => +props.location.query.page || 10;
   const websiteId = () => params.id;
   const sitemapId = () => props.location.query.sitemapId || null;
-  const data = createAsync(() =>
-    ssrFetchWebsiteData(page(), size(), websiteId(), sitemapId())
-  );
+  const data = createAsync(() => ssrFetchWebsiteData(websiteId(), sitemapId()));
   return (
     <main>
-      <h1 class="my-2">Website {data()?.website.domain}</h1>
-      <pre>{JSON.stringify(data(), null, 2)}</pre>
       <Show when={data() !== undefined}>
+        <h1 class="my-2">Website {data()?.website.domain}</h1>
         <WebsiteSitemapsActionsMenu website={data()!.website} />
         <WebsiteSitemapsDataTable
           initialData={data()!.sitemaps}
           website={data()!.website}
+        />
+        <WebsitePagesActionsMenu website={data()!.website} />
+        <WebsitePagesDataTable
+          initialData={data()!.pages}
+          websiteId={websiteId()}
+          sitemapId={sitemapId()}
         />
       </Show>
     </main>

@@ -1,4 +1,3 @@
-'use client';
 import { Button } from 'solid-bootstrap';
 import { JSX, ParentComponent, Show, createEffect } from 'solid-js';
 import { useAuth0, webAuthAuthorize } from '~/features/auth';
@@ -9,6 +8,7 @@ type AuthorizedAccessProps = {
 };
 
 const AuthorizedAccess: ParentComponent<AuthorizedAccessProps> = (props) => {
+  'use client';
   const [authState, authAct] = useAuth0();
   const loginAction = async () => {
     await webAuthAuthorize(authAct.webAuth, authAct.scopes);

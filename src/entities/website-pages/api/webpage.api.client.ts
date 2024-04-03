@@ -7,9 +7,9 @@ import { defaultPagination } from '~/shared/tanstack';
 import { logError } from '~/shared/utils';
 
 /**
- * @summary Fetches a list of website sitemaps on the client.
+ * @summary Fetches a list of website pages on the client.
  */
-export async function fetchWebsiteSitemapsList<QueryFunction>(
+export async function fetchWebsitePagesList<QueryFunction>(
   queryContext: any
 ): Promise<Paginated_WebsitePageRead_> {
   const queryKey = queryContext.queryKey;

@@ -25,7 +25,7 @@ export class TasksService {
   public static tasksGetStatusApiV1TasksTaskIdGet({
     taskId,
   }: {
-    taskId: any,
+    taskId: string,
   }): CancelablePromise<TaskState> {
     return __request(OpenAPI, {
       method: 'GET',
