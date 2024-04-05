@@ -17,7 +17,6 @@
     "@types/crypto-js": "^4.2.1",
     "@types/node": "^20.11.25",
     "esbuild": "^0.20.1",
-    "next-auth": "^4.24.7",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
     "eslint": "^8.56.0",
@@ -33,7 +32,6 @@
   "dependencies": {
     "@auth/core": "^0.28.0",
     "@babel/core": "7.24.0",
-    "@solid-mediakit/auth": "^2.0.2",
     "@solid-primitives/lifecycle": "^0.0.101",
     "@solidjs/meta": "^0.29.3",
     "@solidjs/router": "^0.13.1",
