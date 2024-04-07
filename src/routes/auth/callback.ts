@@ -1,8 +1,15 @@
 'use server';
 import { redirect } from '@solidjs/router';
 import { APIHandler } from '@solidjs/start/server';
-import { completeAuthorizationRequest, defaultAuthConfig } from '~/features/auth';
+import {
+  AUTH_COOKIE_MAX_AGE,
+  AuthConfig,
+  completeAuthorizationRequest,
+  defaultAuthConfig
+} from '~/features/auth';
 import { getServerCookie, setServerCookie } from '~/features/cookie/session.server';
+import { encryptData } from '~/features/encrypt';
+import { getSession } from '~/features/session';
 import { logError } from '~/shared/utils';
 
 export const GET: APIHandler = async (event) => {
@@ -11,6 +18,11 @@ export const GET: APIHandler = async (event) => {
   const state: string | null = url.searchParams.get('state');
   const cookie = getServerCookie(`com.auth0.auth.${state}`);
   if (!cookie) {
+    const session = await getSession();
+    await session.clear();
+    setServerCookie('gcapi_auth', encryptData<AuthConfig>(defaultAuthConfig), {
+      maxAge: AUTH_COOKIE_MAX_AGE
+    });
     return redirect('/login', 401);
   }
   const verification = JSON.parse(cookie);
@@ -22,9 +34,21 @@ export const GET: APIHandler = async (event) => {
   );
   if (!isAuthenticated) {
     logError('Auth state is not valid');
-    setServerCookie('gcapi_auth', JSON.stringify(defaultAuthConfig));
+    const session = await getSession();
+    await session.clear();
+    setServerCookie('gcapi_auth', encryptData<AuthConfig>(defaultAuthConfig), {
+      maxAge: AUTH_COOKIE_MAX_AGE
+    });
     return redirect('/login', 401);
   }
-  setServerCookie('gcapi_auth', JSON.stringify(authState));
-  return redirect('/', 302);
+  const session = await getSession();
+  await session.update((data) => ({
+    idToken: authState.idToken ?? data.idToken,
+    accessToken: authState.accessToken ?? data.accessToken,
+    refreshToken: authState.refreshToken ?? data.refreshToken
+  }));
+  setServerCookie('gcapi_auth', encryptData<AuthConfig>(authState), {
+    maxAge: AUTH_COOKIE_MAX_AGE
+  });
+  return redirect('/', 307);
 };

@@ -1,10 +1,16 @@
 'use server';
 import { redirect } from '@solidjs/router';
 import { APIHandler } from '@solidjs/start/server';
-import { defaultAuthConfig } from '~/features/auth';
+import { AUTH_COOKIE_MAX_AGE, defaultAuthConfig } from '~/features/auth';
 import { setServerCookie } from '~/features/cookie/session.server';
+import { encryptData } from '~/features/encrypt';
+import { getSession } from '~/features/session';
 
 export const GET: APIHandler = async (event) => {
-  setServerCookie('gcapi_auth', JSON.stringify(defaultAuthConfig));
-  return redirect('/login', 302);
+  const session = await getSession();
+  await session.clear();
+  setServerCookie('gcapi_auth', encryptData(defaultAuthConfig), {
+    maxAge: AUTH_COOKIE_MAX_AGE
+  });
+  return redirect('/login', 307);
 };

@@ -28,12 +28,13 @@ export default function App() {
         domain={import.meta.env.VITE_AUTH0_DOMAIN}
         clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
         audience={import.meta.env.VITE_AUTH0_AUDIENCE}
-        redirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
-        logoutUrl={import.meta.env.VITE_AUTH0_LOGOUT_URL}
         organization={{
           id: import.meta.env.VITE_AUTH0_ORGANIZATION_ID,
           name: import.meta.env.VITE_AUTH0_ORGANIZATION
         }}
+        redirectUri={import.meta.env.VITE_AUTH0_REDIRECT_URI}
+        logoutUrl={import.meta.env.VITE_AUTH0_LOGOUT_URL}
+        offlineAccess={import.meta.env.VITE_AUTH0_OFFLINE_ACCESS === 'true'}
       >
         <Router
           root={(props) => {

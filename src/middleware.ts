@@ -1,23 +1,22 @@
 import { createMiddleware } from '@solidjs/start/middleware';
-import { getCookie } from 'vinxi/http';
-import { AuthConfig, defaultAuthConfig } from './features/auth';
+import { setOpenAPISessionToken } from './features/session';
 import { OpenAPI } from './shared/api';
+import { log } from './shared/utils';
 
 export default createMiddleware({
   onRequest: [
     async (event) => {
       const path = event.request.url;
-      console.log('ON REQUEST', event.request.url);
-      const cookie: string | undefined = getCookie('gcapi_auth');
-      if (cookie && !path.includes('/login')) {
-        const parsed: AuthConfig = cookie ? JSON.parse(cookie) : defaultAuthConfig;
-        OpenAPI.TOKEN = await parsed.accessToken;
-      }
+      if (import.meta.env.VITE_DEBUG === 'true') log('ON REQUEST', path);
+      await setOpenAPISessionToken();
+      if (import.meta.env.VITE_DEBUG === 'true')
+        log('SESSION TOKEN', OpenAPI.TOKEN?.length);
     }
   ],
   onBeforeResponse: [
     async (event, { body }) => {
-      console.log('BEFORE RESPONSE', event.request.url);
+      const path = event.request.url;
+      if (import.meta.env.VITE_DEBUG === 'true') log('BEFORE RESPONSE', path);
     }
   ]
 });

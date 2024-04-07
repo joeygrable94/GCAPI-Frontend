@@ -15,7 +15,7 @@ const Profile: Component = () => {
   return (
     <main>
       <Show when={user() !== undefined}>
-        <UserProfileCard user={user()!} />
+        <UserProfileCard user={user() as AuthorizedUser} />
       </Show>
     </main>
   );

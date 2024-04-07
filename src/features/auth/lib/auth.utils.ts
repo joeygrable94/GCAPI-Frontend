@@ -16,19 +16,19 @@ export async function completeAuthorizationRequest(
 ): Promise<UpdatedAuthConfig> {
   let baseUrl = import.meta.env.VITE_APP_BASE_URL;
   if (!verification) {
-    if (import.meta.env.VITE_DEBUG) warn('No verification cookie found');
+    if (import.meta.env.VITE_DEBUG === 'true') warn('No verification cookie found');
     return [false, defaultAuthConfig];
   }
   if (code === undefined || code === null) {
-    if (import.meta.env.VITE_DEBUG) logError('No code found');
+    if (import.meta.env.VITE_DEBUG === 'true') logError('No code found');
     return [false, defaultAuthConfig];
   }
   if (state === undefined || state === null) {
-    if (import.meta.env.VITE_DEBUG) logError('No state found');
+    if (import.meta.env.VITE_DEBUG === 'true') logError('No state found');
     return [false, defaultAuthConfig];
   }
   if (state !== verification.state) {
-    if (import.meta.env.VITE_DEBUG)
+    if (import.meta.env.VITE_DEBUG === 'true')
       logError('Code and state do not match verification');
     return [false, defaultAuthConfig];
   }
@@ -47,17 +47,16 @@ export async function completeAuthorizationRequest(
     redirectUrl,
     verification.organization
   );
-  if (import.meta.env.VITE_DEBUG) log('Auth token:', jsonAuthToken);
+  if (import.meta.env.VITE_DEBUG === 'true') log('Auth token:', jsonAuthToken);
   const userInfo = await fetchAuthUserInfo(jsonAuthToken.access_token);
   if (userInfo === undefined) {
-    if (import.meta.env.VITE_DEBUG) warn('No user info found');
+    if (import.meta.env.VITE_DEBUG === 'true') warn('No user info found');
     return [false, defaultAuthConfig];
   }
-  if (import.meta.env.VITE_DEBUG) log('User info:', userInfo);
+  if (import.meta.env.VITE_DEBUG === 'true') log('User info:', userInfo);
   let newAuthState = {} as AuthConfig;
   newAuthState.accessToken = jsonAuthToken.access_token ?? '';
   newAuthState.refreshToken = jsonAuthToken.refresh_token ?? '';
-  newAuthState.tokenType = jsonAuthToken.token_type ?? 'Bearer';
   newAuthState.idToken = jsonAuthToken.id_token ?? '';
   return [true, newAuthState];
 }
@@ -74,7 +73,7 @@ export async function refreshAuthorization(refreshToken: string) {
   const formData = new URLSearchParams();
   formData.append('grant_type', 'refresh_token');
   formData.append('client_id', import.meta.env.VITE_AUTH0_CLIENT_ID);
-  formData.append('client_secret', import.meta.env.VITE_AUTH0_CLIENT_SECRET!);
+  formData.append('client_secret', process.env.AUTH0_CLIENT_SECRET!);
   formData.append('refresh_token', refreshToken);
 
   const authToken = await fetch(endpoint, {
@@ -125,19 +124,19 @@ export async function fetchOAuthToken(
 ) {
   const endpoint = new URL(`https://${import.meta.env.VITE_AUTH0_DOMAIN}/oauth/token`);
 
-  const scopes = ['openid', 'profile'];
-  if (import.meta.env.VITE_AUTH0_OFFLINE_ACCESS === 'true') {
+  const scopes = process.env.AUTH0_SCOPE?.split(' ') ?? ['openid', 'profile', 'email'];
+  if (process.env.VITE_AUTH0_OFFLINE_ACCESS === 'true') {
     scopes.push('offline_access');
   }
 
-  if (import.meta.env.VITE_AUTH0_PERMISSIONS === 'true') {
+  if (process.env.AUTH0_PERMISSIONS === 'true') {
     scopes.push('permissions');
   }
 
   const formData = new URLSearchParams();
   formData.append('grant_type', 'authorization_code');
   formData.append('client_id', import.meta.env.VITE_AUTH0_CLIENT_ID);
-  formData.append('client_secret', import.meta.env.VITE_AUTH0_CLIENT_SECRET!);
+  formData.append('client_secret', process.env.AUTH0_CLIENT_SECRET!);
   formData.append('code', code);
   formData.append('state', state);
   formData.append('redirect_uri', redirectUrl);

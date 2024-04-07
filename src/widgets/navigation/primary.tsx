@@ -1,20 +1,24 @@
 import { A } from '@solidjs/router';
-import { clientOnly } from '@solidjs/start';
 import { Container, Nav, NavDropdown, Navbar } from 'solid-bootstrap';
-import { Component, createEffect, createSignal } from 'solid-js';
-import { NavlinkToggleDarkMode, useThemeContext } from '~/features/theme';
-const AuthNav = clientOnly(() => import('./auth-nav'));
+import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
+import { useAuth0, webAuthAuthorize, webAuthLogout } from '~/features/auth';
+import { NavlinkToggleDarkMode, ThemeMode, useThemeContext } from '~/features/theme';
 
 type PrimaryNavigationProps = {
   darkMode?: boolean | undefined;
 };
 
 const PrimaryNavigation: Component<PrimaryNavigationProps> = (props) => {
+  const [authState, authAct] = useAuth0();
   const layoutContext = useThemeContext();
-  const handleToggleSessionLayout = () => {
-    layoutContext.darkMode = !layoutContext.darkMode;
+  const [bg, setBg] = createSignal<ThemeMode>(props.darkMode ? 'dark' : 'light');
+  const loginAction = async () => {
+    await webAuthAuthorize(authAct.webAuth, authAct.scopes);
   };
-  const [bg, setBg] = createSignal<'light' | 'dark'>(props.darkMode ? 'dark' : 'light');
+  const logoutAction = async () => {
+    webAuthLogout(authAct.webAuth, authAct.logoutUrl);
+    await authAct.logout();
+  };
   createEffect(() => setBg(layoutContext.darkMode === true ? 'dark' : 'light'));
   return (
     <Navbar bg={bg()} variant={bg()} expand="lg" style={{ padding: 0 }}>
@@ -33,23 +37,33 @@ const PrimaryNavigation: Component<PrimaryNavigationProps> = (props) => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav style={{ width: '100%', 'justify-content': 'flex-start' }}>
-            <Nav.Link as={A} href="/users">
-              Users
-            </Nav.Link>
-            <Nav.Link as={A} href="/clients">
-              Clients
-            </Nav.Link>
-            <Nav.Link as={A} href="/websites">
-              Websites
-            </Nav.Link>
-            <div style={{ 'margin-left': 'auto' }}></div>
-            <NavDropdown title="Account" menuVariant={bg()}>
-              <NavDropdown.Item as={A} href="/users/profile">
-                Profile
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <AuthNav />
-            </NavDropdown>
+            <Switch>
+              <Match when={authAct.isAuthenticated()}>
+                {/* Authenticated Nav */}
+                <Nav.Link as={A} href="/users">
+                  Users
+                </Nav.Link>
+                <Nav.Link as={A} href="/clients">
+                  Clients
+                </Nav.Link>
+                <Nav.Link as={A} href="/websites">
+                  Websites
+                </Nav.Link>
+                <div style={{ 'margin-left': 'auto' }}></div>
+                <NavDropdown title="Account" menuVariant={bg()}>
+                  <NavDropdown.Item as={A} href="/users/profile">
+                    Profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={logoutAction}>Logout</NavDropdown.Item>
+                </NavDropdown>
+              </Match>
+              <Match when={!authAct.isAuthenticated()}>
+                {/* Unauthenticated Nav */}
+                <div style={{ 'margin-left': 'auto' }}></div>
+                <Nav.Link onClick={loginAction}>Login</Nav.Link>
+              </Match>
+            </Switch>
             <NavlinkToggleDarkMode />
           </Nav>
         </Navbar.Collapse>

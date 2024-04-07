@@ -12,7 +12,6 @@ export type AuthOrganization = { id: string; name: string };
 export type AuthConfig = {
   accessToken: string;
   refreshToken: string;
-  tokenType: string;
   idToken: string;
 };
 
@@ -40,4 +39,5 @@ export interface AuthConfigProps extends ParentProps {
   logoutUrl: string;
   invitation?: string;
   organization?: AuthOrganization;
+  offlineAccess?: boolean;
 }

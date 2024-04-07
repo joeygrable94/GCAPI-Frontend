@@ -32,14 +32,14 @@ export const AuthProvider = (props: AuthConfigProps) => {
     'redirectUri',
     'logoutUrl',
     'organization',
-    'invitation'
+    'invitation',
+    'offlineAccess'
   ]);
   const [auth, setAuth] = createStore<AuthConfig>(authConfig.initialAuth);
   const [isAuthenticated, setIsAuthenticated] = createSignal<boolean | undefined>();
   const [organization, setOrg] = createSignal<AuthOrganization | undefined>();
   const [scopes, setScopes] = createSignal<string[]>(['openid', 'profile', 'email']);
-  if (import.meta.env.VITE_AUTH0_OFFLINE_ACCESS === 'true')
-    setScopes((s) => [...s, 'offline_access']);
+  if (authConfig.offlineAccess) setScopes((s) => [...s, 'offline_access']);
   const baseUrl: string = import.meta.env.VITE_APP_BASE_URL;
   const logoutUrl: string = authConfig.logoutUrl || `http://${baseUrl}/auth/logout`;
   const webauthConfig: auth0.AuthOptions = {
@@ -67,9 +67,10 @@ export const AuthProvider = (props: AuthConfigProps) => {
     isInitialized: () => isAuthenticated() !== undefined,
     isAuthenticated: () => !!isAuthenticated(),
     login: async () => {
-      if (import.meta.env.VITE_DEBUG) log('Attempting to log in...');
+      if (import.meta.env.VITE_DEBUG === 'true') log('Attempting to log in...');
       if (auth.accessToken) {
-        if (import.meta.env.VITE_DEBUG) log('Logging in via state access token...');
+        if (import.meta.env.VITE_DEBUG === 'true')
+          log('Logging in via state access token...');
         const jwt = auth.accessToken;
         const JWKS = jose.createRemoteJWKSet(
           new URL(`https://${authConfig.domain}/.well-known/jwks.json`)
@@ -80,11 +81,12 @@ export const AuthProvider = (props: AuthConfigProps) => {
             issuer: `https://${authConfig.domain}/`,
             audience: authConfig.audience
           });
-          if (import.meta.env.VITE_DEBUG) log('Login successful!');
+          if (import.meta.env.VITE_DEBUG === 'true') log('Login successful!');
           setIsAuthenticated(true);
         } catch (err: any) {
           if (err.name === 'JWTExpired' || err.code === 'ERR_JWT_EXPIRED') {
-            if (import.meta.env.VITE_DEBUG) logError('Login expired error:', err);
+            if (import.meta.env.VITE_DEBUG === 'true')
+              logError('Login expired error:', err);
             const refreshToken = auth.refreshToken;
             if (refreshToken) {
               const tokens = await refreshAuthorization(refreshToken);
@@ -96,13 +98,14 @@ export const AuthProvider = (props: AuthConfigProps) => {
               setAuth(defaultAuthConfig);
             }
           } else {
-            if (import.meta.env.VITE_DEBUG) logError('Login error:', err);
+            if (import.meta.env.VITE_DEBUG === 'true') logError('Login error:', err);
             setIsAuthenticated(false);
             setAuth(defaultAuthConfig);
           }
         }
       } else {
-        if (import.meta.env.VITE_DEBUG) log('The state has no access token set...');
+        if (import.meta.env.VITE_DEBUG === 'true')
+          log('The state has no access token set...');
         setIsAuthenticated(false);
       }
     },
@@ -117,7 +120,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
   // Set backend api token
   OpenAPI.TOKEN = authConfig.initialAuth.accessToken;
   createEffect(() => {
-    if (import.meta.env.VITE_DEBUG) log('Setting OpenAPI token...');
+    if (import.meta.env.VITE_DEBUG === 'true') log('Setting OpenAPI token...');
     OpenAPI.TOKEN = auth.accessToken;
   });
   // Set state & return context provider

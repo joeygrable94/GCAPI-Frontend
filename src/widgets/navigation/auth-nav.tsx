@@ -1,8 +1,12 @@
-import { NavDropdown } from 'solid-bootstrap';
-import { Component } from 'solid-js';
+import { A } from '@solidjs/router';
+import { Nav, NavDropdown } from 'solid-bootstrap';
+import { Accessor, Component, Match, Switch } from 'solid-js';
 import { useAuth0, webAuthAuthorize, webAuthLogout } from '~/features/auth';
+import { ThemeMode } from '~/features/theme';
 
-type AuthNavProps = {};
+type AuthNavProps = {
+  bg: Accessor<ThemeMode>;
+};
 
 const AuthNav: Component<AuthNavProps> = (props) => {
   'use client';
@@ -15,10 +19,20 @@ const AuthNav: Component<AuthNavProps> = (props) => {
     await authAct.logout();
   };
   return (
-    <>
-      <NavDropdown.Item onClick={loginAction}>Login</NavDropdown.Item>
-      <NavDropdown.Item onClick={logoutAction}>Logout</NavDropdown.Item>
-    </>
+    <Switch>
+      <Match when={authAct.isAuthenticated()}>
+        <NavDropdown title="Account" menuVariant={props.bg()}>
+          <NavDropdown.Item as={A} href="/users/profile">
+            Profile
+          </NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item onClick={logoutAction}>Logout</NavDropdown.Item>
+        </NavDropdown>
+      </Match>
+      <Match when={!authAct.isAuthenticated()}>
+        <Nav.Link onClick={loginAction}>Login</Nav.Link>
+      </Match>
+    </Switch>
   );
 };
 

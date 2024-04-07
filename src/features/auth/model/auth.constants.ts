@@ -6,7 +6,6 @@ export const AUTH_COOKIE_MAX_AGE = 1 * 60 * 60 * 24 * 1;
 export const defaultAuthConfig: AuthConfig = {
   accessToken: '',
   refreshToken: '',
-  tokenType: '',
   idToken: ''
 };
 
