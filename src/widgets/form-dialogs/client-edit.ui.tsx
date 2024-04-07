@@ -8,9 +8,9 @@ import {
   IsValidClientTitle,
   SEditClient
 } from '~/entities/clients';
-import { Dialog } from '~/features/dialogs';
-import { FormFieldInfo } from '~/features/forms';
 import { ClientRead, ClientsService } from '~/shared/api';
+import { Dialog } from '~/shared/dialogs';
+import { FormFieldInfo } from '~/shared/forms';
 import { EditIcon } from '~/shared/icons';
 import { log } from '~/shared/utils';
 

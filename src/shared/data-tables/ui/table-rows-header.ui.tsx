@@ -1,7 +1,7 @@
 import { flexRender } from '@tanstack/solid-table';
 import { Stack } from 'solid-bootstrap';
 import { Component, For } from 'solid-js';
-import { ITableHeaderProps } from '~/features/data-tables';
+import { ITableHeaderProps } from '~/shared/data-tables';
 import { KeyboardArrowDownIcon, KeyboardArrowUpIcon } from '~/shared/icons';
 import { TableColumnFilter } from './table-filter-column.ui';
 

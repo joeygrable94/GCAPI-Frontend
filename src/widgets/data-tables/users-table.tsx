@@ -17,12 +17,6 @@ import {
   UserProfilePicturePreview,
   fetchUsersList
 } from '~/entities/users';
-import {
-  TableBody,
-  TableColumnIsActive,
-  TableFooter,
-  TableHeader
-} from '~/features/data-tables';
 import { useThemeContext } from '~/features/theme';
 import {
   Paginated_UserReadAsAdmin_,
@@ -30,6 +24,12 @@ import {
   UserReadAsAdmin,
   UserReadAsManager
 } from '~/shared/api';
+import {
+  TableBody,
+  TableColumnIsActive,
+  TableFooter,
+  TableHeader
+} from '~/shared/data-tables';
 import { formatDateString } from '~/shared/utils';
 import { UsersTableActions } from '~/widgets/data-table-actions';
 

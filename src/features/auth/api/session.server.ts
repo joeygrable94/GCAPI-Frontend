@@ -1,6 +1,6 @@
 import { AuthConfig, defaultAuthConfig } from '~/features/auth';
 import { getServerCookie } from '~/features/cookie/session.server';
-import { decryptData } from '~/features/encrypt';
+import { decryptData } from '~/shared/utils';
 
 export function useServerAuthCookie(name: string = 'gcapi_auth'): AuthConfig {
   let auth: AuthConfig;

@@ -16,14 +16,14 @@ import {
   SITEMAP_PAGE_START,
   fetchWebsiteSitemapsList
 } from '~/entities/sitemaps';
+import { useThemeContext } from '~/features/theme';
+import { Paginated_WebsiteMapRead_, WebsiteMapRead, WebsiteRead } from '~/shared/api';
 import {
   TableBody,
   TableColumnIsActive,
   TableFooter,
   TableHeader
-} from '~/features/data-tables';
-import { useThemeContext } from '~/features/theme';
-import { Paginated_WebsiteMapRead_, WebsiteMapRead, WebsiteRead } from '~/shared/api';
+} from '~/shared/data-tables';
 import { WebsiteSitemapsTableActions } from '~/widgets/data-table-actions';
 
 type WebsiteSitemapsDataTableProps = {

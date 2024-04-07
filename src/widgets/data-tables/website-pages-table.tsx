@@ -16,14 +16,14 @@ import {
   WEBSITEPAGE_PAGE_START,
   fetchWebsitePagesList
 } from '~/entities/website-pages';
+import { useThemeContext } from '~/features/theme';
+import { Paginated_WebsitePageRead_, WebsitePageRead } from '~/shared/api';
 import {
   TableBody,
   TableColumnIsActive,
   TableFooter,
   TableHeader
-} from '~/features/data-tables';
-import { useThemeContext } from '~/features/theme';
-import { Paginated_WebsitePageRead_, WebsitePageRead } from '~/shared/api';
+} from '~/shared/data-tables';
 import { formatDateString } from '~/shared/utils';
 import { WebsitePagesTableActions } from '../data-table-actions';
 

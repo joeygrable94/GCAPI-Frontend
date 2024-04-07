@@ -7,9 +7,9 @@ import {
   IsValidWebsiteSitemapUrl,
   SCreateWebsiteSitemap
 } from '~/entities/sitemaps';
-import { Dialog, DialogTriggerType } from '~/features/dialogs';
-import { FormFieldInfo } from '~/features/forms';
 import { WebsiteMapRead, WebsiteRead, WebsiteSitemapsService } from '~/shared/api';
+import { Dialog, DialogTriggerType } from '~/shared/dialogs';
+import { FormFieldInfo } from '~/shared/forms';
 import { log } from '~/shared/utils';
 
 type WebsiteSitemapCreateFormDialogProps = {

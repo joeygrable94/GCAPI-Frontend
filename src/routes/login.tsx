@@ -1,8 +1,8 @@
 import { RouteDefinition, createAsync } from '@solidjs/router';
 import { clientOnly } from '@solidjs/start';
 import { Component, Show } from 'solid-js';
+import { getCurrentUserOrGuest } from '~/entities/users';
 import { CurrentUser } from '~/features/auth';
-import { getCurrentUserOrGuest } from '~/features/user';
 const LoginButton = clientOnly(() => import('~/features/auth/ui/login.button'));
 
 export const route = {

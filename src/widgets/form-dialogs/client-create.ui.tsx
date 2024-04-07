@@ -8,9 +8,9 @@ import {
   IsValidClientTitle,
   SCreateClient
 } from '~/entities/clients';
-import { Dialog, DialogTriggerType } from '~/features/dialogs';
-import { FormFieldInfo } from '~/features/forms';
 import { ClientRead, ClientsService } from '~/shared/api';
+import { Dialog, DialogTriggerType } from '~/shared/dialogs';
+import { FormFieldInfo } from '~/shared/forms';
 import { log } from '~/shared/utils';
 
 type ClientCreateFormDialogProps = {

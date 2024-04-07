@@ -1,3 +1,5 @@
+import { redirect } from '@solidjs/router';
+import { AuthorizedUser, CurrentUser, defaultGuestUser } from '~/features/auth';
 import {
   ApiError,
   Paginated_UserReadAsAdmin_,
@@ -9,6 +11,42 @@ import {
 } from '~/shared/api';
 import { defaultPagination } from '~/shared/tanstack';
 import { logError } from '~/shared/utils';
+
+/**
+ * @summary Fetches the current user or guest on the client.
+ */
+export async function fetchCurrentUserOrLogin<QueryFunction>(
+  queryContext: any
+): Promise<AuthorizedUser | void> {
+  const queryKey = queryContext.queryKey;
+  const _key = queryKey[0];
+  try {
+    let currentUser: AuthorizedUser;
+    currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
+    return currentUser;
+  } catch (err: ApiError | Error | any) {
+    logError('Error fetching current user:', err.message);
+    return redirect('/login');
+  }
+}
+
+/**
+ * @summary Fetches the current user or guest on the client.
+ */
+export async function fetchCurrentUserOrGuest<QueryFunction>(
+  queryContext: any
+): Promise<CurrentUser> {
+  const queryKey = queryContext.queryKey;
+  const _key = queryKey[0];
+  let currentUser: CurrentUser = defaultGuestUser;
+  try {
+    currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
+  } catch (err: ApiError | Error | any) {
+    logError('Error fetching current user:', err.message);
+  } finally {
+    return currentUser;
+  }
+}
 
 /**
  * @summary Fetches a list of users on the client.

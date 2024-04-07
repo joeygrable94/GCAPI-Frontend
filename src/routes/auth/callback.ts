@@ -8,9 +8,8 @@ import {
   defaultAuthConfig
 } from '~/features/auth';
 import { getServerCookie, setServerCookie } from '~/features/cookie/session.server';
-import { encryptData } from '~/features/encrypt';
-import { getSession } from '~/features/session';
-import { logError } from '~/shared/utils';
+import { clearSession, getSession } from '~/features/session';
+import { encryptData, logError } from '~/shared/utils';
 
 export const GET: APIHandler = async (event) => {
   const url = new URL(event.request.url);
@@ -18,8 +17,7 @@ export const GET: APIHandler = async (event) => {
   const state: string | null = url.searchParams.get('state');
   const cookie = getServerCookie(`com.auth0.auth.${state}`);
   if (!cookie) {
-    const session = await getSession();
-    await session.clear();
+    await clearSession();
     setServerCookie('gcapi_auth', encryptData<AuthConfig>(defaultAuthConfig), {
       maxAge: AUTH_COOKIE_MAX_AGE
     });
@@ -34,8 +32,7 @@ export const GET: APIHandler = async (event) => {
   );
   if (!isAuthenticated) {
     logError('Auth state is not valid');
-    const session = await getSession();
-    await session.clear();
+    await clearSession();
     setServerCookie('gcapi_auth', encryptData<AuthConfig>(defaultAuthConfig), {
       maxAge: AUTH_COOKIE_MAX_AGE
     });

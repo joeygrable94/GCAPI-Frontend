@@ -7,8 +7,8 @@ import {
   chevronRight
 } from 'solid-heroicons/outline';
 import { Component, Show } from 'solid-js';
-import { ITablePaginationProps } from '~/features/data-tables';
 import { useThemeContext } from '~/features/theme';
+import { ITablePaginationProps } from '~/shared/data-tables';
 import { log } from '~/shared/utils';
 
 /**

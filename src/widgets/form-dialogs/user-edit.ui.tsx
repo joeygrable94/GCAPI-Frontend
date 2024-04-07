@@ -3,9 +3,9 @@ import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, createSignal } from 'solid-js';
 import { IsValidUserPicture, IsValidUserUsername, SEditUser } from '~/entities/users';
-import { Dialog } from '~/features/dialogs';
-import { FormFieldInfo } from '~/features/forms';
 import { UserRead, UsersService } from '~/shared/api';
+import { Dialog } from '~/shared/dialogs';
+import { FormFieldInfo } from '~/shared/forms';
 import { EditIcon } from '~/shared/icons';
 import { log } from '~/shared/utils';
 

@@ -1,6 +1,6 @@
 import { FloatingLabel, Form, Stack } from 'solid-bootstrap';
 import { Component, Match, Switch, createSignal, onMount } from 'solid-js';
-import { ITableColumnFilterProps } from '~/features/data-tables';
+import { ITableColumnFilterProps } from '~/shared/data-tables';
 
 /**
  * @summary TableColumnFilter component for table columns.

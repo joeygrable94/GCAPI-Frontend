@@ -1,6 +1,6 @@
 import { AuthConfig, defaultAuthConfig } from '~/features/auth';
 import { getClientCookie } from '~/features/cookie/session.client';
-import { decryptData } from '~/features/encrypt';
+import { decryptData } from '~/shared/utils';
 
 export function useClientAuthCookie(name: string = 'gcapi_auth'): AuthConfig {
   let auth: AuthConfig;

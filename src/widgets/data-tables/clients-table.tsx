@@ -16,14 +16,14 @@ import {
   CLIENTS_PAGE_START,
   fetchClientsList
 } from '~/entities/clients';
+import { useThemeContext } from '~/features/theme';
+import { ClientRead, Paginated_ClientRead_ } from '~/shared/api';
 import {
   TableBody,
   TableColumnIsActive,
   TableFooter,
   TableHeader
-} from '~/features/data-tables';
-import { useThemeContext } from '~/features/theme';
-import { ClientRead, Paginated_ClientRead_ } from '~/shared/api';
+} from '~/shared/data-tables';
 import { ClientsTableActions } from '~/widgets/data-table-actions';
 
 type ClientDataTableProps = {

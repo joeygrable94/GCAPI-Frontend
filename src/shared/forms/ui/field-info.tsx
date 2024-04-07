@@ -1,6 +1,6 @@
 import { Form } from 'solid-bootstrap';
 import { Component } from 'solid-js';
-import { IFormFieldInfoProps } from '~/features/forms';
+import { IFormFieldInfoProps } from '~/shared/forms';
 
 const FormFieldInfo: Component<IFormFieldInfoProps> = (props) => {
   return (

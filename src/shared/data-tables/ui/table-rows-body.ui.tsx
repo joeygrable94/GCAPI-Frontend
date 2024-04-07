@@ -1,6 +1,6 @@
 import { flexRender } from '@tanstack/solid-table';
 import { Component, For } from 'solid-js';
-import { ITableBodyProps } from '~/features/data-tables';
+import { ITableBodyProps } from '~/shared/data-tables';
 
 export const TableBody: Component<ITableBodyProps> = (props) => {
   return (

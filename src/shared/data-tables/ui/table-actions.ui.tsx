@@ -1,7 +1,7 @@
 import { Button, Stack } from 'solid-bootstrap';
 import { Component, Show } from 'solid-js';
-import { ITableFooterActionsProps } from '~/features/data-tables';
 import { useThemeContext } from '~/features/theme';
+import { ITableFooterActionsProps } from '~/shared/data-tables';
 
 /**
  * @summary Filter component for table columns.

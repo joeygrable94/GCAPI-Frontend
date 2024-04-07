@@ -1,4 +1,6 @@
 import { cache, redirect } from '@solidjs/router';
+import { AuthorizedUser, CurrentUser, defaultGuestUser } from '~/features/auth';
+import { setOpenAPISessionToken } from '~/features/session';
 import {
   ApiError,
   Paginated_UserReadAsAdmin_,
@@ -8,7 +10,39 @@ import {
   UserReadAsManager,
   UsersService
 } from '~/shared/api';
-import { logError } from '~/shared/utils';
+import { log, logError } from '~/shared/utils';
+
+/**
+ * @summary Fetches the current user or redirects to login page
+ */
+export const getCurrentUserOrLogin = cache(async () => {
+  'use server';
+  let currentUser: AuthorizedUser;
+  try {
+    await setOpenAPISessionToken();
+    currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
+  } catch (err: ApiError | Error | any) {
+    logError('Error fetching current user:', err.message);
+    throw redirect('/login');
+  }
+  return currentUser as AuthorizedUser;
+}, 'currentUserOrLogin');
+
+/**
+ * @summary Fetches the current user or guest on the server.
+ */
+export const getCurrentUserOrGuest = cache(async () => {
+  'use server';
+  let currentUser: CurrentUser = defaultGuestUser;
+  if (import.meta.env.VITE_DEBUG === 'true') log('Fetching current user or guest');
+  try {
+    await setOpenAPISessionToken();
+    currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
+  } catch (err: ApiError | Error | any) {
+    logError('No user currently logged in:', err.message);
+  }
+  return currentUser;
+}, 'currentUser');
 
 /**
  * @summary Fetches a list of users on the server.

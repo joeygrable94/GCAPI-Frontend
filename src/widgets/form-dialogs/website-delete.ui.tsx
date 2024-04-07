@@ -1,7 +1,7 @@
 import { Button, Spinner, Stack } from 'solid-bootstrap';
 import { Component, Match, Switch, createSignal } from 'solid-js';
-import { Dialog } from '~/features/dialogs';
 import { WebsiteRead, WebsitesService } from '~/shared/api';
+import { Dialog } from '~/shared/dialogs';
 import { DeleteIcon } from '~/shared/icons';
 import { log } from '~/shared/utils';
 

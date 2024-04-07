@@ -10,9 +10,9 @@ import {
   IsValidWebsiteIsSecure,
   SCreateWebsite
 } from '~/entities/websites';
-import { Dialog, DialogTriggerType } from '~/features/dialogs';
-import { FormFieldInfo } from '~/features/forms';
 import { ClientsService, WebsiteCreateProcessing, WebsitesService } from '~/shared/api';
+import { Dialog, DialogTriggerType } from '~/shared/dialogs';
+import { FormFieldInfo } from '~/shared/forms';
 import { log, logError } from '~/shared/utils';
 
 type WebsiteCreateFormDialogProps = {

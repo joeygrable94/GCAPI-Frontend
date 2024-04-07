@@ -1,8 +1,7 @@
 import { RouteDefinition, createAsync } from '@solidjs/router';
 import { Component, Show, createEffect, createSignal } from 'solid-js';
-import { UserProfileCard } from '~/entities/users/ui';
+import { UserProfileCard, getCurrentUserOrLogin } from '~/entities/users';
 import { AuthorizedUser } from '~/features/auth';
-import { getCurrentUserOrLogin } from '~/features/user';
 
 export const route = {
   load: () => getCurrentUserOrLogin()

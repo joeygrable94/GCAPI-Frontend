@@ -8,9 +8,9 @@ import {
   IsValidWebsiteIsSecure,
   SEditWebsite
 } from '~/entities/websites';
-import { Dialog } from '~/features/dialogs';
-import { FormFieldInfo } from '~/features/forms';
 import { WebsiteRead, WebsitesService } from '~/shared/api';
+import { Dialog } from '~/shared/dialogs';
+import { FormFieldInfo } from '~/shared/forms';
 import { EditIcon } from '~/shared/icons';
 import { log } from '~/shared/utils';
 

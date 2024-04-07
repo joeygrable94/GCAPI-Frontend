@@ -16,14 +16,14 @@ import {
   WEBSITES_PAGE_START,
   fetchWebsitesList
 } from '~/entities/websites';
+import { useThemeContext } from '~/features/theme';
+import { Paginated_WebsiteRead_, WebsiteRead } from '~/shared/api';
 import {
   TableBody,
   TableColumnIsActive,
   TableFooter,
   TableHeader
-} from '~/features/data-tables';
-import { useThemeContext } from '~/features/theme';
-import { Paginated_WebsiteRead_, WebsiteRead } from '~/shared/api';
+} from '~/shared/data-tables';
 import { WebsitesTableActions } from '~/widgets/data-table-actions';
 
 type WebsiteDataTableProps = {

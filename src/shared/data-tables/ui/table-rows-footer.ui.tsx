@@ -1,10 +1,10 @@
 import { Component } from 'solid-js';
+import { useThemeContext } from '~/features/theme';
 import {
   ITableFooterProps,
   TableFooterActions,
   TablePagination
-} from '~/features/data-tables';
-import { useThemeContext } from '~/features/theme';
+} from '~/shared/data-tables';
 
 export const TableFooter: Component<ITableFooterProps> = (props) => {
   const theme = useThemeContext();

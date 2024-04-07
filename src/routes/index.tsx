@@ -1,7 +1,7 @@
 import { RouteDefinition, createAsync } from '@solidjs/router';
 import { Component, Show } from 'solid-js';
+import { getCurrentUserOrGuest } from '~/entities/users';
 import { CurrentUser } from '~/features/auth';
-import { getCurrentUserOrGuest } from '~/features/user';
 
 export const route = {
   load: () => getCurrentUserOrGuest()
