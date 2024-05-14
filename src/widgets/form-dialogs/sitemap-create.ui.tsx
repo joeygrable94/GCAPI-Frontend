@@ -10,6 +10,7 @@ import {
 import { WebsiteMapRead, WebsiteRead, WebsiteSitemapsService } from '~/shared/api';
 import { Dialog, DialogTriggerType } from '~/shared/dialogs';
 import { FormFieldInfo } from '~/shared/forms';
+import { queryClient } from '~/shared/tanstack';
 import { log } from '~/shared/utils';
 
 type WebsiteSitemapCreateFormDialogProps = {
@@ -23,16 +24,12 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
 ) => {
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    queryClient.invalidateQueries({ queryKey: ['websiteSitemaps'] });
+    setOpen(false);
+  };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
-
-  createEffect(() => {
-    log('form submitted', isSubmitted());
-    log('form pending', pending());
-  });
-
-  // form
   const Frm = createForm<SCreateWebsiteSitemap, typeof zodValidator>(() => ({
     defaultValues: {
       url: '',
@@ -47,7 +44,6 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
         .then((r: WebsiteMapRead) => {
           log('created website sitemap response', r);
           setIsSubmitted(true);
-          handleClose();
         })
         .catch((e) => {
           log('error creating website sitemap', e);
@@ -59,7 +55,7 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
     },
     validatorAdapter: zodValidator
   }));
-
+  createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
       triggerType={props.triggerType}

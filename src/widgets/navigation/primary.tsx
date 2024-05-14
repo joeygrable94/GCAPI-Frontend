@@ -9,7 +9,7 @@ type PrimaryNavigationProps = {
 };
 
 const PrimaryNavigation: Component<PrimaryNavigationProps> = (props) => {
-  const [authState, authAct] = useAuth0();
+  const [_, authAct] = useAuth0();
   const layoutContext = useThemeContext();
   const [bg, setBg] = createSignal<ThemeMode>(props.darkMode ? 'dark' : 'light');
   const loginAction = async () => {
@@ -38,7 +38,7 @@ const PrimaryNavigation: Component<PrimaryNavigationProps> = (props) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav style={{ width: '100%', 'justify-content': 'flex-start' }}>
             <Switch>
-              <Match when={authAct.isAuthenticated()}>
+              <Match when={authAct.isInitialized() && authAct.isAuthenticated()}>
                 {/* Authenticated Nav */}
                 <Nav.Link as={A} href="/users">
                   Users

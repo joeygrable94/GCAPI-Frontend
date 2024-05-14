@@ -1,12 +1,13 @@
 import { createForm } from '@tanstack/solid-form';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Button, Col, Form, Row } from 'solid-bootstrap';
-import { Component, createSignal } from 'solid-js';
+import { Component, createEffect, createSignal } from 'solid-js';
 import { IsValidUserPicture, IsValidUserUsername, SEditUser } from '~/entities/users';
 import { UserRead, UsersService } from '~/shared/api';
 import { Dialog } from '~/shared/dialogs';
 import { FormFieldInfo } from '~/shared/forms';
 import { EditIcon } from '~/shared/icons';
+import { queryClient } from '~/shared/tanstack';
 import { log } from '~/shared/utils';
 
 type UserEditFormDialogProps = {
@@ -16,11 +17,12 @@ type UserEditFormDialogProps = {
 const UserEditFormDialog: Component<UserEditFormDialogProps> = (props) => {
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+    setOpen(false);
+  };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
-
-  // form
   const Frm = createForm<SEditUser, typeof zodValidator>(() => ({
     defaultValues: {
       userId: props.user.id,
@@ -40,7 +42,6 @@ const UserEditFormDialog: Component<UserEditFormDialogProps> = (props) => {
         .then((r: UserRead) => {
           log('updated user response', r);
           setIsSubmitted(true);
-          handleClose();
         })
         .catch((e) => {
           log('error updating user', e);
@@ -52,7 +53,7 @@ const UserEditFormDialog: Component<UserEditFormDialogProps> = (props) => {
     },
     validatorAdapter: zodValidator
   }));
-
+  createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
       triggerType="button"

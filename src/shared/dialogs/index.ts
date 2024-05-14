@@ -1,2 +1,2 @@
-export * from './dialog.types';
-export { default as Dialog } from './dialog.ui';
+export * from './model';
+export * from './ui';

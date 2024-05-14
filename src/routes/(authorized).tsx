@@ -9,10 +9,10 @@ export const route = {
 
 export default function (props: RouteSectionProps) {
   const user = createAsync<AuthorizedUser>(() => getCurrentUserOrLogin());
-  const [_, AuthActions] = useAuth0();
+  const [_, authAct] = useAuth0();
 
   return (
-    <Show when={AuthActions.isAuthenticated() && user()}>
+    <Show when={authAct.isInitialized() && authAct.isAuthenticated() && user()}>
       <UserProvider initialUser={user()!}>{props.children}</UserProvider>
     </Show>
   );

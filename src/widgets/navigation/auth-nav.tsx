@@ -10,7 +10,7 @@ type AuthNavProps = {
 
 const AuthNav: Component<AuthNavProps> = (props) => {
   'use client';
-  const [authState, authAct] = useAuth0();
+  const [_, authAct] = useAuth0();
   const loginAction = async () => {
     await webAuthAuthorize(authAct.webAuth, authAct.scopes);
   };
@@ -20,7 +20,7 @@ const AuthNav: Component<AuthNavProps> = (props) => {
   };
   return (
     <Switch>
-      <Match when={authAct.isAuthenticated()}>
+      <Match when={authAct.isInitialized() && authAct.isAuthenticated()}>
         <NavDropdown title="Account" menuVariant={props.bg()}>
           <NavDropdown.Item as={A} href="/users/profile">
             Profile
@@ -29,7 +29,7 @@ const AuthNav: Component<AuthNavProps> = (props) => {
           <NavDropdown.Item onClick={logoutAction}>Logout</NavDropdown.Item>
         </NavDropdown>
       </Match>
-      <Match when={!authAct.isAuthenticated()}>
+      <Match when={authAct.isInitialized() && !authAct.isAuthenticated()}>
         <Nav.Link onClick={loginAction}>Login</Nav.Link>
       </Match>
     </Switch>

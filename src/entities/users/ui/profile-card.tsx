@@ -1,6 +1,6 @@
 import { Card } from 'solid-bootstrap';
 import { Component } from 'solid-js';
-import { AuthorizedUser } from '~/features/auth';
+import { AuthScopesList, AuthorizedUser } from '~/features/auth';
 import { formatDateString } from '~/shared/utils';
 
 type UserProfileCardProps = {
@@ -24,8 +24,9 @@ const UserProfileCard: Component<UserProfileCardProps> = (props) => {
             <dt>Email</dt>
             <dd>{props.user.email}</dd>
             <dt>Created</dt>
-            <dd>{formatDateString(new Date(props.user.created_on))}</dd>
+            <dd>{formatDateString(new Date(props.user.created))}</dd>
           </dl>
+          <AuthScopesList user={props.user} />
         </Card.Text>
       </Card.Body>
     </Card>

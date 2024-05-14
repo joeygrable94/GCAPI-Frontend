@@ -6,7 +6,7 @@ type LoginButtonProps = {};
 
 const LoginButton: Component<LoginButtonProps> = (props) => {
   'use client';
-  const [authState, authAct] = useAuth0();
+  const [_, authAct] = useAuth0();
   const loginAction = async () => {
     await webAuthAuthorize(authAct.webAuth, authAct.scopes);
   };

@@ -1,8 +1,9 @@
 import { Button, Spinner, Stack } from 'solid-bootstrap';
-import { Component, Match, Switch, createSignal } from 'solid-js';
+import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
 import { WebsitePageRead, WebsitePagesService } from '~/shared/api';
 import { Dialog } from '~/shared/dialogs';
 import { DeleteIcon } from '~/shared/icons';
+import { queryClient } from '~/shared/tanstack';
 import { log } from '~/shared/utils';
 
 type WebsitePageDeleteFormDialogProps = {
@@ -14,7 +15,10 @@ const WebsitePageDeleteFormDialog: Component<WebsitePageDeleteFormDialogProps> =
 ) => {
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    queryClient.invalidateQueries({ queryKey: ['websitePages'] });
+    setOpen(false);
+  };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
   const handleSubmit = () => {
@@ -25,7 +29,6 @@ const WebsitePageDeleteFormDialog: Component<WebsitePageDeleteFormDialogProps> =
       .then((v: any) => {
         log('deleted Page response', v);
         setIsSubmitted(true);
-        handleClose();
       })
       .catch((e) => {
         log('error deleting Page', e);
@@ -35,7 +38,7 @@ const WebsitePageDeleteFormDialog: Component<WebsitePageDeleteFormDialogProps> =
         setPending(false);
       });
   };
-
+  createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
       size="sm"

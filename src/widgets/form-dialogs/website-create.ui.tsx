@@ -10,9 +10,15 @@ import {
   IsValidWebsiteIsSecure,
   SCreateWebsite
 } from '~/entities/websites';
-import { ClientsService, WebsiteCreateProcessing, WebsitesService } from '~/shared/api';
+import {
+  ClientWebsiteCreate,
+  ClientsService,
+  WebsiteRead,
+  WebsitesService
+} from '~/shared/api';
 import { Dialog, DialogTriggerType } from '~/shared/dialogs';
 import { FormFieldInfo } from '~/shared/forms';
+import { queryClient } from '~/shared/tanstack';
 import { log, logError } from '~/shared/utils';
 
 type WebsiteCreateFormDialogProps = {
@@ -23,61 +29,62 @@ type WebsiteCreateFormDialogProps = {
 const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props) => {
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    queryClient.invalidateQueries({ queryKey: ['websites'] });
+    setOpen(false);
+  };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
   const clientsQuery = createQuery(() => ({
     queryKey: ['clients', 1, 1000],
     queryFn: fetchClientsList
   }));
-
-  createEffect(() => {
-    log('form submitted', isSubmitted());
-    log('form pending', pending());
-  });
-
-  // form
   const Frm = createForm<SCreateWebsite, typeof zodValidator>(() => ({
     defaultValues: {
       domain: '',
       is_secure: true,
       is_active: true,
-      client_id: ''
+      clientId: ''
     },
     onSubmit: async ({ value, formApi }) => {
       setPending(true);
-      try {
-        let website: WebsiteCreateProcessing =
-          await WebsitesService.websitesCreateApiV1WebsitesPost({
-            requestBody: {
-              domain: value.domain,
-              is_secure: value.is_secure,
-              is_active: value.is_active
-            }
-          });
-        log('created website response', website);
-        try {
-          let clienWebsite =
-            await ClientsService.clientsAssignWebsiteApiV1ClientsClientIdWebsitePost({
-              clientId: value.client_id,
-              requestBody: {
-                client_id: value.client_id,
-                website_id: website.website.id
-              }
-            });
-          log('assigned website to client', clienWebsite);
-        } catch (e) {
-          logError('error assigning website to client', e);
+      const { domain, is_secure, is_active, clientId } = value;
+      WebsitesService.websitesCreateApiV1WebsitesPost({
+        requestBody: {
+          domain: domain,
+          is_secure: is_secure,
+          is_active: is_active
         }
-      } catch (e) {
-        logError('error creating website', e);
-      } finally {
-        setIsSubmitted(true);
-      }
+      })
+        .then((website: WebsiteRead) => {
+          log('create website response', website);
+          ClientsService.clientsAssignWebsiteApiV1ClientsClientIdAssignWebsitePost({
+            clientId: clientId,
+            requestBody: {
+              client_id: clientId,
+              website_id: website.id
+            }
+          })
+            .then((r: ClientWebsiteCreate) => {
+              log('assigned website to client response', r);
+              setIsSubmitted(true);
+            })
+            .catch((e) => {
+              logError('error assigning website to client', e);
+              setIsSubmitted(false);
+            });
+        })
+        .catch((e) => {
+          logError('create website error', e);
+          setIsSubmitted(false);
+        })
+        .finally(() => {
+          setPending(false);
+        });
     },
     validatorAdapter: zodValidator
   }));
-
+  createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
       triggerType={props.triggerType}
@@ -205,7 +212,7 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
             </Form.Group>
             <Form.Group as={Col} xs={12} class="mb-2">
               <Frm.Field
-                name="client_id"
+                name="clientId"
                 children={(field) => {
                   return (
                     <>

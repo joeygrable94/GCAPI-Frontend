@@ -75,6 +75,21 @@ const ClientDataTable = (props: ClientDataTableProps) => {
       ]
     }),
     columnHelper.group({
+      header: 'Relationships',
+      columns: [
+        columnHelper.accessor('users', {
+          header: () => 'Users',
+          footer: (props) => props.column.id,
+          cell: (info) => info.getValue().length
+        }),
+        columnHelper.accessor('websites', {
+          header: () => 'Websites',
+          footer: (props) => props.column.id,
+          cell: (info) => info.getValue().length
+        })
+      ]
+    }),
+    columnHelper.group({
       header: 'Actions',
       columns: [
         columnHelper.display({

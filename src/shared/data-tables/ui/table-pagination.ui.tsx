@@ -6,10 +6,12 @@ import {
   chevronLeft,
   chevronRight
 } from 'solid-heroicons/outline';
-import { Component, Show } from 'solid-js';
+import { Component, Show, createEffect, createSignal } from 'solid-js';
 import { useThemeContext } from '~/features/theme';
-import { ITablePaginationProps } from '~/shared/data-tables';
-import { log } from '~/shared/utils';
+import {
+  ITablePaginationProps,
+  getNextHighestPageInterval
+} from '~/shared/data-tables';
 
 /**
  * @summary Filter component for table columns.
@@ -17,15 +19,19 @@ import { log } from '~/shared/utils';
 export const TablePagination: Component<ITablePaginationProps> = (props) => {
   const theme = useThemeContext();
   const displayPageSizeInterval = [10, 20, 30, 40, 50, 100, 1000];
+  const [pageInterval, setPageInterval] = createSignal<number>(10);
   const handleChangePageSize = (e: any) => {
-    log('handleChangePageSize');
     props.table.setPageSize(Number(e.target.value));
   };
   const handleChangePageNumber = (e: any) => {
-    log('handleChangePageNumber');
     const page = e.target.value ? Number(e.target.value) - 1 : 0;
     props.table.setPageIndex(page);
   };
+  createEffect(() =>
+    setPageInterval(
+      getNextHighestPageInterval(displayPageSizeInterval, props.maximum())
+    )
+  );
   return (
     <Show when={props.maximum() > displayPageSizeInterval[0]}>
       <Stack
@@ -100,7 +106,7 @@ export const TablePagination: Component<ITablePaginationProps> = (props) => {
             onChange={handleChangePageSize}
           >
             {displayPageSizeInterval
-              .filter((v) => v <= props.maximum())
+              .filter((v) => v <= pageInterval())
               .map((pageSize) => (
                 <option value={pageSize}>Show {pageSize}</option>
               ))}

@@ -1,17 +1,20 @@
 import { createForm } from '@tanstack/solid-form';
+import { createQuery } from '@tanstack/solid-query';
 import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Button, Col, Form, Row } from 'solid-bootstrap';
-import { Component, createSignal } from 'solid-js';
+import { Component, For, Show, createEffect, createSignal } from 'solid-js';
+import { fetchClientsList } from '~/entities/clients';
 import {
   IsValidWebsiteDomain,
   IsValidWebsiteIsActive,
   IsValidWebsiteIsSecure,
   SEditWebsite
 } from '~/entities/websites';
-import { WebsiteRead, WebsitesService } from '~/shared/api';
+import { ClientsService, WebsiteRead, WebsitesService } from '~/shared/api';
 import { Dialog } from '~/shared/dialogs';
 import { FormFieldInfo } from '~/shared/forms';
 import { EditIcon } from '~/shared/icons';
+import { queryClient } from '~/shared/tanstack';
 import { log } from '~/shared/utils';
 
 type WebsiteEditFormDialogProps = {
@@ -21,21 +24,27 @@ type WebsiteEditFormDialogProps = {
 const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => {
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    queryClient.invalidateQueries({ queryKey: ['websites'] });
+    setOpen(false);
+  };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
-
-  // form
+  const clientsQuery = createQuery(() => ({
+    queryKey: ['clients', 1, 1000],
+    queryFn: fetchClientsList
+  }));
   const Frm = createForm<SEditWebsite, typeof zodValidator>(() => ({
     defaultValues: {
       websiteId: props.website.id,
       domain: props.website.domain,
       is_secure: props.website.is_secure ?? true,
-      is_active: props.website.is_active ?? true
+      is_active: props.website.is_active ?? true,
+      clientId: null
     },
     onSubmit: async ({ value, formApi }) => {
       setPending(true);
-      const { websiteId, domain, is_secure, is_active } = value;
+      const { websiteId, domain, is_secure, is_active, clientId } = value;
       WebsitesService.websitesUpdateApiV1WebsitesWebsiteIdPatch({
         websiteId: websiteId,
         requestBody: {
@@ -46,7 +55,25 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
       })
         .then((r: WebsiteRead) => {
           log('updated website response', r);
-          setIsSubmitted(true);
+          if (clientId === null) {
+            setIsSubmitted(true);
+            return;
+          }
+          ClientsService.clientsAssignWebsiteApiV1ClientsClientIdAssignWebsitePost({
+            clientId: clientId,
+            requestBody: {
+              client_id: clientId,
+              website_id: websiteId
+            }
+          })
+            .then((r) => {
+              log('assigned website to client response', r);
+              setIsSubmitted(true);
+            })
+            .catch((e) => {
+              log('error assigning website to client', e);
+              setIsSubmitted(false);
+            });
         })
         .catch((e) => {
           log('error updating website', e);
@@ -54,12 +81,11 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
         })
         .finally(() => {
           setPending(false);
-          handleClose();
         });
     },
     validatorAdapter: zodValidator
   }));
-
+  createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
       triggerType="button"
@@ -191,6 +217,39 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
                         checked={field().state.value ?? true}
                         onInput={(e) => field().handleChange(e.target.checked)}
                       />
+                      <FormFieldInfo field={field()} />
+                    </>
+                  );
+                }}
+              />
+            </Form.Group>
+            <Form.Group as={Col} xs={12} class="mb-2">
+              <Frm.Field
+                name="clientId"
+                children={(field) => {
+                  return (
+                    <>
+                      <Form.Label class="mb-1">Assign Website to Client</Form.Label>
+                      <Form.Select
+                        id={field().name}
+                        name={field().name}
+                        value={field().state.value ?? ''}
+                        onChange={(e) => field().handleChange(e.target.value)}
+                        size="sm"
+                      >
+                        <Show when={clientsQuery.isSuccess}>
+                          <For each={clientsQuery.data?.results}>
+                            {(client) => (
+                              <option
+                                selected={field().state.value === client.id}
+                                value={client.id}
+                              >
+                                {client.title}
+                              </option>
+                            )}
+                          </For>
+                        </Show>
+                      </Form.Select>
                       <FormFieldInfo field={field()} />
                     </>
                   );

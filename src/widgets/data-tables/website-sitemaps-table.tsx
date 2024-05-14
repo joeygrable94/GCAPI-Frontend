@@ -12,62 +12,63 @@ import {
 import { Table } from 'solid-bootstrap';
 import { createEffect, createSignal } from 'solid-js';
 import {
-  WEBSITES_PAGE_SIZE,
-  WEBSITES_PAGE_START,
-  fetchWebsitesList
-} from '~/entities/websites';
+  SITEMAP_PAGE_SIZE,
+  SITEMAP_PAGE_START,
+  fetchWebsiteSitemapsList
+} from '~/entities/sitemaps';
 import { useThemeContext } from '~/features/theme';
-import { Paginated_WebsiteRead_, WebsiteRead } from '~/shared/api';
+import { Paginated_WebsiteMapRead_, WebsiteMapRead, WebsiteRead } from '~/shared/api';
 import {
   TableBody,
   TableColumnIsActive,
   TableFooter,
-  TableHeader
+  TableHeader,
+  columnSortByUrl
 } from '~/shared/data-tables';
-import { WebsitesTableActions } from '~/widgets/data-table-actions';
+import { WebsiteSitemapsTableActions } from '~/widgets/data-table-actions';
 
-type WebsitesDataTableProps = {
-  initialData: Paginated_WebsiteRead_ | undefined;
-  clientId?: string | null;
+type WebsiteSitemapsDataTableProps = {
+  initialData: Paginated_WebsiteMapRead_ | undefined;
+  website?: WebsiteRead;
 };
 
-const WebsitesDataTable = (props: WebsitesDataTableProps) => {
+const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
   const theme = useThemeContext();
   const [fetchPage, setFetchPage] = createSignal(
-    props.initialData?.page ?? WEBSITES_PAGE_START
+    props.initialData?.page ?? SITEMAP_PAGE_START
   );
   const [fetchSize, setFetchSize] = createSignal(
-    props.initialData?.size ?? WEBSITES_PAGE_SIZE
+    props.initialData?.size ?? SITEMAP_PAGE_SIZE
   );
-  const [fetchClientId, setFetchClientId] = createSignal(props.clientId ?? null);
+  const [fetchWebsiteId, setFetchWebsiteId] = createSignal(props.website?.id ?? null);
   const [fetchTotal, setFetchTodal] = createSignal(props.initialData?.total ?? 0);
-  const [data, setData] = createSignal<WebsiteRead[]>(props.initialData?.results ?? []);
+  const [data, setData] = createSignal<WebsiteMapRead[]>(
+    props.initialData?.results ?? []
+  );
   const query = createQuery(() => ({
-    queryKey: ['websites', fetchPage(), fetchSize(), fetchClientId()],
-    queryFn: fetchWebsitesList,
+    queryKey: ['websiteSitemaps', fetchPage(), fetchSize(), fetchWebsiteId()],
+    queryFn: fetchWebsiteSitemapsList,
     initialData: props.initialData
   }));
   createEffect(() => {
     if (query.data !== undefined && query.data !== null) {
       setFetchTodal(query.data.total);
-      setData(query.data.results.map((r: WebsiteRead) => r));
+      setData(query.data.results.map((r: WebsiteMapRead) => r));
     }
   });
-  const [sorting, setSorting] = createSignal<SortingState>([]);
-  const columnHelper = createColumnHelper<WebsiteRead>();
-  const columns: ColumnDef<WebsiteRead>[] = [
+  const [sorting, setSorting] = createSignal<SortingState>([
+    { id: 'url', desc: false }
+  ]);
+  const columnHelper = createColumnHelper<WebsiteMapRead>();
+  const columns: ColumnDef<WebsiteMapRead>[] = [
     columnHelper.group({
       header: 'Info',
       columns: [
-        columnHelper.accessor('domain', {
-          header: () => 'Title',
+        columnHelper.accessor('url', {
+          header: () => 'URL',
           footer: (props) => props.column.id,
-          cell: (info) => info.getValue()
-        }),
-        columnHelper.accessor('is_secure', {
-          header: () => 'HTTPS',
-          footer: (props) => props.column.id,
-          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />
+          cell: (info) => info.getValue(),
+          sortingFn: columnSortByUrl
         }),
         columnHelper.accessor('is_active', {
           header: () => 'Is Active',
@@ -83,7 +84,7 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
           id: 'id',
           header: () => '',
           footer: (props) => props.column.id,
-          cell: (info) => <WebsitesTableActions website={info.row.original} />
+          cell: (info) => <WebsiteSitemapsTableActions sitemap={info.row.original} />
         })
       ]
     })
@@ -134,4 +135,4 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
   );
 };
 
-export default WebsitesDataTable;
+export default WebsiteSitemapsDataTable;

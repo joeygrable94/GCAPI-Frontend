@@ -15,7 +15,9 @@ export const TableColumnFilter: Component<ITableColumnFilterProps> = (props) => 
   };
   const setFilterText = (e: any) => {
     props.setIsFiltering(true);
-    return props.column.setFilterValue(e.target.value);
+    return props.column.setFilterValue((old: [string, string]) => {
+      return e.target.value;
+    });
   };
   const setFilterMin = (e: any) => {
     props.setIsFiltering(true);
@@ -57,6 +59,7 @@ export const TableColumnFilter: Component<ITableColumnFilterProps> = (props) => 
       setFilterCategoryIds(categoryList());
     }
   };
+  /*
   const handleChangeTagsList = (e: any) => {
     let selected = Array.from(e.target.options as HTMLOptionElement[])
       .filter((v: HTMLOptionElement) => v.selected)
@@ -73,6 +76,7 @@ export const TableColumnFilter: Component<ITableColumnFilterProps> = (props) => 
     setTagsInclusive(e.target.checked);
     setFilterTagIds([tagsInclusive(), tagsList()]);
   };
+  */
   const handleSetFirstValue = () => {
     setFirstValue(
       props.table.getPreFilteredRowModel().flatRows[0]?.getValue(props.column.id)

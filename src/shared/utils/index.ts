@@ -1,4 +1,3 @@
-export * from './cookies';
 export * from './dates';
 export * from './encryption';
 export * from './global';

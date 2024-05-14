@@ -22,7 +22,8 @@ import {
   TableBody,
   TableColumnIsActive,
   TableFooter,
-  TableHeader
+  TableHeader,
+  columnSortByUrl
 } from '~/shared/data-tables';
 import { formatDateString } from '~/shared/utils';
 import { WebsitePagesTableActions } from '../data-table-actions';
@@ -64,7 +65,9 @@ const WebsitePagesDataTable = (props: WebsitePagesDataTableProps) => {
       setData(query.data.results.map((r: WebsitePageRead) => r));
     }
   });
-  const [sorting, setSorting] = createSignal<SortingState>([]);
+  const [sorting, setSorting] = createSignal<SortingState>([
+    { id: 'url', desc: false }
+  ]);
   const columnHelper = createColumnHelper<WebsitePageRead>();
   const columns: ColumnDef<WebsitePageRead>[] = [
     columnHelper.group({
@@ -73,7 +76,8 @@ const WebsitePagesDataTable = (props: WebsitePagesDataTableProps) => {
         columnHelper.accessor('url', {
           header: () => 'URL',
           footer: (props) => props.column.id,
-          cell: (info) => info.getValue()
+          cell: (info) => info.getValue(),
+          sortingFn: columnSortByUrl
         }),
         columnHelper.accessor('status', {
           header: () => 'Status',
