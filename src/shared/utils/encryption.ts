@@ -3,7 +3,7 @@ import encUTF8 from 'crypto-js/enc-utf8';
 
 export function encryptData<T>(
   data: T,
-  secret: any = import.meta.env.VITE_SESSION_SECRET ??
+  secret: string = import.meta.env.VITE_SESSION_SECRET ??
     'areallylongsecretthatyoushouldreplace'
 ): string {
   return AES.encrypt(JSON.stringify(data), secret).toString();
@@ -11,7 +11,7 @@ export function encryptData<T>(
 
 export function decryptData<T>(
   data: string,
-  secret: any = import.meta.env.VITE_SESSION_SECRET ??
+  secret: string = import.meta.env.VITE_SESSION_SECRET ??
     'areallylongsecretthatyoushouldreplace'
 ): T {
   try {

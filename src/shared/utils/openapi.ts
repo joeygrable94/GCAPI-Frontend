@@ -9,7 +9,7 @@ const APP_PROTOCOL: string =
 
 const API_HOST: string = import.meta.env.VITE_API_BASE_URL
   ? import.meta.env.VITE_API_BASE_URL
-  : 'localhost:8888';
+  : 'localhost:3333';
 
 const API_URL_BASE = `${APP_PROTOCOL}://${API_HOST}`;
 

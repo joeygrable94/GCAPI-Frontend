@@ -80,12 +80,12 @@ const ClientDataTable = (props: ClientDataTableProps) => {
         columnHelper.accessor('users', {
           header: () => 'Users',
           footer: (props) => props.column.id,
-          cell: (info) => info.getValue().length
+          cell: (info) => info.getValue()?.length ?? 0
         }),
         columnHelper.accessor('websites', {
           header: () => 'Websites',
           footer: (props) => props.column.id,
-          cell: (info) => info.getValue().length
+          cell: (info) => info.getValue()?.length ?? 0
         })
       ]
     }),

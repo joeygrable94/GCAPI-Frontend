@@ -3,9 +3,9 @@
   "version": "0.0.3",
   "description": "",
   "type": "module",
-  "proxy": "http://localhost:8888",
+  "proxy": "http://localhost:3333",
   "scripts": {
-    "generate-client": "openapi-ts --input http://0.0.0.0:8888/api/docs/openapi.json --output ./src/shared/api --useOptions --client axios",
+    "generate-client": "openapi-ts --input http://localhost:3333/api/docs/openapi.json --output ./src/shared/api --useOptions --client axios",
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "lint": "eslint --config .eslintrc.js 'src/**/*.ts' --fix",
     "dev": "vinxi dev",

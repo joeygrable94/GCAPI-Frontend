@@ -18,7 +18,7 @@ import {
   defaultAuthConfig,
   refreshAuthorization
 } from '~/features/auth';
-import { OpenAPI } from '~/shared/api';
+import { ApiError, OpenAPI } from '~/shared/api';
 import { log, logError } from '~/shared/utils';
 
 export const AuthConfigContext = createContext<AuthContextProvider>();

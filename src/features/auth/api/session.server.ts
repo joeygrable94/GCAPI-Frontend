@@ -3,8 +3,9 @@ import { getServerCookie } from '~/features/cookie/session.server';
 import { decryptData } from '~/shared/utils';
 
 export function useServerAuthCookie(name: string = 'gcapi_auth'): AuthConfig {
-  let auth: AuthConfig;
   const cookie = getServerCookie(name);
-  auth = cookie?.length ? decryptData<AuthConfig>(cookie) : defaultAuthConfig;
+  const auth: AuthConfig = cookie?.length
+    ? decryptData<AuthConfig>(cookie)
+    : defaultAuthConfig;
   return auth;
 }

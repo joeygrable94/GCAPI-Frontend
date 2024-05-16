@@ -2,7 +2,6 @@ import { cache, redirect } from '@solidjs/router';
 import { AuthorizedUser, CurrentUser, defaultGuestUser } from '~/features/auth';
 import { setOpenAPISessionToken } from '~/features/session';
 import {
-  ApiError,
   Paginated_UserReadAsAdmin_,
   Paginated_UserReadAsManager_,
   UserRead,
@@ -21,7 +20,7 @@ export const getCurrentUserOrLogin = cache(async () => {
   try {
     await setOpenAPISessionToken();
     currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
-  } catch (err: ApiError | Error | any) {
+  } catch (err: Error | any) {
     logError('Error fetching current user:', err.message);
     throw redirect('/login');
   }
@@ -38,7 +37,7 @@ export const getCurrentUserOrGuest = cache(async () => {
   try {
     await setOpenAPISessionToken();
     currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
-  } catch (err: ApiError | Error | any) {
+  } catch (err: Error | any) {
     logError('No user currently logged in:', err.message);
   }
   return currentUser;
@@ -60,7 +59,7 @@ export const ssrFetchUsersList = cache(async (page: number, size: number) => {
       page: page,
       size: size
     });
-  } catch (err: ApiError | Error | any) {
+  } catch (err: Error | any) {
     logError('Error fetching users list:', err.message);
   }
   return users;
@@ -74,7 +73,7 @@ export const ssrFetchUserById = cache(async (id: string) => {
   let user: UserReadAsAdmin | UserReadAsManager | UserRead;
   try {
     user = await UsersService.usersReadApiV1UsersUserIdGet({ userId: id });
-  } catch (err: ApiError | Error | any) {
+  } catch (err: Error | any) {
     logError('Error fetching user:', err.message);
     throw redirect('/404');
   }
