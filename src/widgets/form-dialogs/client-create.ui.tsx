@@ -30,14 +30,21 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
   const [isSubmitted, setIsSubmitted] = createSignal(false);
   const Frm = createForm<SCreateClient, typeof zodValidator>(() => ({
     defaultValues: {
+      slug: '',
       title: '',
       description: null,
       is_active: true
     },
-    onSubmit: async ({ value, formApi }) => {
+    onSubmit: async ({ value }) => {
+      const { slug, title, description, is_active } = value;
       setPending(true);
       ClientsService.clientsCreateApiV1ClientsPost({
-        requestBody: value
+        requestBody: {
+          title,
+          description,
+          is_active,
+          slug: slug
+        }
       })
         .then((r: ClientRead) => {
           log('created client response', r);
@@ -95,94 +102,92 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
         </>
       }
     >
-      <Frm.Provider>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void Frm.handleSubmit();
-          }}
-        >
-          <Row>
-            <Form.Group as={Col} xs={12} class="mb-2">
-              <Frm.Field
-                name="title"
-                validators={{
-                  onChange: IsValidClientTitle
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Client Name</Form.Label>
-                      <Form.Control
-                        required
-                        id={field().name}
-                        name={field().name}
-                        value={field().state.value ?? ''}
-                        onBlur={field().handleBlur}
-                        onInput={(e) => field().handleChange(e.target.value)}
-                        placeholder="Client Name"
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-            <Form.Group as={Col} xs={12} class="mb-2">
-              <Frm.Field
-                name="description"
-                validators={{
-                  onChange: IsValidClientDescription
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Client Description</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={3}
-                        id={field().name}
-                        name={field().name}
-                        value={field().state.value ?? ''}
-                        onBlur={field().handleBlur}
-                        onInput={(e) => field().handleChange(e.target.value)}
-                        placeholder="Client Description"
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-            <Form.Group as={Col} xs={12} class="mb-2">
-              <Frm.Field
-                name="is_active"
-                validators={{
-                  onChange: IsValidClientIsActive
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Client Is Active?</Form.Label>
-                      <Form.Check
-                        type="switch"
-                        required
-                        id={field().name}
-                        name={field().name}
-                        label={field().state.value ? 'Active' : 'Inactive'}
-                        checked={field().state.value ?? true}
-                        onInput={(e) => field().handleChange(e.target.checked)}
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-          </Row>
-        </Form>
-      </Frm.Provider>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          void Frm.handleSubmit();
+        }}
+      >
+        <Row>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <Frm.Field
+              name="title"
+              validators={{
+                onChange: IsValidClientTitle
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Client Name</Form.Label>
+                    <Form.Control
+                      required
+                      id={field().name}
+                      name={field().name}
+                      value={field().state.value ?? ''}
+                      onBlur={field().handleBlur}
+                      onInput={(e) => field().handleChange(e.target.value)}
+                      placeholder="Client Name"
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <Frm.Field
+              name="description"
+              validators={{
+                onChange: IsValidClientDescription
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Client Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      id={field().name}
+                      name={field().name}
+                      value={field().state.value ?? ''}
+                      onBlur={field().handleBlur}
+                      onInput={(e) => field().handleChange(e.target.value)}
+                      placeholder="Client Description"
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <Frm.Field
+              name="is_active"
+              validators={{
+                onChange: IsValidClientIsActive
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Client Is Active?</Form.Label>
+                    <Form.Check
+                      type="switch"
+                      required
+                      id={field().name}
+                      name={field().name}
+                      label={field().state.value ? 'Active' : 'Inactive'}
+                      checked={field().state.value ?? true}
+                      onInput={(e) => field().handleChange(e.target.checked)}
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+        </Row>
+      </Form>
     </Dialog>
   );
 };

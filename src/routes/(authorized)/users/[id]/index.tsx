@@ -1,6 +1,6 @@
-import { RouteDefinition, createAsync, useParams } from '@solidjs/router';
-import { Component, Show } from 'solid-js';
-import { UserProfileCard, ssrFetchUserById } from '~/entities/users';
+import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
+import { Show } from 'solid-js';
+import { ssrFetchUserById } from '~/entities/users';
 
 export const route = {
   load({ params }) {
@@ -8,16 +8,15 @@ export const route = {
   }
 } satisfies RouteDefinition;
 
-const UserById: Component = () => {
-  const params = useParams();
-  const data = createAsync(() => ssrFetchUserById(params.id));
+export default function UserById(props: RouteSectionProps) {
+  const userId = () => props.params.id;
+  const data = createAsync(() => ssrFetchUserById(userId()));
   return (
     <main>
       <Show when={data() !== undefined}>
-        <UserProfileCard user={data()!} />
+        <pre>{JSON.stringify(data(), null, 2)}</pre>
+        {/* <UserProfileCard user={data()!} /> */}
       </Show>
     </main>
   );
-};
-
-export default UserById;
+}

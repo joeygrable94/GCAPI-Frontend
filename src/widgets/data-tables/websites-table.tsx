@@ -16,7 +16,7 @@ import {
   WEBSITES_PAGE_START,
   fetchWebsitesList
 } from '~/entities/websites';
-import { useThemeContext } from '~/features/theme';
+import { useTheme } from '~/providers/theme';
 import { Paginated_WebsiteRead_, WebsiteRead } from '~/shared/api';
 import {
   TableBody,
@@ -32,14 +32,10 @@ type WebsitesDataTableProps = {
 };
 
 const WebsitesDataTable = (props: WebsitesDataTableProps) => {
-  const theme = useThemeContext();
-  const [fetchPage, setFetchPage] = createSignal(
-    props.initialData?.page ?? WEBSITES_PAGE_START
-  );
-  const [fetchSize, setFetchSize] = createSignal(
-    props.initialData?.size ?? WEBSITES_PAGE_SIZE
-  );
-  const [fetchClientId, setFetchClientId] = createSignal(props.clientId ?? null);
+  const [theme] = useTheme();
+  const [fetchPage] = createSignal(props.initialData?.page ?? WEBSITES_PAGE_START);
+  const [fetchSize] = createSignal(props.initialData?.size ?? WEBSITES_PAGE_SIZE);
+  const [fetchClientId] = createSignal(props.clientId ?? null);
   const [fetchTotal, setFetchTodal] = createSignal(props.initialData?.total ?? 0);
   const [data, setData] = createSignal<WebsiteRead[]>(props.initialData?.results ?? []);
   const query = createQuery(() => ({
@@ -120,9 +116,12 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
         bordered
         hover
       >
+        {/* @ts-expect-error table type unknown */}
         <TableHeader table={table} setIsFiltering={setIsFiltering} />
+        {/* @ts-expect-error table type unknown */}
         <TableBody table={table} />
         <TableFooter
+          // @ts-expect-error table type unknown
           table={table}
           maximum={fetchTotal}
           isFiltering={isFiltering}

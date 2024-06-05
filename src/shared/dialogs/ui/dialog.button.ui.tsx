@@ -1,10 +1,10 @@
 import { Button } from 'solid-bootstrap';
 import { ParentComponent } from 'solid-js';
-import { useThemeContext } from '~/features/theme';
+import { useTheme } from '~/providers/theme';
 import { DialogButtonProps } from '../model/dialog.types';
 
 const DialogButton: ParentComponent<DialogButtonProps> = (props) => {
-  const theme = useThemeContext();
+  const [theme] = useTheme();
   return (
     <Button
       size="sm"

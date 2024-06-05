@@ -1,6 +1,6 @@
 import { Card } from 'solid-bootstrap';
 import { Component } from 'solid-js';
-import { AuthScopesList, AuthorizedUser } from '~/features/auth';
+import { AuthorizedUser } from '~/providers/auth';
 import { formatDateString } from '~/shared/utils';
 
 type UserProfileCardProps = {
@@ -15,7 +15,7 @@ const UserProfileCard: Component<UserProfileCardProps> = (props) => {
         src={props.user.picture ?? 'https://www.gravatar.com/avatar/?d=identicon'}
       />
       <Card.Body>
-        <Card.Title>{props.user.username}</Card.Title>
+        <Card.Title>{props.user?.username}</Card.Title>
         <Card.Text>
           <dl>
             <dd>
@@ -26,7 +26,7 @@ const UserProfileCard: Component<UserProfileCardProps> = (props) => {
             <dt>Created</dt>
             <dd>{formatDateString(new Date(props.user.created))}</dd>
           </dl>
-          <AuthScopesList user={props.user} />
+          {/* <AuthScopesList user={props.user} /> */}
         </Card.Text>
       </Card.Body>
     </Card>

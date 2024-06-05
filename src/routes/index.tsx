@@ -1,23 +1,22 @@
-import { RouteDefinition, createAsync } from '@solidjs/router';
-import { Component, Show } from 'solid-js';
-import { getCurrentUserOrGuest } from '~/entities/users';
-import { CurrentUser } from '~/features/auth';
+import { createSession } from '@solid-mediakit/auth/client';
+import { createAsync } from '@solidjs/router';
+import { Show } from 'solid-js';
+import { getUserSessionOrLogin } from '~/providers/auth';
 
 export const route = {
-  load: () => getCurrentUserOrGuest()
-} satisfies RouteDefinition;
+  load: () => getUserSessionOrLogin()
+};
 
-const Home: Component = () => {
-  const user = createAsync<CurrentUser>(() => getCurrentUserOrGuest());
-
+export default function Home() {
+  const session = createAsync(() => getUserSessionOrLogin());
+  const auth = createSession();
   return (
     <main>
-      <h1 class="my-2">GCAPI Auth0 Secured Backend</h1>
-      <Show when={user()}>
-        <p>Welcome {user()?.username}.</p>
+      <Show when={session() || auth()} fallback={<p>You are not signed in.</p>} keyed>
+        {(session) => {
+          return <h1>Welcome {session.user?.email}</h1>;
+        }}
       </Show>
     </main>
   );
-};
-
-export default Home;
+}

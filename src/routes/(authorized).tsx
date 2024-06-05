@@ -1,19 +1,18 @@
-import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
+import { createSession } from '@solid-mediakit/auth/client';
+import { RouteSectionProps, createAsync } from '@solidjs/router';
 import { Show } from 'solid-js';
-import { getCurrentUserOrLogin } from '~/entities/users';
-import { AuthorizedUser, UserProvider, useAuth0 } from '~/features/auth';
+import { getUserSessionOrLogin } from '~/providers/auth';
 
 export const route = {
-  load: () => getCurrentUserOrLogin()
-} satisfies RouteDefinition;
+  load: () => getUserSessionOrLogin()
+};
 
-export default function (props: RouteSectionProps) {
-  const user = createAsync<AuthorizedUser>(() => getCurrentUserOrLogin());
-  const [_, authAct] = useAuth0();
-
+export default function Authorzied(props: RouteSectionProps) {
+  const session = createAsync(() => getUserSessionOrLogin());
+  const auth = createSession();
   return (
-    <Show when={authAct.isInitialized() && authAct.isAuthenticated() && user()}>
-      <UserProvider initialUser={user()!}>{props.children}</UserProvider>
+    <Show when={session() || auth()} fallback={<p>You are not signed in.</p>}>
+      {props.children}
     </Show>
   );
 }

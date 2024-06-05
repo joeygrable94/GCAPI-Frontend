@@ -24,7 +24,7 @@ const WebsiteDeleteFormDialog: Component<WebsiteDeleteFormDialogProps> = (props)
     WebsitesService.websitesDeleteApiV1WebsitesWebsiteIdDelete({
       websiteId: props.website.id
     })
-      .then((v: any) => {
+      .then((v: unknown) => {
         log('deleted website response', v);
         setIsSubmitted(true);
       })

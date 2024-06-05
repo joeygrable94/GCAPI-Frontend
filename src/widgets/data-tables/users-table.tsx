@@ -17,7 +17,7 @@ import {
   UserProfilePicturePreview,
   fetchUsersList
 } from '~/entities/users';
-import { useThemeContext } from '~/features/theme';
+import { useTheme } from '~/providers/theme';
 import {
   Paginated_UserReadAsAdmin_,
   Paginated_UserReadAsManager_,
@@ -38,13 +38,9 @@ type UsersDataTableProps = {
 };
 
 const UsersDataTable = (props: UsersDataTableProps) => {
-  const theme = useThemeContext();
-  const [fetchPage, setFetchPage] = createSignal(
-    props.initialData?.page ?? USERS_PAGE_START
-  );
-  const [fetchSize, setFetchSize] = createSignal(
-    props.initialData?.size ?? USERS_PAGE_SIZE
-  );
+  const [theme] = useTheme();
+  const [fetchPage] = createSignal(props.initialData?.page ?? USERS_PAGE_START);
+  const [fetchSize] = createSignal(props.initialData?.size ?? USERS_PAGE_SIZE);
   const [fetchTotal, setFetchTodal] = createSignal(props.initialData?.total ?? 0);
   const [data, setData] = createSignal<UserReadAsAdmin[] | UserReadAsManager[]>(
     props.initialData?.results ?? []
@@ -91,13 +87,13 @@ const UsersDataTable = (props: UsersDataTableProps) => {
           footer: (props) => props.column.id,
           cell: (info) => <TableColumnIsActive isActive={info.getValue()} />
         }),
-        columnHelper.accessor('created_on', {
+        columnHelper.accessor('created', {
           header: () => 'Created',
           footer: (props) => props.column.id,
           cell: (info) =>
             info.getValue() ? formatDateString(new Date(info.getValue())) : 'N/A'
         }),
-        columnHelper.accessor('updated_on', {
+        columnHelper.accessor('updated', {
           header: () => 'Updated',
           footer: (props) => props.column.id,
           cell: (info) =>
@@ -149,9 +145,12 @@ const UsersDataTable = (props: UsersDataTableProps) => {
         bordered
         hover
       >
+        {/* @ts-expect-error table type unknown */}
         <TableHeader table={table} setIsFiltering={setIsFiltering} />
+        {/* @ts-expect-error table type unknown */}
         <TableBody table={table} />
         <TableFooter
+          // @ts-expect-error table type unknown
           table={table}
           maximum={fetchTotal}
           isFiltering={isFiltering}

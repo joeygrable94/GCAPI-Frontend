@@ -7,9 +7,9 @@ import { ITableColumnFilterProps } from '~/shared/data-tables';
  */
 export const TableColumnFilter: Component<ITableColumnFilterProps> = (props) => {
   const [firstValue, setFirstValue] = createSignal<any>(null);
-  const [categoryList, setCategoryList] = createSignal<string[]>([]);
-  const [tagsList, setTagsList] = createSignal<string[]>([]);
-  const [tagsInclusive, setTagsInclusive] = createSignal<boolean>(false);
+  // const [categoryList, setCategoryList] = createSignal<string[]>([]);
+  // const [tagsList, setTagsList] = createSignal<string[]>([]);
+  // const [tagsInclusive, setTagsInclusive] = createSignal<boolean>(false);
   const columnFilterValue = () => {
     return props.column.getFilterValue();
   };
@@ -37,28 +37,28 @@ export const TableColumnFilter: Component<ITableColumnFilterProps> = (props) => 
     props.setIsFiltering(true);
     return props.column.setFilterValue(checked);
   };
-  const setFilterCategoryIds = (value: string[]) => {
-    props.setIsFiltering(true);
-    return props.column.setFilterValue(value);
-  };
-  const setFilterTagIds = (value: any[]) => {
-    props.setIsFiltering(true);
-    return props.column.setFilterValue(value);
-  };
+  // const setFilterCategoryIds = (value: string[]) => {
+  //   props.setIsFiltering(true);
+  //   return props.column.setFilterValue(value);
+  // };
+  // const setFilterTagIds = (value: any[]) => {
+  //   props.setIsFiltering(true);
+  //   return props.column.setFilterValue(value);
+  // };
   const [filterCheckbox, setFilterCheckbox] = createSignal(false);
   const handleChangeCheckbox = (e: any) => {
     setFilterCheckbox(!filterCheckbox());
     setFilterBool(e.target.checked);
   };
-  const handleChangeCategoryList = (e: any) => {
-    if (e.target.value.includes('ALL') || e.target.value.length === 0) {
-      setFilterCategoryIds(['ALL']);
-      setCategoryList([]);
-    } else {
-      setCategoryList(e.target.value);
-      setFilterCategoryIds(categoryList());
-    }
-  };
+  // const handleChangeCategoryList = (e: any) => {
+  //   if (e.target.value.includes('ALL') || e.target.value.length === 0) {
+  //     setFilterCategoryIds(['ALL']);
+  //     setCategoryList([]);
+  //   } else {
+  //     setCategoryList(e.target.value);
+  //     setFilterCategoryIds(categoryList());
+  //   }
+  // };
   /*
   const handleChangeTagsList = (e: any) => {
     let selected = Array.from(e.target.options as HTMLOptionElement[])

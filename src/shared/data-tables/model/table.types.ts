@@ -2,7 +2,7 @@ import { Column, Table } from '@tanstack/solid-table';
 import { Accessor, Setter } from 'solid-js';
 
 export interface ITableProps {
-  table: Table<any>;
+  table: Table<unknown>;
 }
 
 export interface ITableHeaderProps extends ITableProps {
@@ -10,7 +10,7 @@ export interface ITableHeaderProps extends ITableProps {
 }
 
 export interface ITableColumnFilterProps extends ITableProps {
-  column: Column<any, any>;
+  column: Column<unknown, unknown>;
   setIsFiltering: Setter<boolean>;
 }
 

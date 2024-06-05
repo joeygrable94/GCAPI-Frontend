@@ -1,8 +1,8 @@
 import { Component } from 'solid-js';
 
-type UsersActionsMenuProps = {};
+// type UsersActionsMenuProps = {};
 
-const UsersActionsMenu: Component<UsersActionsMenuProps> = (props) => {
+const UsersActionsMenu: Component = () => {
   return <></>;
 };
 

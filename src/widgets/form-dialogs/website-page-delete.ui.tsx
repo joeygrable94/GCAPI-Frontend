@@ -26,7 +26,7 @@ const WebsitePageDeleteFormDialog: Component<WebsitePageDeleteFormDialogProps> =
     WebsitePagesService.websitePagesDeleteApiV1WebpagesPageIdDelete({
       pageId: props.websitePage.id
     })
-      .then((v: any) => {
+      .then((v: unknown) => {
         log('deleted Page response', v);
         setIsSubmitted(true);
       })

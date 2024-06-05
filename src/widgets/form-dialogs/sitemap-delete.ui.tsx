@@ -26,7 +26,7 @@ const WebsiteSitemapDeleteFormDialog: Component<WebsiteSitemapDeleteFormDialogPr
     WebsiteSitemapsService.websiteSitemapsDeleteApiV1SitemapsSitemapIdDelete({
       sitemapId: props.sitemap.id
     })
-      .then((v: any) => {
+      .then((v: unknown) => {
         log('deleted sitemap response', v);
         setIsSubmitted(true);
       })

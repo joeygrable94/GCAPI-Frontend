@@ -1,11 +1,18 @@
 import { Button, Modal } from 'solid-bootstrap';
-import { Match, ParentComponent, Show, Switch } from 'solid-js';
+import { Match, ParentComponent, Show, Switch, children } from 'solid-js';
 import { DialogProps } from '../model/dialog.types';
 import DialogButton from './dialog.button.ui';
 import DialogLink from './dialog.link.ui';
 import DialogNavLink from './dialog.navlink.ui';
 
 const Dialog: ParentComponent<DialogProps> = (props) => {
+  const showFooterActions = (): boolean => {
+    // check if the props.footerActions is defined
+    // return true if not undefined, false otherwise
+    return props.footerActions ? true : false;
+  };
+  const footerBody = children(() => props.children);
+  const footerActions = children(() => props.footerActions);
   return (
     <>
       <Switch>
@@ -39,12 +46,12 @@ const Dialog: ParentComponent<DialogProps> = (props) => {
           <Show when={props.description}>
             <p>{props.description}</p>
           </Show>
-          {props.children}
+          {footerBody()}
         </Modal.Body>
         <Modal.Footer>
           <Switch>
-            <Match when={props.footerActions}>{props.footerActions}</Match>
-            <Match when={!props.footerActions}>
+            <Match when={showFooterActions()}>{footerActions()}</Match>
+            <Match when={!showFooterActions()}>
               <Button variant="secondary" onClick={props.handleClose}>
                 Close
               </Button>

@@ -1,25 +1,14 @@
-import { RouteDefinition, createAsync } from '@solidjs/router';
-import { clientOnly } from '@solidjs/start';
-import { Component, Show } from 'solid-js';
-import { getCurrentUserOrGuest } from '~/entities/users';
-import { CurrentUser } from '~/features/auth';
-const LoginButton = clientOnly(() => import('~/features/auth/ui/login.button'));
+import { createSession } from '@solid-mediakit/auth/client';
+import { Navigate } from '@solidjs/router';
+import { Show } from 'solid-js';
 
-export const route = {
-  load: () => getCurrentUserOrGuest()
-} satisfies RouteDefinition;
-
-const Login: Component = () => {
-  const user = createAsync<CurrentUser>(() => getCurrentUserOrGuest());
-
+export default function Login() {
+  const session = createSession();
   return (
     <main>
-      <Show when={user()} fallback={<h1 class="my-2">Please Log In or Register.</h1>}>
-        <h1 class="my-2">Please Log In or Register {user()?.username}.</h1>
+      <Show when={session()} fallback={<p>Please sign in or sign up.</p>}>
+        <Navigate href="/" />
       </Show>
-      <LoginButton />
     </main>
   );
-};
-
-export default Login;
+}

@@ -1,5 +1,5 @@
 import { Accessor, JSX, Setter } from 'solid-js';
-import { BOOSTRAP_CONTEXTUAL_VARIANT } from '~/features/theme';
+import { BOOSTRAP_CONTEXTUAL_VARIANT } from '~/providers/theme';
 
 export type DialogTriggerType = 'button' | 'link' | 'nav' | 'jsx';
 

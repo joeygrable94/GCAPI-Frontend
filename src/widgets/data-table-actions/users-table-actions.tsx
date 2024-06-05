@@ -1,17 +1,21 @@
 import { useNavigate } from '@solidjs/router';
+import { clientOnly } from '@solidjs/start';
 import { Button, Stack } from 'solid-bootstrap';
 import { Component } from 'solid-js';
-import { useThemeContext } from '~/features/theme';
+import { useTheme } from '~/providers/theme';
 import { UserReadAsAdmin, UserReadAsManager } from '~/shared/api';
 import { ViewIcon } from '~/shared/icons';
-import { UserEditFormDialog } from '~/widgets/form-dialogs';
+
+const UserEditFormDialog = clientOnly(
+  () => import('~/widgets/form-dialogs/user-edit.ui')
+);
 
 interface IUsersTableActionsProps {
   user: UserReadAsAdmin | UserReadAsManager;
 }
 
 const UsersTableActions: Component<IUsersTableActionsProps> = (props) => {
-  const theme = useThemeContext();
+  const [theme] = useTheme();
   const navigate = useNavigate();
   return (
     <Stack direction="horizontal" gap={2} class="d-flex flex-row flex-nowrap">

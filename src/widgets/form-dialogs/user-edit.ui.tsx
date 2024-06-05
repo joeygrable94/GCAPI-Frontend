@@ -29,7 +29,7 @@ const UserEditFormDialog: Component<UserEditFormDialogProps> = (props) => {
       username: props.user.username,
       picture: props.user.picture
     },
-    onSubmit: async ({ value, formApi }) => {
+    onSubmit: async ({ value }) => {
       setPending(true);
       const { userId, username, picture } = value;
       UsersService.usersUpdateApiV1UsersUserIdPatch({
@@ -95,81 +95,79 @@ const UserEditFormDialog: Component<UserEditFormDialogProps> = (props) => {
         </>
       }
     >
-      <Frm.Provider>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void Frm.handleSubmit();
-          }}
-        >
-          <Row>
-            <Form.Group as={Col} xs={12} class="mb-2">
-              <Frm.Field
-                name="userId"
-                children={(field) => (
-                  <Form.Control
-                    required
-                    id={field().name}
-                    name={field().name}
-                    value={props.user.id}
-                    hidden
-                  />
-                )}
-              />
-              <Frm.Field
-                name="username"
-                validators={{
-                  onChange: IsValidUserUsername
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">User Name</Form.Label>
-                      <Form.Control
-                        required
-                        id={field().name}
-                        name={field().name}
-                        value={field().state.value ?? ''}
-                        onBlur={field().handleBlur}
-                        onInput={(e) => field().handleChange(e.target.value)}
-                        placeholder="User Name"
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-            <Form.Group as={Col} xs={12} class="mb-2">
-              <Frm.Field
-                name="picture"
-                validators={{
-                  onChange: IsValidUserPicture
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Profile Picture URL</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={3}
-                        id={field().name}
-                        name={field().name}
-                        value={field().state.value ?? ''}
-                        onBlur={field().handleBlur}
-                        onInput={(e) => field().handleChange(e.target.value)}
-                        placeholder="Profile Picture URL"
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-          </Row>
-        </Form>
-      </Frm.Provider>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          void Frm.handleSubmit();
+        }}
+      >
+        <Row>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <Frm.Field
+              name="userId"
+              children={(field) => (
+                <Form.Control
+                  required
+                  id={field().name}
+                  name={field().name}
+                  value={props.user.id}
+                  hidden
+                />
+              )}
+            />
+            <Frm.Field
+              name="username"
+              validators={{
+                onChange: IsValidUserUsername
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">User Name</Form.Label>
+                    <Form.Control
+                      required
+                      id={field().name}
+                      name={field().name}
+                      value={field().state.value ?? ''}
+                      onBlur={field().handleBlur}
+                      onInput={(e) => field().handleChange(e.target.value)}
+                      placeholder="User Name"
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <Frm.Field
+              name="picture"
+              validators={{
+                onChange: IsValidUserPicture
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Profile Picture URL</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      id={field().name}
+                      name={field().name}
+                      value={field().state.value ?? ''}
+                      onBlur={field().handleBlur}
+                      onInput={(e) => field().handleChange(e.target.value)}
+                      placeholder="Profile Picture URL"
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+        </Row>
+      </Form>
     </Dialog>
   );
 };

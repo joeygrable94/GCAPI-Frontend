@@ -36,7 +36,7 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
       is_active: true,
       website_id: props.website.id
     },
-    onSubmit: async ({ value, formApi }) => {
+    onSubmit: async ({ value }) => {
       setPending(true);
       WebsiteSitemapsService.websiteSitemapsCreateApiV1SitemapsPost({
         requestBody: value
@@ -97,80 +97,78 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
         </>
       }
     >
-      <Frm.Provider>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void Frm.handleSubmit();
-          }}
-        >
-          <Row>
-            <Form.Group as={Col} xs={12} class="mb-2">
-              <Frm.Field
-                name="website_id"
-                children={(field) => (
-                  <Form.Control
-                    required
-                    id={field().name}
-                    name={field().name}
-                    value={props.website.id}
-                    hidden
-                  />
-                )}
-              />
-              <Frm.Field
-                name="url"
-                validators={{
-                  onChange: IsValidWebsiteSitemapUrl
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Website Sitemap URL</Form.Label>
-                      <Form.Control
-                        required
-                        id={field().name}
-                        name={field().name}
-                        value={field().state.value ?? ''}
-                        onBlur={field().handleBlur}
-                        onInput={(e) => field().handleChange(e.target.value)}
-                        placeholder="Domain Name"
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-            <Form.Group as={Col} xs={12} class="mb-2">
-              <Frm.Field
-                name="is_active"
-                validators={{
-                  onChange: IsValidWebsiteSitemapIsActive
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Website Sitemap Is Active?</Form.Label>
-                      <Form.Check
-                        type="switch"
-                        required
-                        id={field().name}
-                        name={field().name}
-                        label={field().state.value ? 'Active' : 'Inactive'}
-                        checked={field().state.value ?? true}
-                        onInput={(e) => field().handleChange(e.target.checked)}
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-          </Row>
-        </Form>
-      </Frm.Provider>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          void Frm.handleSubmit();
+        }}
+      >
+        <Row>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <Frm.Field
+              name="website_id"
+              children={(field) => (
+                <Form.Control
+                  required
+                  id={field().name}
+                  name={field().name}
+                  value={props.website.id}
+                  hidden
+                />
+              )}
+            />
+            <Frm.Field
+              name="url"
+              validators={{
+                onChange: IsValidWebsiteSitemapUrl
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Website Sitemap URL</Form.Label>
+                    <Form.Control
+                      required
+                      id={field().name}
+                      name={field().name}
+                      value={field().state.value ?? ''}
+                      onBlur={field().handleBlur}
+                      onInput={(e) => field().handleChange(e.target.value)}
+                      placeholder="Domain Name"
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <Frm.Field
+              name="is_active"
+              validators={{
+                onChange: IsValidWebsiteSitemapIsActive
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Website Sitemap Is Active?</Form.Label>
+                    <Form.Check
+                      type="switch"
+                      required
+                      id={field().name}
+                      name={field().name}
+                      label={field().state.value ? 'Active' : 'Inactive'}
+                      checked={field().state.value ?? true}
+                      onInput={(e) => field().handleChange(e.target.checked)}
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+        </Row>
+      </Form>
     </Dialog>
   );
 };

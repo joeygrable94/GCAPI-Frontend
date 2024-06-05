@@ -1,5 +1,5 @@
 import { Component } from 'solid-js';
-import { useThemeContext } from '~/features/theme';
+import { useTheme } from '~/providers/theme';
 import {
   ITableFooterProps,
   TableFooterActions,
@@ -7,7 +7,7 @@ import {
 } from '~/shared/data-tables';
 
 export const TableFooter: Component<ITableFooterProps> = (props) => {
-  const theme = useThemeContext();
+  const [theme] = useTheme();
   return (
     <tfoot>
       <tr>

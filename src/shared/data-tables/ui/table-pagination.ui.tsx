@@ -6,24 +6,25 @@ import {
   chevronLeft,
   chevronRight
 } from 'solid-heroicons/outline';
-import { Component, Show, createEffect, createSignal } from 'solid-js';
-import { useThemeContext } from '~/features/theme';
+import { Component, For, Show, createEffect, createSignal } from 'solid-js';
+import { useTheme } from '~/providers/theme';
 import {
   ITablePaginationProps,
   getNextHighestPageInterval
 } from '~/shared/data-tables';
+import { FormControlChangeEvent, SelectChangeEvent } from '~/shared/forms';
 
 /**
  * @summary Filter component for table columns.
  */
 export const TablePagination: Component<ITablePaginationProps> = (props) => {
-  const theme = useThemeContext();
+  const [theme] = useTheme();
   const displayPageSizeInterval = [10, 20, 30, 40, 50, 100, 1000];
   const [pageInterval, setPageInterval] = createSignal<number>(10);
-  const handleChangePageSize = (e: any) => {
+  const handleChangePageSize = (e: SelectChangeEvent) => {
     props.table.setPageSize(Number(e.target.value));
   };
-  const handleChangePageNumber = (e: any) => {
+  const handleChangePageNumber = (e: FormControlChangeEvent) => {
     const page = e.target.value ? Number(e.target.value) - 1 : 0;
     props.table.setPageIndex(page);
   };
@@ -78,7 +79,7 @@ export const TablePagination: Component<ITablePaginationProps> = (props) => {
         <Form.Group class="w-70 inline-block d-flex justify-content-end align-items-center">
           <Form.Label
             id="users-table-pagination-go-to-page-label"
-            htmlFor="users-table-pagination-go-to-page-input"
+            for="users-table-pagination-go-to-page-input"
             class="d-flex justify-content-end align-items-center mb-0 px-1"
           >
             Go To
@@ -93,7 +94,7 @@ export const TablePagination: Component<ITablePaginationProps> = (props) => {
           />
           <Form.Label
             id="users-table-pagination-size-label"
-            htmlFor="users-table-pagination-size-select"
+            form="users-table-pagination-size-select"
             class="d-flex justify-content-end align-items-center mb-0 px-1"
           >
             Page Size
@@ -105,11 +106,9 @@ export const TablePagination: Component<ITablePaginationProps> = (props) => {
             value={props.table.getState().pagination.pageSize}
             onChange={handleChangePageSize}
           >
-            {displayPageSizeInterval
-              .filter((v) => v <= pageInterval())
-              .map((pageSize) => (
-                <option value={pageSize}>Show {pageSize}</option>
-              ))}
+            <For each={displayPageSizeInterval.filter((v) => v <= pageInterval())}>
+              {(pageSize) => <option value={pageSize}>Show {pageSize}</option>}
+            </For>
           </Form.Select>
         </Form.Group>
       </Stack>

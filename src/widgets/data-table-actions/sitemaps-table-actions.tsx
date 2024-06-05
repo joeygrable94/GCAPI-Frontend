@@ -1,7 +1,8 @@
 import { useNavigate } from '@solidjs/router';
+import { clientOnly } from '@solidjs/start';
 import { Button, Stack } from 'solid-bootstrap';
 import { Component } from 'solid-js';
-import { useThemeContext } from '~/features/theme';
+import { useTheme } from '~/providers/theme';
 import {
   WebsiteMapProcessing,
   WebsiteMapRead,
@@ -9,7 +10,10 @@ import {
 } from '~/shared/api';
 import { ProcessIcon, ViewIcon } from '~/shared/icons';
 import { log, logError } from '~/shared/utils';
-import { WebsiteSitemapDeleteFormDialog } from '~/widgets/form-dialogs';
+
+const WebsiteSitemapDeleteFormDialog = clientOnly(
+  () => import('~/widgets/form-dialogs/sitemap-delete.ui')
+);
 
 interface IWebsiteSitemapsTableActionsProps {
   sitemap: WebsiteMapRead;
@@ -18,7 +22,7 @@ interface IWebsiteSitemapsTableActionsProps {
 const WebsiteSitemapsTableActions: Component<IWebsiteSitemapsTableActionsProps> = (
   props
 ) => {
-  const theme = useThemeContext();
+  const [theme] = useTheme();
   const navigate = useNavigate();
   const handleProcessPages = () => {
     WebsiteSitemapsService.websiteSitemapsProcessSitemapPagesApiV1SitemapsSitemapIdProcessPagesGet(

@@ -1,8 +1,12 @@
+import { clientOnly } from '@solidjs/start';
 import { Nav } from 'solid-bootstrap';
 import { Component } from 'solid-js';
 import { WebsiteRead } from '~/shared/api';
 import { CreateIcon } from '~/shared/icons';
-import { WebsiteSitemapCreateFormDialog } from '~/widgets/form-dialogs';
+
+const WebsiteSitemapCreateFormDialog = clientOnly(
+  () => import('~/widgets/form-dialogs/sitemap-create.ui')
+);
 
 type WebsiteSitemapsActionsMenuProps = {
   website: WebsiteRead;

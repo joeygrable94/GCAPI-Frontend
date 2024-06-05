@@ -1,13 +1,13 @@
 import { Button, Stack } from 'solid-bootstrap';
 import { Component, Show } from 'solid-js';
-import { useThemeContext } from '~/features/theme';
+import { useTheme } from '~/providers/theme';
 import { ITableFooterActionsProps } from '~/shared/data-tables';
 
 /**
  * @summary Filter component for table columns.
  */
 export const TableFooterActions: Component<ITableFooterActionsProps> = (props) => {
-  const layout = useThemeContext();
+  const [theme] = useTheme();
   return (
     <Stack
       direction="horizontal"
@@ -17,7 +17,7 @@ export const TableFooterActions: Component<ITableFooterActionsProps> = (props) =
         <Button
           class="d-block"
           size="sm"
-          variant={layout.darkMode ? 'outline-light' : 'outline-dark'}
+          variant={theme.darkMode ? 'outline-light' : 'outline-dark'}
           onClick={() => props.resetFilter()}
         >
           Reset Filters

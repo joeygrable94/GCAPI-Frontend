@@ -5,7 +5,7 @@ type WebsitePagesActionsMenuProps = {
   website: WebsiteRead;
 };
 
-const WebsitePagesActionsMenu: Component<WebsitePagesActionsMenuProps> = (props) => {
+const WebsitePagesActionsMenu: Component<WebsitePagesActionsMenuProps> = () => {
   return <></>;
 };
 

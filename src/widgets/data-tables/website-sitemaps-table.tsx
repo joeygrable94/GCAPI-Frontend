@@ -16,7 +16,7 @@ import {
   SITEMAP_PAGE_START,
   fetchWebsiteSitemapsList
 } from '~/entities/sitemaps';
-import { useThemeContext } from '~/features/theme';
+import { useTheme } from '~/providers/theme';
 import { Paginated_WebsiteMapRead_, WebsiteMapRead, WebsiteRead } from '~/shared/api';
 import {
   TableBody,
@@ -33,14 +33,10 @@ type WebsiteSitemapsDataTableProps = {
 };
 
 const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
-  const theme = useThemeContext();
-  const [fetchPage, setFetchPage] = createSignal(
-    props.initialData?.page ?? SITEMAP_PAGE_START
-  );
-  const [fetchSize, setFetchSize] = createSignal(
-    props.initialData?.size ?? SITEMAP_PAGE_SIZE
-  );
-  const [fetchWebsiteId, setFetchWebsiteId] = createSignal(props.website?.id ?? null);
+  const [theme] = useTheme();
+  const [fetchPage] = createSignal(props.initialData?.page ?? SITEMAP_PAGE_START);
+  const [fetchSize] = createSignal(props.initialData?.size ?? SITEMAP_PAGE_SIZE);
+  const [fetchWebsiteId] = createSignal(props.website?.id ?? null);
   const [fetchTotal, setFetchTodal] = createSignal(props.initialData?.total ?? 0);
   const [data, setData] = createSignal<WebsiteMapRead[]>(
     props.initialData?.results ?? []
@@ -121,9 +117,12 @@ const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
         bordered
         hover
       >
+        {/* @ts-expect-error table type unknown */}
         <TableHeader table={table} setIsFiltering={setIsFiltering} />
+        {/* @ts-expect-error table type unknown */}
         <TableBody table={table} />
         <TableFooter
+          // @ts-expect-error table type unknown
           table={table}
           maximum={fetchTotal}
           isFiltering={isFiltering}

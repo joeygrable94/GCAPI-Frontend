@@ -46,7 +46,7 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
       is_active: true,
       clientId: ''
     },
-    onSubmit: async ({ value, formApi }) => {
+    onSubmit: async ({ value }) => {
       setPending(true);
       const { domain, is_secure, is_active, clientId } = value;
       WebsitesService.websitesCreateApiV1WebsitesPost({
@@ -126,126 +126,124 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
         </>
       }
     >
-      <Frm.Provider>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            void Frm.handleSubmit();
-          }}
-        >
-          <Row>
-            <Form.Group as={Col} xs={12} class="mb-2">
-              <Frm.Field
-                name="domain"
-                validators={{
-                  onChange: IsValidWebsiteDomain
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Website Domain</Form.Label>
-                      <Form.Control
-                        required
-                        id={field().name}
-                        name={field().name}
-                        value={field().state.value ?? ''}
-                        onBlur={field().handleBlur}
-                        onInput={(e) => field().handleChange(e.target.value)}
-                        placeholder="Domain Name"
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-            <Form.Group as={Col} xs={6} class="mb-2">
-              <Frm.Field
-                name="is_secure"
-                validators={{
-                  onChange: IsValidWebsiteIsSecure
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Website Is Secure (HTTPS)?</Form.Label>
-                      <Form.Check
-                        type="switch"
-                        required
-                        id={field().name}
-                        name={field().name}
-                        label={field().state.value ? 'Secure' : 'Insecure'}
-                        checked={field().state.value ?? true}
-                        onInput={(e) => field().handleChange(e.target.checked)}
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-            <Form.Group as={Col} xs={6} class="mb-2">
-              <Frm.Field
-                name="is_active"
-                validators={{
-                  onChange: IsValidWebsiteIsActive
-                }}
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Website Is Active?</Form.Label>
-                      <Form.Check
-                        type="switch"
-                        required
-                        id={field().name}
-                        name={field().name}
-                        label={field().state.value ? 'Active' : 'Inactive'}
-                        checked={field().state.value ?? true}
-                        onInput={(e) => field().handleChange(e.target.checked)}
-                      />
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-            <Form.Group as={Col} xs={12} class="mb-2">
-              <Frm.Field
-                name="clientId"
-                children={(field) => {
-                  return (
-                    <>
-                      <Form.Label class="mb-1">Assign Website to Client</Form.Label>
-                      <Form.Select
-                        id={field().name}
-                        name={field().name}
-                        value={field().state.value ?? ''}
-                        onChange={(e) => field().handleChange(e.target.value)}
-                        size="sm"
-                      >
-                        <Show when={clientsQuery.isSuccess}>
-                          <For each={clientsQuery.data?.results}>
-                            {(client) => (
-                              <option
-                                selected={field().state.value === client.id}
-                                value={client.id}
-                              >
-                                {client.title}
-                              </option>
-                            )}
-                          </For>
-                        </Show>
-                      </Form.Select>
-                      <FormFieldInfo field={field()} />
-                    </>
-                  );
-                }}
-              />
-            </Form.Group>
-          </Row>
-        </Form>
-      </Frm.Provider>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          void Frm.handleSubmit();
+        }}
+      >
+        <Row>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <Frm.Field
+              name="domain"
+              validators={{
+                onChange: IsValidWebsiteDomain
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Website Domain</Form.Label>
+                    <Form.Control
+                      required
+                      id={field().name}
+                      name={field().name}
+                      value={field().state.value ?? ''}
+                      onBlur={field().handleBlur}
+                      onInput={(e) => field().handleChange(e.target.value)}
+                      placeholder="Domain Name"
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+          <Form.Group as={Col} xs={6} class="mb-2">
+            <Frm.Field
+              name="is_secure"
+              validators={{
+                onChange: IsValidWebsiteIsSecure
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Website Is Secure (HTTPS)?</Form.Label>
+                    <Form.Check
+                      type="switch"
+                      required
+                      id={field().name}
+                      name={field().name}
+                      label={field().state.value ? 'Secure' : 'Insecure'}
+                      checked={field().state.value ?? true}
+                      onInput={(e) => field().handleChange(e.target.checked)}
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+          <Form.Group as={Col} xs={6} class="mb-2">
+            <Frm.Field
+              name="is_active"
+              validators={{
+                onChange: IsValidWebsiteIsActive
+              }}
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Website Is Active?</Form.Label>
+                    <Form.Check
+                      type="switch"
+                      required
+                      id={field().name}
+                      name={field().name}
+                      label={field().state.value ? 'Active' : 'Inactive'}
+                      checked={field().state.value ?? true}
+                      onInput={(e) => field().handleChange(e.target.checked)}
+                    />
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <Frm.Field
+              name="clientId"
+              children={(field) => {
+                return (
+                  <>
+                    <Form.Label class="mb-1">Assign Website to Client</Form.Label>
+                    <Form.Select
+                      id={field().name}
+                      name={field().name}
+                      value={field().state.value ?? ''}
+                      onChange={(e) => field().handleChange(e.target.value)}
+                      size="sm"
+                    >
+                      <Show when={clientsQuery.isSuccess}>
+                        <For each={clientsQuery.data?.results}>
+                          {(client) => (
+                            <option
+                              selected={field().state.value === client.id}
+                              value={client.id}
+                            >
+                              {client.title}
+                            </option>
+                          )}
+                        </For>
+                      </Show>
+                    </Form.Select>
+                    <FormFieldInfo field={field()} />
+                  </>
+                );
+              }}
+            />
+          </Form.Group>
+        </Row>
+      </Form>
     </Dialog>
   );
 };

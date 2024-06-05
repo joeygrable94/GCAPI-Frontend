@@ -1,9 +1,9 @@
 import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
-import { WebsitesActionsMenu, ssrFetchWebsitesList } from '~/entities/websites';
-import { WebsitesDataTable } from '~/widgets/data-tables';
+import { Show } from 'solid-js';
+import { ssrFetchWebsitesList } from '~/entities/websites';
 
 export const route = {
-  load({ location, params }) {
+  load({ location }) {
     void ssrFetchWebsitesList(
       +location.query.page || 1,
       +location.query.size || 10,
@@ -12,7 +12,7 @@ export const route = {
   }
 } satisfies RouteDefinition;
 
-const Websites = (props: RouteSectionProps) => {
+export default function Websites(props: RouteSectionProps) {
   const page = () => +props.location.query.page || 1;
   const size = () => +props.location.query.page || 10;
   const clientId = () => props.location.query.clientId || null;
@@ -20,10 +20,11 @@ const Websites = (props: RouteSectionProps) => {
   return (
     <main>
       <h1 class="my-2">Websites</h1>
-      <WebsitesActionsMenu />
-      <WebsitesDataTable initialData={data()} clientId={clientId()} />
+      <Show when={data() !== undefined}>
+        <pre>{JSON.stringify(data(), null, 2)}</pre>
+      </Show>
+      {/* <WebsitesActionsMenu /> */}
+      {/* <WebsitesDataTable initialData={data()} clientId={clientId()} /> */}
     </main>
   );
-};
-
-export default Websites;
+}

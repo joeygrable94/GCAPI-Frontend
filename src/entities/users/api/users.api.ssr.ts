@@ -1,6 +1,5 @@
 import { cache, redirect } from '@solidjs/router';
-import { AuthorizedUser, CurrentUser, defaultGuestUser } from '~/features/auth';
-import { setOpenAPISessionToken } from '~/features/session';
+import { getUserSessionApiToken } from '~/providers/auth';
 import {
   Paginated_UserReadAsAdmin_,
   Paginated_UserReadAsManager_,
@@ -9,38 +8,22 @@ import {
   UserReadAsManager,
   UsersService
 } from '~/shared/api';
-import { log, logError } from '~/shared/utils';
+import { logError } from '~/shared/utils';
 
 /**
  * @summary Fetches the current user or redirects to login page
  */
-export const getCurrentUserOrLogin = cache(async () => {
+export const ssrFetchCurrentUser = cache(async () => {
   'use server';
-  let currentUser: AuthorizedUser;
   try {
-    await setOpenAPISessionToken();
-    currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
-  } catch (err: Error | any) {
-    logError('Error fetching current user:', err.message);
-    throw redirect('/login');
+    await getUserSessionApiToken();
+    const currentUser: UserReadAsAdmin | UserReadAsManager | UserRead =
+      await UsersService.usersCurrentApiV1UsersMeGet();
+    return currentUser;
+  } catch (err: Error | unknown) {
+    logError('Error fetching current user:', err);
+    return { username: 'guest' };
   }
-  return currentUser as AuthorizedUser;
-}, 'currentUserOrLogin');
-
-/**
- * @summary Fetches the current user or guest on the server.
- */
-export const getCurrentUserOrGuest = cache(async () => {
-  'use server';
-  let currentUser: CurrentUser = defaultGuestUser;
-  if (import.meta.env.VITE_DEBUG === 'true') log('Fetching current user or guest');
-  try {
-    await setOpenAPISessionToken();
-    currentUser = await UsersService.usersCurrentApiV1UsersMeGet();
-  } catch (err: Error | any) {
-    logError('No user currently logged in:', err.message);
-  }
-  return currentUser;
 }, 'currentUser');
 
 /**
@@ -55,12 +38,13 @@ export const ssrFetchUsersList = cache(async (page: number, size: number) => {
     results: []
   };
   try {
+    await getUserSessionApiToken();
     users = await UsersService.usersListApiV1UsersGet({
       page: page,
       size: size
     });
-  } catch (err: Error | any) {
-    logError('Error fetching users list:', err.message);
+  } catch (err: Error | unknown) {
+    logError('Error fetching users list:', err);
   }
   return users;
 }, 'ssrFetchUsersList');
@@ -72,9 +56,10 @@ export const ssrFetchUserById = cache(async (id: string) => {
   'use server';
   let user: UserReadAsAdmin | UserReadAsManager | UserRead;
   try {
+    await getUserSessionApiToken();
     user = await UsersService.usersReadApiV1UsersUserIdGet({ userId: id });
-  } catch (err: Error | any) {
-    logError('Error fetching user:', err.message);
+  } catch (err: Error | unknown) {
+    logError('Error fetching user:', err);
     throw redirect('/404');
   }
   return user;

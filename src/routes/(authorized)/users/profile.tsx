@@ -1,23 +1,22 @@
 import { RouteDefinition, createAsync } from '@solidjs/router';
-import { Component, Show, createEffect, createSignal } from 'solid-js';
-import { UserProfileCard, getCurrentUserOrLogin } from '~/entities/users';
-import { AuthorizedUser } from '~/features/auth';
+import { Show } from 'solid-js';
+import { ssrFetchCurrentUser } from '~/entities/users';
 
 export const route = {
-  load: () => getCurrentUserOrLogin()
+  load() {
+    void ssrFetchCurrentUser();
+  }
 } satisfies RouteDefinition;
 
-const Profile: Component = () => {
-  const data = createAsync<AuthorizedUser>(() => getCurrentUserOrLogin());
-  const [user, setUser] = createSignal<AuthorizedUser | undefined>(data());
-  createEffect(() => setUser(data()));
+export default function UserProfile() {
+  const data = createAsync(() => ssrFetchCurrentUser());
+
   return (
     <main>
-      <Show when={user() !== undefined}>
-        <UserProfileCard user={user() as AuthorizedUser} />
+      <Show when={data() !== undefined}>
+        <pre>{JSON.stringify(data(), null, 2)}</pre>
+        {/* <UserProfileCard user={data() as AuthorizedUser} /> */}
       </Show>
     </main>
   );
-};
-
-export default Profile;
+}

@@ -9,13 +9,11 @@ import { Show } from 'solid-js';
 import {
   SITEMAP_PAGE_SIZE,
   SITEMAP_PAGE_START,
-  WebsiteSitemapsActionsMenu,
   ssrFetchWebsiteSitemapsList
 } from '~/entities/sitemaps';
 import {
   WEBSITEPAGE_PAGE_SIZE,
   WEBSITEPAGE_PAGE_START,
-  WebsitePagesActionsMenu,
   ssrFetchWebsitePagesList
 } from '~/entities/website-pages';
 import { ssrFetchWebsiteById } from '~/entities/websites';
@@ -24,7 +22,6 @@ import {
   Paginated_WebsitePageRead_,
   WebsiteRead
 } from '~/shared/api';
-import { WebsitePagesDataTable, WebsiteSitemapsDataTable } from '~/widgets/data-tables';
 
 type WebsiteByIdData = {
   website: WebsiteRead;
@@ -35,7 +32,7 @@ type WebsiteByIdData = {
 const ssrFetchWebsiteData = cache(
   async (websiteId: string, sitemapId: string | null) => {
     'use server';
-    let websiteData: WebsiteByIdData = {
+    const websiteData: WebsiteByIdData = {
       website: await ssrFetchWebsiteById(websiteId),
       sitemaps: await ssrFetchWebsiteSitemapsList(
         SITEMAP_PAGE_START,
@@ -61,7 +58,7 @@ export const route = {
   }
 } satisfies RouteDefinition;
 
-const WebsiteById = (props: RouteSectionProps) => {
+export default function WebsiteById(props: RouteSectionProps) {
   const params = useParams();
   const websiteId = () => params.id;
   const sitemapId = () => props.location.query.sitemapId || null;
@@ -70,20 +67,19 @@ const WebsiteById = (props: RouteSectionProps) => {
     <main>
       <Show when={data() !== undefined}>
         <h1 class="my-2">Website {data()?.website.domain}</h1>
-        <WebsiteSitemapsActionsMenu website={data()!.website} />
-        <WebsiteSitemapsDataTable
+        <pre>{JSON.stringify(data(), null, 2)}</pre>
+        {/* <WebsiteSitemapsActionsMenu website={data()!.website} /> */}
+        {/* <WebsiteSitemapsDataTable
           initialData={data()!.sitemaps}
           website={data()!.website}
-        />
-        <WebsitePagesActionsMenu website={data()!.website} />
-        <WebsitePagesDataTable
+        /> */}
+        {/* <WebsitePagesActionsMenu website={data()!.website} /> */}
+        {/* <WebsitePagesDataTable
           initialData={data()!.pages}
           websiteId={websiteId()}
           sitemapId={sitemapId()}
-        />
+        /> */}
       </Show>
     </main>
   );
-};
-
-export default WebsiteById;
+}

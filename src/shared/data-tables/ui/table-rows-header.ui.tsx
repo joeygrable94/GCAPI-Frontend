@@ -36,7 +36,7 @@ export const TableHeader: Component<ITableHeaderProps> = (props) => {
                   </div>
                   <div>
                     {header.column.getCanFilter() ? (
-                      <div style="mt-1">
+                      <div class="mt-1">
                         <TableColumnFilter
                           table={props.table}
                           column={header.column}

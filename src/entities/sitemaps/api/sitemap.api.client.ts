@@ -1,23 +1,20 @@
-import {
-  ApiError,
-  Paginated_WebsiteMapRead_,
-  WebsiteSitemapsService
-} from '~/shared/api';
+import { QueryFunctionContext } from '@tanstack/solid-query';
+import { Paginated_WebsiteMapRead_, WebsiteSitemapsService } from '~/shared/api';
 import { defaultPagination } from '~/shared/tanstack';
 import { logError } from '~/shared/utils';
 
 /**
  * @summary Fetches a list of website sitemaps on the client.
  */
-export async function fetchWebsiteSitemapsList<QueryFunction>(
-  queryContext: any
+export async function fetchWebsiteSitemapsList(
+  queryContext: QueryFunctionContext
 ): Promise<Paginated_WebsiteMapRead_> {
   const queryKey = queryContext.queryKey;
   const _key = queryKey[0];
-  const page = queryKey[1];
-  const size = queryKey[2];
-  const websiteId = queryKey[3];
-  const sitemapId = queryKey[4];
+  const page = queryKey[1] as number;
+  const size = queryKey[2] as number;
+  const websiteId = queryKey[3] as string;
+  const sitemapId = queryKey[4] as string;
   try {
     const response = await WebsiteSitemapsService.websiteSitemapsListApiV1SitemapsGet({
       page: page,
@@ -26,8 +23,8 @@ export async function fetchWebsiteSitemapsList<QueryFunction>(
       sitemapId: sitemapId
     });
     return response;
-  } catch (err: ApiError | Error | any) {
-    logError('Error fetching sitemap list:', err.message);
+  } catch (err: Error | unknown) {
+    logError('Error fetching sitemap list:', _key, err);
     return defaultPagination<Paginated_WebsiteMapRead_>(page, size);
   }
 }

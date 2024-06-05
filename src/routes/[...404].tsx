@@ -1,28 +1,7 @@
-import { Title } from '@solidjs/meta';
-import { Component } from 'solid-js';
-
-const NotFound: Component = () => {
+export default function NotFound() {
   return (
-    <>
-      <Title>Not Found</Title>
-      <main style={{ 'text-align': 'center' }}>
-        <h1
-          style={{
-            'font-size': '33vw'
-          }}
-        >
-          404
-        </h1>
-        <h2
-          style={{
-            'font-size': '6vw'
-          }}
-        >
-          Page Not Found
-        </h2>
-      </main>
-    </>
+    <main>
+      <h1>Page Not Found</h1>
+    </main>
   );
-};
-
-export default NotFound;
+}

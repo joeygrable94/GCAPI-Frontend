@@ -1,10 +1,6 @@
 import { cache, redirect } from '@solidjs/router';
-import {
-  ApiError,
-  ClientRead,
-  ClientsService,
-  Paginated_ClientRead_
-} from '~/shared/api';
+import { getUserSessionApiToken } from '~/providers/auth';
+import { ClientRead, ClientsService, Paginated_ClientRead_ } from '~/shared/api';
 import { logError } from '~/shared/utils';
 
 /**
@@ -19,12 +15,13 @@ export const ssrFetchClientsList = cache(async (page: number, size: number) => {
     results: []
   };
   try {
+    await getUserSessionApiToken();
     clients = await ClientsService.clientsListApiV1ClientsGet({
       page,
       size
     });
-  } catch (err: ApiError | Error | any) {
-    logError('Error fetching clients list:', err.message);
+  } catch (err: Error | unknown) {
+    logError('Error fetching clients list:', err);
   }
   return clients;
 }, 'ssrFetchClientsList');
@@ -36,9 +33,10 @@ export const ssrFetchClientById = cache(async (id: string) => {
   'use server';
   let client: ClientRead;
   try {
+    await getUserSessionApiToken();
     client = await ClientsService.clientsReadApiV1ClientsClientIdGet({ clientId: id });
-  } catch (err: ApiError | Error | any) {
-    logError('Error fetching client:', err.message);
+  } catch (err: Error | unknown) {
+    logError('Error fetching client:', err);
     throw redirect('/404');
   }
   return client;

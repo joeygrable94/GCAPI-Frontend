@@ -16,7 +16,7 @@ import {
   CLIENTS_PAGE_START,
   fetchClientsList
 } from '~/entities/clients';
-import { useThemeContext } from '~/features/theme';
+import { useTheme } from '~/providers/theme';
 import { ClientRead, Paginated_ClientRead_ } from '~/shared/api';
 import {
   TableBody,
@@ -31,13 +31,9 @@ type ClientDataTableProps = {
 };
 
 const ClientDataTable = (props: ClientDataTableProps) => {
-  const theme = useThemeContext();
-  const [fetchPage, setFetchPage] = createSignal(
-    props.initialData?.page ?? CLIENTS_PAGE_START
-  );
-  const [fetchSize, setFetchSize] = createSignal(
-    props.initialData?.size ?? CLIENTS_PAGE_SIZE
-  );
+  const [theme] = useTheme();
+  const [fetchPage] = createSignal(props.initialData?.page ?? CLIENTS_PAGE_START);
+  const [fetchSize] = createSignal(props.initialData?.size ?? CLIENTS_PAGE_SIZE);
   const [fetchTotal, setFetchTodal] = createSignal(props.initialData?.total ?? 0);
   const [data, setData] = createSignal<ClientRead[]>(props.initialData?.results ?? []);
   const query = createQuery(() => ({
@@ -74,21 +70,21 @@ const ClientDataTable = (props: ClientDataTableProps) => {
         })
       ]
     }),
-    columnHelper.group({
-      header: 'Relationships',
-      columns: [
-        columnHelper.accessor('users', {
-          header: () => 'Users',
-          footer: (props) => props.column.id,
-          cell: (info) => info.getValue()?.length ?? 0
-        }),
-        columnHelper.accessor('websites', {
-          header: () => 'Websites',
-          footer: (props) => props.column.id,
-          cell: (info) => info.getValue()?.length ?? 0
-        })
-      ]
-    }),
+    // columnHelper.group({
+    //   header: 'Relationships',
+    //   columns: [
+    //     columnHelper.accessor('users', {
+    //       header: () => 'Users',
+    //       footer: (props) => props.column.id,
+    //       cell: (info) => info.getValue()?.length ?? 0
+    //     }),
+    //     columnHelper.accessor('websites', {
+    //       header: () => 'Websites',
+    //       footer: (props) => props.column.id,
+    //       cell: (info) => info.getValue()?.length ?? 0
+    //     })
+    //   ]
+    // }),
     columnHelper.group({
       header: 'Actions',
       columns: [
@@ -133,9 +129,12 @@ const ClientDataTable = (props: ClientDataTableProps) => {
         bordered
         hover
       >
+        {/* @ts-expect-error table type unknown */}
         <TableHeader table={table} setIsFiltering={setIsFiltering} />
+        {/* @ts-expect-error table type unknown */}
         <TableBody table={table} />
         <TableFooter
+          // @ts-expect-error table type unknown
           table={table}
           maximum={fetchTotal}
           isFiltering={isFiltering}
