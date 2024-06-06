@@ -1,3 +1,4 @@
+import { clientOnly } from '@solidjs/start';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -26,7 +27,10 @@ import {
   columnSortByUrl
 } from '~/shared/data-tables';
 import { formatDateString } from '~/shared/utils';
-import { WebsitePagesTableActions } from '../data-table-actions';
+
+const WebsitePagesTableActions = clientOnly(
+  () => import('~/widgets/data-table-actions/website-pages-table-actions')
+);
 
 type WebsitePagesDataTableProps = {
   initialData: Paginated_WebsitePageRead_ | undefined;

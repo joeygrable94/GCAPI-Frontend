@@ -1,3 +1,4 @@
+import { clientOnly } from '@solidjs/start';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -31,7 +32,10 @@ import {
   TableHeader
 } from '~/shared/data-tables';
 import { formatDateString } from '~/shared/utils';
-import { UsersTableActions } from '~/widgets/data-table-actions';
+
+const UsersTableActions = clientOnly(
+  () => import('~/widgets/data-table-actions/users-table-actions')
+);
 
 type UsersDataTableProps = {
   initialData: Paginated_UserReadAsAdmin_ | Paginated_UserReadAsManager_ | undefined;

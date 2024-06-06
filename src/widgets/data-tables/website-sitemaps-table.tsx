@@ -1,3 +1,4 @@
+import { clientOnly } from '@solidjs/start';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -25,7 +26,10 @@ import {
   TableHeader,
   columnSortByUrl
 } from '~/shared/data-tables';
-import { WebsiteSitemapsTableActions } from '~/widgets/data-table-actions';
+
+const WebsiteSitemapsTableActions = clientOnly(
+  () => import('~/widgets/data-table-actions/sitemaps-table-actions')
+);
 
 type WebsiteSitemapsDataTableProps = {
   initialData: Paginated_WebsiteMapRead_ | undefined;

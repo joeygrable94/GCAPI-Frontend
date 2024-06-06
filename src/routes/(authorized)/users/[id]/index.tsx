@@ -1,6 +1,7 @@
 import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
 import { Show } from 'solid-js';
-import { ssrFetchUserById } from '~/entities/users';
+import { UserProfileCard, ssrFetchUserById } from '~/entities/users';
+import { AuthorizedUser } from '~/providers/auth';
 
 export const route = {
   load({ params }) {
@@ -14,8 +15,7 @@ export default function UserById(props: RouteSectionProps) {
   return (
     <main>
       <Show when={data() !== undefined}>
-        <pre>{JSON.stringify(data(), null, 2)}</pre>
-        {/* <UserProfileCard user={data()!} /> */}
+        <UserProfileCard user={data() as AuthorizedUser} />
       </Show>
     </main>
   );

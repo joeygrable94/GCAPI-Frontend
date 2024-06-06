@@ -1,6 +1,10 @@
 import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
-import { Show } from 'solid-js';
+import { clientOnly } from '@solidjs/start';
 import { ssrFetchClientsList } from '~/entities/clients';
+
+const ClientsDataTable = clientOnly(
+  () => import('~/widgets/data-tables/clients-table')
+);
 
 export const route = {
   load({ location }) {
@@ -16,10 +20,7 @@ export default function Clients(props: RouteSectionProps) {
     <main>
       <h1 class="my-2">Clients</h1>
       {/* <ClientsActionsMenu /> */}
-      {/* <ClientsDataTable initialData={data()} /> */}
-      <Show when={data() !== undefined}>
-        <pre>{JSON.stringify(data(), null, 2)}</pre>
-      </Show>
+      <ClientsDataTable initialData={data()} />
     </main>
   );
 }

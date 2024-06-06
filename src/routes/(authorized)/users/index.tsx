@@ -1,6 +1,6 @@
 import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
-import { Show } from 'solid-js';
 import { ssrFetchUsersList } from '~/entities/users';
+import { UsersDataTable } from '~/widgets/data-tables';
 
 export const route = {
   load({ location }) {
@@ -15,10 +15,7 @@ export default function UserList(props: RouteSectionProps) {
   return (
     <main>
       <h1 class="my-2">Users</h1>
-      <Show when={data() !== undefined}>
-        <pre>{JSON.stringify(data(), null, 2)}</pre>
-      </Show>
-      {/* <UsersDataTable initialData={data()} /> */}
+      <UsersDataTable initialData={data()} />
     </main>
   );
 }

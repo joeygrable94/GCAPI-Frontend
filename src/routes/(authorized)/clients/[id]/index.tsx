@@ -1,6 +1,6 @@
 import { RouteDefinition, createAsync, useParams } from '@solidjs/router';
-import { Show } from 'solid-js';
 import { ssrFetchClientById } from '~/entities/clients';
+import { WebsitesDataTable } from '~/widgets/data-tables';
 
 export const route = {
   load({ params }) {
@@ -13,11 +13,8 @@ export default function ClientById() {
   const data = createAsync(() => ssrFetchClientById(params.id));
   return (
     <main>
-      <Show when={data() !== undefined}>
-        <h1 class="my-2">Client {data()?.title}</h1>
-        <pre>{JSON.stringify(data(), null, 2)}</pre>
-      </Show>
-      {/* <WebsitesDataTable initialData={undefined} clientId={params.id} /> */}
+      <h1 class="my-2">Client {data()?.title}</h1>
+      <WebsitesDataTable initialData={undefined} clientId={params.id} />
     </main>
   );
 }

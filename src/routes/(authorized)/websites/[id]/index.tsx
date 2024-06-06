@@ -22,6 +22,7 @@ import {
   Paginated_WebsitePageRead_,
   WebsiteRead
 } from '~/shared/api';
+import { WebsitePagesDataTable, WebsiteSitemapsDataTable } from '~/widgets/data-tables';
 
 type WebsiteByIdData = {
   website: WebsiteRead;
@@ -69,16 +70,16 @@ export default function WebsiteById(props: RouteSectionProps) {
         <h1 class="my-2">Website {data()?.website.domain}</h1>
         <pre>{JSON.stringify(data(), null, 2)}</pre>
         {/* <WebsiteSitemapsActionsMenu website={data()!.website} /> */}
-        {/* <WebsiteSitemapsDataTable
+        <WebsiteSitemapsDataTable
           initialData={data()!.sitemaps}
           website={data()!.website}
-        /> */}
+        />
         {/* <WebsitePagesActionsMenu website={data()!.website} /> */}
-        {/* <WebsitePagesDataTable
+        <WebsitePagesDataTable
           initialData={data()!.pages}
           websiteId={websiteId()}
           sitemapId={sitemapId()}
-        /> */}
+        />
       </Show>
     </main>
   );

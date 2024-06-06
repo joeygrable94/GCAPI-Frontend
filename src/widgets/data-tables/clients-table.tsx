@@ -1,3 +1,4 @@
+import { clientOnly } from '@solidjs/start';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -24,7 +25,10 @@ import {
   TableFooter,
   TableHeader
 } from '~/shared/data-tables';
-import { ClientsTableActions } from '~/widgets/data-table-actions';
+
+const ClientsTableActions = clientOnly(
+  () => import('~/widgets/data-table-actions/clients-table-actions')
+);
 
 type ClientDataTableProps = {
   initialData: Paginated_ClientRead_ | undefined;
