@@ -14,4 +14,9 @@ export const API_HOST: string = import.meta.env.VITE_API_BASE_URL
 export const API_URL_BASE = `${APP_PROTOCOL}://${API_HOST}`;
 
 // set base url for OpenAPI once
-once(() => (OpenAPI.BASE = API_URL_BASE))();
+once(() => {
+  OpenAPI.BASE = API_URL_BASE;
+  OpenAPI.HEADERS = {
+    'Access-Control-Allow-Origin': '*'
+  };
+})();
