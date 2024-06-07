@@ -4,12 +4,9 @@
 /* eslint-disable */
 import type { Paginated_UserReadAsAdmin_ } from '../models/Paginated_UserReadAsAdmin_';
 import type { Paginated_UserReadAsManager_ } from '../models/Paginated_UserReadAsManager_';
-import type { UserAuthRequestToken } from '../models/UserAuthRequestToken';
-import type { UserLoginRequest } from '../models/UserLoginRequest';
 import type { UserRead } from '../models/UserRead';
 import type { UserReadAsAdmin } from '../models/UserReadAsAdmin';
 import type { UserReadAsManager } from '../models/UserReadAsManager';
-import type { UserSession } from '../models/UserSession';
 import type { UserUpdate } from '../models/UserUpdate';
 import type { UserUpdateAsAdmin } from '../models/UserUpdateAsAdmin';
 import type { UserUpdateAsManager } from '../models/UserUpdateAsManager';
@@ -18,46 +15,6 @@ import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class UsersService {
-    /**
-     * Users:Authentication Request Csrf
-     * Generate an auth request token to be used in the /login route.
-     *
-     * Permissions:
-     * ------------
-     * anyone can access this endpoint
-     *
-     * Returns:
-     * --------
-     * `Dict[str, Any]` : a dictionary containing the CSRF token for the API
-     * @returns UserAuthRequestToken Successful Response
-     * @throws ApiError
-     */
-    public static usersAuthenticationRequestCsrfApiV1UsersRequestAuthGet(): CancelablePromise<UserAuthRequestToken> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/users/request-auth',
-        });
-    }
-    /**
-     * Users:Authentication
-     * @returns UserSession Successful Response
-     * @throws ApiError
-     */
-    public static usersAuthenticationApiV1UsersLoginPost({
-        requestBody,
-    }: {
-        requestBody: UserLoginRequest,
-    }): CancelablePromise<UserSession> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/v1/users/login',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
     /**
      * Users:Current
      * Retrieve the profile information about the currently active, verified user.

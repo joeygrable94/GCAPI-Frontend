@@ -10,7 +10,8 @@ export const authOptions = {
       authorization: {
         params: {
           audience: process.env.AUTH_AUTH0_AUDIENCE,
-          scope: process.env.AUTH_AUTH0_SCOPE
+          scope: process.env.AUTH_AUTH0_SCOPE,
+          response_type: 'code'
         }
       }
     })
