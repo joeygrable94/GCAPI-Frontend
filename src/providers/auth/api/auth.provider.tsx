@@ -66,12 +66,6 @@ export const AuthProvider = (props: AuthConfigProps) => {
     } else if (state.accessToken !== undefined && state.accessToken?.length > 0) {
       OpenAPI.TOKEN = state.accessToken;
     }
-    // console.log(
-    //   `SESSION TOKEN ${mode}`,
-    //   OpenAPI.TOKEN?.length,
-    //   authOptions.accessToken?.length,
-    //   state.accessToken?.length
-    // );
   };
   if (isServer) setOpenApiToken('server');
   onMount(() => setOpenApiToken('mount'));

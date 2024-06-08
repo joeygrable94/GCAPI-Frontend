@@ -14,8 +14,8 @@ export const getUserSessionOrLogin = cache(async () => {
     OpenAPI.TOKEN = session.accessToken;
     return session;
   } catch (error) {
+    OpenAPI.TOKEN = '';
     logError(error);
-    throw redirect('/login');
   }
 }, 'userSessionOrLogin');
 

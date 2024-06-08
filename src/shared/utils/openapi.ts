@@ -7,10 +7,14 @@ import { once } from '~/shared/utils';
 export const APP_PROTOCOL: string =
   import.meta.env.VITE_APP_ENV === 'production' ? 'https' : 'http';
 
+export const APP_HOST: string = import.meta.env.VITE_APP_BASE_URL
+  ? import.meta.env.VITE_APP_BASE_URL
+  : 'localhost:3333';
 export const API_HOST: string = import.meta.env.VITE_API_BASE_URL
   ? import.meta.env.VITE_API_BASE_URL
-  : 'localhost:3333';
+  : 'localhost:8888';
 
+export const APP_URL_BASE = `${APP_PROTOCOL}://${APP_HOST}`;
 export const API_URL_BASE = `${APP_PROTOCOL}://${API_HOST}`;
 
 // set base url for OpenAPI once

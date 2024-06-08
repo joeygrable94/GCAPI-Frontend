@@ -1,22 +1,22 @@
+import { getSession } from '@solid-mediakit/auth';
 import { createMiddleware } from '@solidjs/start/middleware';
-import { getUserSessionApiToken } from './providers/auth';
+import { getWebRequest } from 'vinxi/http';
+import { authOptions } from './providers/auth';
 import { OpenAPI } from './shared/api';
-import { log } from './shared/utils';
 
 export default createMiddleware({
   onRequest: [
     async (event) => {
-      const path = event.request.url;
-      if (import.meta.env.VITE_DEBUG === 'true') log('ON REQUEST', path);
-      await getUserSessionApiToken();
-      if (import.meta.env.VITE_DEBUG === 'true')
-        log('SESSION TOKEN', OpenAPI.TOKEN?.length);
-    }
-  ],
-  onBeforeResponse: [
-    async (event) => {
-      const path = event.request.url;
-      if (import.meta.env.VITE_DEBUG === 'true') log('BEFORE RESPONSE', path);
+      console.log('GLOBAL', event.request.url);
+      try {
+        const request = getWebRequest();
+        const session = await getSession(request, authOptions);
+        if (session) {
+          OpenAPI.TOKEN = session.accessToken;
+        }
+      } catch (error) {
+        console.error('GLOBAL', error);
+      }
     }
   ]
 });

@@ -1,4 +1,3 @@
-import { redirect } from '@solidjs/router';
 import { QueryFunctionContext } from '@tanstack/solid-query';
 import {
   Paginated_UserReadAsAdmin_,
@@ -16,7 +15,7 @@ import { logError } from '~/shared/utils';
  */
 export async function fetchCurrentUserOrLogin(
   queryContext: QueryFunctionContext
-): Promise<UserReadAsAdmin | UserReadAsManager | UserRead | void> {
+): Promise<UserReadAsAdmin | UserReadAsManager | UserRead | undefined> {
   const queryKey = queryContext.queryKey;
   const _key = queryKey[0];
   try {
@@ -25,7 +24,7 @@ export async function fetchCurrentUserOrLogin(
     return currentUser;
   } catch (err: Error | unknown) {
     logError('Error fetching current user:', _key, err);
-    return redirect('/login');
+    return undefined;
   }
 }
 
