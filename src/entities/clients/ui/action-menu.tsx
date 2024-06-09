@@ -1,11 +1,7 @@
-import { clientOnly } from '@solidjs/start';
 import { Nav } from 'solid-bootstrap';
 import { Component } from 'solid-js';
 import { CreateIcon } from '~/shared/icons';
-
-const ClientCreateFormDialog = clientOnly(
-  () => import('~/widgets/form-dialogs/client-create.ui')
-);
+import { ClientCreateFormDialog } from '~/widgets/form-dialogs';
 
 // type ClientsActionsMenuProps = {};
 

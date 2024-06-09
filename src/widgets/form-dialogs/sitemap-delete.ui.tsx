@@ -1,10 +1,10 @@
 import { Button, Spinner, Stack } from 'solid-bootstrap';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
+import toast from 'solid-toast';
 import { WebsiteMapRead, WebsiteSitemapsService } from '~/shared/api';
 import { Dialog } from '~/shared/dialogs';
 import { DeleteIcon } from '~/shared/icons';
 import { queryClient } from '~/shared/tanstack';
-import { log } from '~/shared/utils';
 
 type WebsiteSitemapDeleteFormDialogProps = {
   sitemap: WebsiteMapRead;
@@ -26,12 +26,12 @@ const WebsiteSitemapDeleteFormDialog: Component<WebsiteSitemapDeleteFormDialogPr
     WebsiteSitemapsService.websiteSitemapsDeleteApiV1SitemapsSitemapIdDelete({
       sitemapId: props.sitemap.id
     })
-      .then((v: unknown) => {
-        log('deleted sitemap response', v);
+      .then(() => {
+        toast.success(`deleted sitemap: ${props.sitemap.url}`);
         setIsSubmitted(true);
       })
       .catch((e) => {
-        log('error deleting sitemap', e);
+        toast.error(`error deleting sitemap: ${e.message}`);
         setIsSubmitted(false);
       })
       .finally(() => {

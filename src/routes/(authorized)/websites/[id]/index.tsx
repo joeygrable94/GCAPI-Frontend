@@ -5,6 +5,7 @@ import {
   createAsync,
   useParams
 } from '@solidjs/router';
+import { clientOnly } from '@solidjs/start';
 import { Show } from 'solid-js';
 import {
   SITEMAP_PAGE_SIZE,
@@ -22,7 +23,19 @@ import {
   Paginated_WebsitePageRead_,
   WebsiteRead
 } from '~/shared/api';
-import { WebsitePagesDataTable, WebsiteSitemapsDataTable } from '~/widgets/data-tables';
+
+const WebsiteSitemapsActionsMenu = clientOnly(
+  () => import('~/entities/sitemaps/ui/action-menu')
+);
+const WebsitePagesActionsMenu = clientOnly(
+  () => import('~/entities/website-pages/ui/action-menu')
+);
+const WebsiteSitemapsDataTable = clientOnly(
+  () => import('~/widgets/data-tables/website-sitemaps-table')
+);
+const WebsitePagesDataTable = clientOnly(
+  () => import('~/widgets/data-tables/website-pages-table')
+);
 
 type WebsiteByIdData = {
   website: WebsiteRead;
@@ -67,14 +80,14 @@ export default function WebsiteById(props: RouteSectionProps) {
   return (
     <main>
       <Show when={data() !== undefined}>
-        <h1 class="my-2">Website {data()?.website.domain}</h1>
+        <h1 class="my-2">Website {data()!.website.domain}</h1>
         <pre>{JSON.stringify(data(), null, 2)}</pre>
-        {/* <WebsiteSitemapsActionsMenu website={data()!.website} /> */}
+        <WebsiteSitemapsActionsMenu website={data()!.website} />
         <WebsiteSitemapsDataTable
           initialData={data()!.sitemaps}
           website={data()!.website}
         />
-        {/* <WebsitePagesActionsMenu website={data()!.website} /> */}
+        <WebsitePagesActionsMenu website={data()!.website} />
         <WebsitePagesDataTable
           initialData={data()!.pages}
           websiteId={websiteId()}

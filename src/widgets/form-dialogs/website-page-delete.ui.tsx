@@ -1,10 +1,10 @@
 import { Button, Spinner, Stack } from 'solid-bootstrap';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
+import toast from 'solid-toast';
 import { WebsitePageRead, WebsitePagesService } from '~/shared/api';
 import { Dialog } from '~/shared/dialogs';
 import { DeleteIcon } from '~/shared/icons';
 import { queryClient } from '~/shared/tanstack';
-import { log } from '~/shared/utils';
 
 type WebsitePageDeleteFormDialogProps = {
   websitePage: WebsitePageRead;
@@ -26,12 +26,12 @@ const WebsitePageDeleteFormDialog: Component<WebsitePageDeleteFormDialogProps> =
     WebsitePagesService.websitePagesDeleteApiV1WebpagesPageIdDelete({
       pageId: props.websitePage.id
     })
-      .then((v: unknown) => {
-        log('deleted Page response', v);
+      .then(() => {
+        toast.success(`deleted website page: ${props.websitePage.url}`);
         setIsSubmitted(true);
       })
       .catch((e) => {
-        log('error deleting Page', e);
+        toast.error(`error deleting website page: ${e.message}`);
         setIsSubmitted(false);
       })
       .finally(() => {

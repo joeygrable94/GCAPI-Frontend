@@ -1,19 +1,25 @@
-import { createForm } from '@tanstack/solid-form';
-import { zodValidator } from '@tanstack/zod-form-adapter';
+import {
+  SubmitHandler,
+  createForm,
+  submit,
+  valiField,
+  valiForm
+} from '@modular-forms/solid';
 import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, createEffect, createSignal } from 'solid-js';
-import {
-  IsValidClientDescription,
-  IsValidClientIsActive,
-  IsValidClientTitle,
-  SEditClient
-} from '~/entities/clients';
+import toast from 'solid-toast';
+import { SEditClient, SchemaEditClient } from '~/entities/clients';
 import { ClientRead, ClientsService } from '~/shared/api';
+import {
+  IsValidClientId,
+  IsValidClientIsActive,
+  IsValidDescription,
+  IsValidTitle
+} from '~/shared/db';
 import { Dialog } from '~/shared/dialogs';
-import { FormFieldInfo } from '~/shared/forms';
+import { CheckboxInput, TextInput, TextareaInput } from '~/shared/forms';
 import { EditIcon } from '~/shared/icons';
 import { queryClient } from '~/shared/tanstack';
-import { log } from '~/shared/utils';
 
 type ClientEditFormDialogProps = {
   client: ClientRead;
@@ -28,38 +34,38 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
   };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
-  const Frm = createForm<SEditClient, typeof zodValidator>(() => ({
-    defaultValues: {
+  const [editClientForm, EditClient] = createForm<SEditClient>({
+    initialValues: {
       clientId: props.client.id,
       title: props.client.title,
-      description: props.client.description ?? null,
-      is_active: props.client.is_active ?? true
+      description: props.client.description ?? undefined,
+      is_active: props.client.is_active ?? undefined
     },
-    onSubmit: async ({ value }) => {
-      setPending(true);
-      const { clientId, title, description, is_active } = value;
-      ClientsService.clientsUpdateApiV1ClientsClientIdPatch({
-        clientId: clientId,
-        requestBody: {
-          title: title !== props.client.title ? title : null,
-          description: description !== props.client.description ? description : null,
-          is_active: is_active !== props.client.is_active ? is_active : null
-        }
+    validate: valiForm(SchemaEditClient)
+  });
+  const handleSubmit: SubmitHandler<SEditClient> = (values) => {
+    setPending(true);
+    const { clientId, title, description, is_active } = values;
+    ClientsService.clientsUpdateApiV1ClientsClientIdPatch({
+      clientId: clientId,
+      requestBody: {
+        title: title !== props.client.title ? title : null,
+        description: description !== props.client.description ? description : null,
+        is_active: is_active !== props.client.is_active ? is_active : null
+      }
+    })
+      .then((r: ClientRead) => {
+        toast.success(`updated client: ${r.title}`);
+        setIsSubmitted(true);
       })
-        .then((r: ClientRead) => {
-          log('updated client response', r);
-          setIsSubmitted(true);
-        })
-        .catch((e) => {
-          log('error updating client', e);
-          setIsSubmitted(false);
-        })
-        .finally(() => {
-          setPending(false);
-        });
-    },
-    validatorAdapter: zodValidator
-  }));
+      .catch((e) => {
+        toast.error(`error updating client: ${e.message}`);
+        setIsSubmitted(false);
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
@@ -81,125 +87,81 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
             <Button variant="secondary" onClick={() => handleClose()}>
               Close
             </Button>
-            <Frm.Subscribe
-              selector={(state) => ({
-                canSubmit: state.canSubmit,
-                isSubmitting: state.isSubmitting
-              })}
-              children={(state) => {
-                return (
-                  <Button
-                    type="submit"
-                    disabled={!state().canSubmit || pending() || isSubmitted()}
-                    onClick={() => Frm.handleSubmit()}
-                  >
-                    {state().isSubmitting ? '...' : 'Update Client'}
-                  </Button>
-                );
-              }}
-            />
+            <Button
+              type="submit"
+              disabled={pending() || isSubmitted()}
+              onClick={() => submit(editClientForm)}
+            >
+              {editClientForm.submitting ? '...' : 'Update Client'}
+            </Button>
           </Form.Group>
         </>
       }
     >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          void Frm.handleSubmit();
-        }}
-      >
+      <EditClient.Form onSubmit={handleSubmit}>
         <Row>
+          <EditClient.Field name="clientId" validate={[valiField(IsValidClientId)]}>
+            {(field, props) => (
+              <TextInput
+                {...props}
+                type="hidden"
+                value={field.value}
+                error={field.error}
+                required
+              />
+            )}
+          </EditClient.Field>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
-              name="clientId"
-              children={(field) => (
-                <Form.Control
+            <EditClient.Field name="title" validate={[valiField(IsValidTitle)]}>
+              {(field, props) => (
+                <TextInput
+                  {...props}
+                  type="text"
                   required
-                  id={field().name}
-                  name={field().name}
-                  value={props.client.id}
-                  hidden
+                  label="Client Name"
+                  value={field.value}
+                  error={field.error}
                 />
               )}
-            />
-            <Frm.Field
-              name="title"
-              validators={{
-                onChange: IsValidClientTitle
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Client Name</Form.Label>
-                    <Form.Control
-                      required
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ''}
-                      onBlur={field().handleBlur}
-                      onInput={(e) => field().handleChange(e.target.value)}
-                      placeholder="Client Name"
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+            </EditClient.Field>
           </Form.Group>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
+            <EditClient.Field
               name="description"
-              validators={{
-                onChange: IsValidClientDescription
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Client Description</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ''}
-                      onBlur={field().handleBlur}
-                      onInput={(e) => field().handleChange(e.target.value)}
-                      placeholder="Client Description"
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidDescription)]}
+            >
+              {(field, props) => (
+                <TextareaInput
+                  {...props}
+                  rows={3}
+                  label="Client Description"
+                  value={field.value}
+                  error={field.error}
+                />
+              )}
+            </EditClient.Field>
           </Form.Group>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
+            <Form.Label class="mb-1">Client Is Active?</Form.Label>
+            <EditClient.Field
               name="is_active"
-              validators={{
-                onChange: IsValidClientIsActive
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Client Is Active?</Form.Label>
-                    <Form.Check
-                      required
-                      type="switch"
-                      id={field().name}
-                      name={field().name}
-                      label={field().state.value ? 'Active' : 'Inactive'}
-                      checked={field().state.value ?? true}
-                      onInput={(e) => field().handleChange(e.target.checked)}
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidClientIsActive)]}
+              type="boolean"
+            >
+              {(field, props) => (
+                <CheckboxInput
+                  {...props}
+                  type="checkbox"
+                  required
+                  label={field.value ? 'Active' : 'Inactive'}
+                  checked={field.value}
+                  error={field.error}
+                />
+              )}
+            </EditClient.Field>
           </Form.Group>
         </Row>
-      </Form>
+      </EditClient.Form>
     </Dialog>
   );
 };

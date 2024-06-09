@@ -1,17 +1,10 @@
 import { useNavigate } from '@solidjs/router';
-import { clientOnly } from '@solidjs/start';
 import { Button, Stack } from 'solid-bootstrap';
 import { Component } from 'solid-js';
 import { useTheme } from '~/providers/theme';
 import { WebsiteRead } from '~/shared/api';
 import { ViewIcon } from '~/shared/icons';
-
-const WebsiteDeleteFormDialog = clientOnly(
-  () => import('~/widgets/form-dialogs/website-delete.ui')
-);
-const WebsiteEditFormDialog = clientOnly(
-  () => import('~/widgets/form-dialogs/website-delete.ui')
-);
+import { WebsiteDeleteFormDialog, WebsiteEditFormDialog } from '~/widgets/form-dialogs';
 
 interface IWebsitesTableActionsProps {
   website: WebsiteRead;

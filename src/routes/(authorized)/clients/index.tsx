@@ -2,6 +2,9 @@ import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router
 import { clientOnly } from '@solidjs/start';
 import { ssrFetchClientsList } from '~/entities/clients';
 
+const ClientsActionsMenu = clientOnly(
+  () => import('~/entities/clients/ui/action-menu')
+);
 const ClientsDataTable = clientOnly(
   () => import('~/widgets/data-tables/clients-table')
 );
@@ -19,7 +22,7 @@ export default function Clients(props: RouteSectionProps) {
   return (
     <main>
       <h1 class="my-2">Clients</h1>
-      {/* <ClientsActionsMenu /> */}
+      <ClientsActionsMenu />
       <ClientsDataTable initialData={data()} />
     </main>
   );

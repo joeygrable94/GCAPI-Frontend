@@ -10,7 +10,7 @@ export async function fetchWebsitePagesList(
   queryContext: QueryFunctionContext
 ): Promise<Paginated_WebsitePageRead_> {
   const queryKey = queryContext.queryKey;
-  const _key = queryKey[0];
+  const _key = queryKey[0] as string;
   const page = queryKey[1] as number;
   const size = queryKey[2] as number;
   const websiteId = queryKey[3] as string;

@@ -1,2 +1,2 @@
 export * from './event.types';
-export * from './form.types';
+export * from './input.types';

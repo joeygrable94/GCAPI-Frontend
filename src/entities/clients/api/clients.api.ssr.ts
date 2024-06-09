@@ -1,4 +1,4 @@
-import { cache, redirect } from '@solidjs/router';
+import { cache } from '@solidjs/router';
 import { getUserSessionApiToken } from '~/providers/auth';
 import { ClientRead, ClientsService, Paginated_ClientRead_ } from '~/shared/api';
 import { logError } from '~/shared/utils';
@@ -31,13 +31,12 @@ export const ssrFetchClientsList = cache(async (page: number, size: number) => {
  */
 export const ssrFetchClientById = cache(async (id: string) => {
   'use server';
-  let client: ClientRead;
+  let client: ClientRead | undefined = undefined;
   try {
     await getUserSessionApiToken();
     client = await ClientsService.clientsReadApiV1ClientsClientIdGet({ clientId: id });
   } catch (err: Error | unknown) {
     logError('Error fetching client:', err);
-    throw redirect('/404');
   }
   return client;
 }, 'ssrFetchClientById');

@@ -1,7 +1,8 @@
 import { useNavigate } from '@solidjs/router';
 import { clientOnly } from '@solidjs/start';
 import { Button, Stack } from 'solid-bootstrap';
-import { Component } from 'solid-js';
+import { Component, createEffect, createSignal } from 'solid-js';
+import toast from 'solid-toast';
 import { useTheme } from '~/providers/theme';
 import {
   WebsiteMapProcessing,
@@ -9,7 +10,6 @@ import {
   WebsiteSitemapsService
 } from '~/shared/api';
 import { ProcessIcon, ViewIcon } from '~/shared/icons';
-import { log, logError } from '~/shared/utils';
 
 const WebsiteSitemapDeleteFormDialog = clientOnly(
   () => import('~/widgets/form-dialogs/sitemap-delete.ui')
@@ -24,28 +24,27 @@ const WebsiteSitemapsTableActions: Component<IWebsiteSitemapsTableActionsProps> 
 ) => {
   const [theme] = useTheme();
   const navigate = useNavigate();
+  const [sitemap, setSitemap] = createSignal<WebsiteMapRead>(props.sitemap);
   const handleProcessPages = () => {
     WebsiteSitemapsService.websiteSitemapsProcessSitemapPagesApiV1SitemapsSitemapIdProcessPagesGet(
       {
-        sitemapId: props.sitemap.id
+        sitemapId: sitemap().id
       }
     )
       .then((r: WebsiteMapProcessing) => {
-        log('Pages processed', r.task_id, r.url, r.website_id);
+        toast.success(`pages processed: ${r.url}`);
       })
       .catch((e) => {
-        logError('Process Error', e);
-      })
-      .finally(() => {
-        log('Process Complete');
+        toast.error(`process Error: ${e.message}`);
       });
   };
+  createEffect(() => setSitemap(props.sitemap));
   return (
     <Stack direction="horizontal" gap={2} class="d-flex flex-row flex-nowrap">
       <Button
         size="sm"
         variant={theme.darkMode ? 'outline-light' : 'outline-dark'}
-        onClick={() => navigate(`/sitemaps/${props.sitemap.id}`)}
+        onClick={() => navigate(`/sitemaps/${sitemap().id}`)}
       >
         <ViewIcon />
       </Button>
@@ -56,7 +55,7 @@ const WebsiteSitemapsTableActions: Component<IWebsiteSitemapsTableActionsProps> 
       >
         <ProcessIcon />
       </Button>
-      <WebsiteSitemapDeleteFormDialog sitemap={props.sitemap} />
+      <WebsiteSitemapDeleteFormDialog sitemap={sitemap()} />
     </Stack>
   );
 };

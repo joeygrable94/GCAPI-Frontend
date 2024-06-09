@@ -17,7 +17,7 @@ export async function fetchCurrentUserOrLogin(
   queryContext: QueryFunctionContext
 ): Promise<UserReadAsAdmin | UserReadAsManager | UserRead | undefined> {
   const queryKey = queryContext.queryKey;
-  const _key = queryKey[0];
+  const _key = queryKey[0] as string;
   try {
     const currentUser: UserReadAsAdmin | UserReadAsManager | UserRead =
       await UsersService.usersCurrentApiV1UsersMeGet();
@@ -35,7 +35,7 @@ export async function fetchUsersList(
   queryContext: QueryFunctionContext
 ): Promise<Paginated_UserReadAsAdmin_ | Paginated_UserReadAsManager_> {
   const queryKey = queryContext.queryKey;
-  const _key = queryKey[0];
+  const _key = queryKey[0] as string;
   const page = queryKey[1] as number;
   const size = queryKey[2] as number;
   try {
@@ -57,8 +57,8 @@ export async function fetchUserById(
   queryContext: QueryFunctionContext
 ): Promise<UserReadAsAdmin | UserReadAsManager | UserRead | undefined> {
   const queryKey = queryContext.queryKey;
-  const _key = queryKey[0];
-  const userId = queryKey[1];
+  const _key = queryKey[0] as string;
+  const userId = queryKey[1] as string;
   try {
     const response = await UsersService.usersReadApiV1UsersUserIdGet({ userId });
     return response;

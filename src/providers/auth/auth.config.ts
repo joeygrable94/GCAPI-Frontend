@@ -1,5 +1,6 @@
 import Auth0Provider from '@auth/core/providers/auth0';
 import type { SolidAuthConfig } from '@solid-mediakit/auth';
+import { setOpenApiToken } from '~/shared/utils';
 
 export const authOptions = {
   providers: [
@@ -28,6 +29,7 @@ export const authOptions = {
       return token;
     },
     async session({ token, session }) {
+      setOpenApiToken('session', token.accessToken as string);
       return {
         ...session,
         accessToken: token.accessToken,

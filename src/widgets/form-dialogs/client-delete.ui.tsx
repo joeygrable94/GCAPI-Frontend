@@ -1,10 +1,10 @@
 import { Button, Spinner, Stack } from 'solid-bootstrap';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
+import toast from 'solid-toast';
 import { ClientDelete, ClientRead, ClientsService } from '~/shared/api';
 import { Dialog } from '~/shared/dialogs';
 import { DeleteIcon } from '~/shared/icons';
 import { queryClient } from '~/shared/tanstack';
-import { log } from '~/shared/utils';
 
 type ClientDeleteFormDialogProps = {
   client: ClientRead;
@@ -25,11 +25,11 @@ const ClientDeleteFormDialog: Component<ClientDeleteFormDialogProps> = (props) =
       clientId: props.client.id
     })
       .then((v: ClientDelete) => {
-        log('deleted client response', v);
+        toast.success(`deleted client: ${v.message}`);
         setIsSubmitted(true);
       })
       .catch((e) => {
-        log('error deleting client', e);
+        toast.error(`error deleting client: ${e.message}`);
         setIsSubmitted(false);
       })
       .finally(() => {

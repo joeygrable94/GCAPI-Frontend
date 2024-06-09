@@ -1,18 +1,24 @@
-import { createForm } from '@tanstack/solid-form';
-import { zodValidator } from '@tanstack/zod-form-adapter';
+import {
+  SubmitHandler,
+  createForm,
+  submit,
+  valiField,
+  valiForm
+} from '@modular-forms/solid';
 import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
-import {
-  IsValidClientDescription,
-  IsValidClientIsActive,
-  IsValidClientTitle,
-  SCreateClient
-} from '~/entities/clients';
+import toast from 'solid-toast';
+import { SCreateClient, SchemaCreateClient } from '~/entities/clients';
 import { ClientRead, ClientsService } from '~/shared/api';
+import {
+  IsValidClientIsActive,
+  IsValidDescription,
+  IsValidSlug,
+  IsValidTitle
+} from '~/shared/db';
 import { Dialog, DialogTriggerType } from '~/shared/dialogs';
-import { FormFieldInfo } from '~/shared/forms';
+import { CheckboxInput, TextInput, TextareaInput } from '~/shared/forms';
 import { queryClient } from '~/shared/tanstack';
-import { log } from '~/shared/utils';
 
 type ClientCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -28,38 +34,38 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
   };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
-  const Frm = createForm<SCreateClient, typeof zodValidator>(() => ({
-    defaultValues: {
+  const [createClientForm, CreateClient] = createForm<SCreateClient>({
+    initialValues: {
       slug: '',
       title: '',
-      description: null,
+      description: undefined,
       is_active: true
     },
-    onSubmit: async ({ value }) => {
-      const { slug, title, description, is_active } = value;
-      setPending(true);
-      ClientsService.clientsCreateApiV1ClientsPost({
-        requestBody: {
-          title,
-          description,
-          is_active,
-          slug: slug
-        }
+    validate: valiForm(SchemaCreateClient)
+  });
+  const handleSubmit: SubmitHandler<SCreateClient> = (values) => {
+    const { slug, title, description, is_active } = values;
+    setPending(true);
+    ClientsService.clientsCreateApiV1ClientsPost({
+      requestBody: {
+        title,
+        description,
+        is_active,
+        slug: slug
+      }
+    })
+      .then((r: ClientRead) => {
+        toast.success(`created client: ${r.title}`);
+        setIsSubmitted(true);
       })
-        .then((r: ClientRead) => {
-          log('created client response', r);
-          setIsSubmitted(true);
-        })
-        .catch((e) => {
-          log('error creating client', e);
-          setIsSubmitted(false);
-        })
-        .finally(() => {
-          setPending(false);
-        });
-    },
-    validatorAdapter: zodValidator
-  }));
+      .catch((e) => {
+        toast.error(`error creating client: ${e.message}`);
+        setIsSubmitted(false);
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
@@ -81,113 +87,84 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
             <Button variant="secondary" onClick={() => handleClose()}>
               Close
             </Button>
-            <Frm.Subscribe
-              selector={(state) => ({
-                canSubmit: state.canSubmit,
-                isSubmitting: state.isSubmitting
-              })}
-              children={(state) => {
-                return (
-                  <Button
-                    type="submit"
-                    disabled={!state().canSubmit || pending() || isSubmitted()}
-                    onClick={() => Frm.handleSubmit()}
-                  >
-                    {state().isSubmitting ? '...' : 'Create Client'}
-                  </Button>
-                );
-              }}
-            />
+            <Button
+              type="submit"
+              disabled={pending() || isSubmitted()}
+              onClick={() => submit(createClientForm)}
+            >
+              {createClientForm.submitting ? '...' : 'Create Client'}
+            </Button>
           </Form.Group>
         </>
       }
     >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          void Frm.handleSubmit();
-        }}
-      >
+      <CreateClient.Form onSubmit={handleSubmit}>
         <Row>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
-              name="title"
-              validators={{
-                onChange: IsValidClientTitle
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Client Name</Form.Label>
-                    <Form.Control
-                      required
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ''}
-                      onBlur={field().handleBlur}
-                      onInput={(e) => field().handleChange(e.target.value)}
-                      placeholder="Client Name"
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+            <CreateClient.Field name="slug" validate={[valiField(IsValidSlug)]}>
+              {(field, props) => (
+                <TextInput
+                  {...props}
+                  type="text"
+                  required
+                  label="Data Slug"
+                  value={field.value}
+                  error={field.error}
+                />
+              )}
+            </CreateClient.Field>
           </Form.Group>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
+            <CreateClient.Field name="title" validate={[valiField(IsValidTitle)]}>
+              {(field, props) => (
+                <TextInput
+                  {...props}
+                  type="text"
+                  required
+                  label="Client Name"
+                  value={field.value}
+                  error={field.error}
+                />
+              )}
+            </CreateClient.Field>
+          </Form.Group>
+          <Form.Group as={Col} xs={12} class="mb-2">
+            <CreateClient.Field
               name="description"
-              validators={{
-                onChange: IsValidClientDescription
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Client Description</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ''}
-                      onBlur={field().handleBlur}
-                      onInput={(e) => field().handleChange(e.target.value)}
-                      placeholder="Client Description"
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidDescription)]}
+            >
+              {(field, props) => (
+                <TextareaInput
+                  {...props}
+                  rows={3}
+                  label="Client Description"
+                  value={field.value}
+                  error={field.error}
+                />
+              )}
+            </CreateClient.Field>
           </Form.Group>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
+            <Form.Label class="mb-1">Client Is Active?</Form.Label>
+            <CreateClient.Field
               name="is_active"
-              validators={{
-                onChange: IsValidClientIsActive
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Client Is Active?</Form.Label>
-                    <Form.Check
-                      type="switch"
-                      required
-                      id={field().name}
-                      name={field().name}
-                      label={field().state.value ? 'Active' : 'Inactive'}
-                      checked={field().state.value ?? true}
-                      onInput={(e) => field().handleChange(e.target.checked)}
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidClientIsActive)]}
+              type="boolean"
+            >
+              {(field, props) => (
+                <CheckboxInput
+                  {...props}
+                  type="checkbox"
+                  required
+                  label={field.value ? 'Active' : 'Inactive'}
+                  checked={field.value}
+                  error={field.error}
+                />
+              )}
+            </CreateClient.Field>
           </Form.Group>
         </Row>
-      </Form>
+      </CreateClient.Form>
     </Dialog>
   );
 };

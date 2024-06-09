@@ -1,27 +1,39 @@
-import { createForm } from '@tanstack/solid-form';
+import {
+  SubmitHandler,
+  createForm,
+  setValue,
+  submit,
+  valiField,
+  valiForm
+} from '@modular-forms/solid';
 import { createQuery } from '@tanstack/solid-query';
-import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, For, Show, createEffect, createSignal } from 'solid-js';
+import toast from 'solid-toast';
 import { fetchClientsList } from '~/entities/clients';
-import {
-  IsValidWebsiteDomain,
-  IsValidWebsiteIsActive,
-  IsValidWebsiteIsSecure,
-  SEditWebsite
-} from '~/entities/websites';
+import { SEditWebsite, SchemaEditWebsite } from '~/entities/websites';
 import { ClientsService, WebsiteRead, WebsitesService } from '~/shared/api';
+import {
+  IsValidClientId,
+  IsValidWebsiteDomain,
+  IsValidWebsiteId,
+  IsValidWebsiteIsActive,
+  IsValidWebsiteIsSecure
+} from '~/shared/db';
 import { Dialog } from '~/shared/dialogs';
-import { FormFieldInfo } from '~/shared/forms';
+import { CheckboxInput, TextInput } from '~/shared/forms';
 import { EditIcon } from '~/shared/icons';
 import { queryClient } from '~/shared/tanstack';
-import { log } from '~/shared/utils';
 
 type WebsiteEditFormDialogProps = {
   website: WebsiteRead;
 };
 
 const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => {
+  const clientsQuery = createQuery(() => ({
+    queryKey: ['clients', 1, 1000],
+    queryFn: fetchClientsList
+  }));
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -30,61 +42,57 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
   };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
-  const clientsQuery = createQuery(() => ({
-    queryKey: ['clients', 1, 1000],
-    queryFn: fetchClientsList
-  }));
-  const Frm = createForm<SEditWebsite, typeof zodValidator>(() => ({
-    defaultValues: {
+  const [editWebsiteForm, EditWebsite] = createForm<SEditWebsite>({
+    initialValues: {
       websiteId: props.website.id,
       domain: props.website.domain,
       is_secure: props.website.is_secure ?? true,
       is_active: props.website.is_active ?? true,
-      clientId: null
+      clientId: undefined
     },
-    onSubmit: async ({ value }) => {
-      setPending(true);
-      const { websiteId, domain, is_secure, is_active, clientId } = value;
-      WebsitesService.websitesUpdateApiV1WebsitesWebsiteIdPatch({
-        websiteId: websiteId,
-        requestBody: {
-          domain: domain !== props.website.domain ? domain : null,
-          is_secure: is_secure !== props.website.is_secure ? is_secure : null,
-          is_active: is_active !== props.website.is_active ? is_active : null
+    validate: valiForm(SchemaEditWebsite)
+  });
+  const handleSubmit: SubmitHandler<SEditWebsite> = (values) => {
+    setPending(true);
+    const { websiteId, domain, is_secure, is_active, clientId } = values;
+    WebsitesService.websitesUpdateApiV1WebsitesWebsiteIdPatch({
+      websiteId: websiteId,
+      requestBody: {
+        domain: domain !== props.website.domain ? domain : null,
+        is_secure: is_secure !== props.website.is_secure ? is_secure : null,
+        is_active: is_active !== props.website.is_active ? is_active : null
+      }
+    })
+      .then((r: WebsiteRead) => {
+        toast.success(`updated website: ${r.domain}`);
+        if (clientId === null) {
+          setIsSubmitted(true);
+          return;
         }
-      })
-        .then((r: WebsiteRead) => {
-          log('updated website response', r);
-          if (clientId === null) {
-            setIsSubmitted(true);
-            return;
+        ClientsService.clientsAssignWebsiteApiV1ClientsClientIdAssignWebsitePost({
+          clientId: clientId,
+          requestBody: {
+            client_id: clientId,
+            website_id: websiteId
           }
-          ClientsService.clientsAssignWebsiteApiV1ClientsClientIdAssignWebsitePost({
-            clientId: clientId,
-            requestBody: {
-              client_id: clientId,
-              website_id: websiteId
-            }
+        })
+          .then((r) => {
+            toast.success(`assigned website to client: ${r.client_id}`);
+            setIsSubmitted(true);
           })
-            .then((r) => {
-              log('assigned website to client response', r);
-              setIsSubmitted(true);
-            })
-            .catch((e) => {
-              log('error assigning website to client', e);
-              setIsSubmitted(false);
-            });
-        })
-        .catch((e) => {
-          log('error updating website', e);
-          setIsSubmitted(false);
-        })
-        .finally(() => {
-          setPending(false);
-        });
-    },
-    validatorAdapter: zodValidator
-  }));
+          .catch((e) => {
+            toast.error(`error assigning website to client: ${e.message}`);
+            setIsSubmitted(false);
+          });
+      })
+      .catch((e) => {
+        toast.error(`error updating website: ${e.message}`);
+        setIsSubmitted(false);
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
@@ -106,157 +114,119 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
             <Button variant="secondary" onClick={() => handleClose()}>
               Close
             </Button>
-            <Frm.Subscribe
-              selector={(state) => ({
-                canSubmit: state.canSubmit,
-                isSubmitting: state.isSubmitting
-              })}
-              children={(state) => {
-                return (
-                  <Button
-                    type="submit"
-                    disabled={!state().canSubmit || pending() || isSubmitted()}
-                    onClick={() => Frm.handleSubmit()}
-                  >
-                    {state().isSubmitting ? '...' : 'Update Website'}
-                  </Button>
-                );
-              }}
-            />
+            <Button
+              type="submit"
+              disabled={pending() || isSubmitted()}
+              onClick={() => submit(editWebsiteForm)}
+            >
+              {editWebsiteForm.submitting ? '...' : 'Update Website'}
+            </Button>
           </Form.Group>
         </>
       }
     >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          void Frm.handleSubmit();
-        }}
-      >
+      <EditWebsite.Form onSubmit={handleSubmit}>
         <Row>
+          <EditWebsite.Field name="websiteId" validate={[valiField(IsValidWebsiteId)]}>
+            {(field, props) => (
+              <TextInput
+                {...props}
+                type="hidden"
+                value={field.value}
+                error={field.error}
+                required
+              />
+            )}
+          </EditWebsite.Field>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
-              name="websiteId"
-              children={(field) => (
-                <Form.Control
+            <EditWebsite.Field
+              name="domain"
+              validate={[valiField(IsValidWebsiteDomain)]}
+            >
+              {(field, props) => (
+                <TextInput
+                  {...props}
+                  type="text"
                   required
-                  id={field().name}
-                  name={field().name}
-                  value={props.website.id}
-                  hidden
+                  label="Website Domain"
+                  placeholder="Domain Name"
+                  value={field.value}
+                  error={field.error}
                 />
               )}
-            />
-            <Frm.Field
-              name="domain"
-              validators={{
-                onChange: IsValidWebsiteDomain
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Website Domain</Form.Label>
-                    <Form.Control
-                      required
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ''}
-                      onBlur={field().handleBlur}
-                      onInput={(e) => field().handleChange(e.target.value)}
-                      placeholder="Domain Name"
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+            </EditWebsite.Field>
           </Form.Group>
           <Form.Group as={Col} xs={6} class="mb-2">
-            <Frm.Field
+            <Form.Label class="mb-1">Website Is Secure (HTTPS)?</Form.Label>
+            <EditWebsite.Field
               name="is_secure"
-              validators={{
-                onChange: IsValidWebsiteIsSecure
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Website Is Secure (HTTPS)?</Form.Label>
-                    <Form.Check
-                      required
-                      type="switch"
-                      id={field().name}
-                      name={field().name}
-                      label={field().state.value ? 'Secure' : 'Insecure'}
-                      checked={field().state.value ?? true}
-                      onInput={(e) => field().handleChange(e.target.checked)}
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidWebsiteIsSecure)]}
+              type="boolean"
+            >
+              {(field, props) => (
+                <CheckboxInput
+                  {...props}
+                  type="checkbox"
+                  required
+                  label={field.value ? 'Secure' : 'Insecure'}
+                  checked={field.value}
+                  error={field.error}
+                />
+              )}
+            </EditWebsite.Field>
           </Form.Group>
           <Form.Group as={Col} xs={6} class="mb-2">
-            <Frm.Field
+            <Form.Label class="mb-1">Website Is Active?</Form.Label>
+            <EditWebsite.Field
               name="is_active"
-              validators={{
-                onChange: IsValidWebsiteIsActive
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Website Is Active?</Form.Label>
-                    <Form.Check
-                      required
-                      type="switch"
-                      id={field().name}
-                      name={field().name}
-                      label={field().state.value ? 'Active' : 'Inactive'}
-                      checked={field().state.value ?? true}
-                      onInput={(e) => field().handleChange(e.target.checked)}
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidWebsiteIsActive)]}
+              type="boolean"
+            >
+              {(field, props) => (
+                <CheckboxInput
+                  {...props}
+                  type="checkbox"
+                  required
+                  label={field.value ? 'Active' : 'Inactive'}
+                  checked={field.value}
+                  error={field.error}
+                />
+              )}
+            </EditWebsite.Field>
           </Form.Group>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
-              name="clientId"
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Assign Website to Client</Form.Label>
-                    <Form.Select
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ''}
-                      onChange={(e) => field().handleChange(e.target.value)}
-                      size="sm"
-                    >
-                      <Show when={clientsQuery.isSuccess}>
-                        <For each={clientsQuery.data?.results}>
-                          {(client) => (
-                            <option
-                              selected={field().state.value === client.id}
-                              value={client.id}
-                            >
-                              {client.title}
-                            </option>
-                          )}
-                        </For>
-                      </Show>
-                    </Form.Select>
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+            <EditWebsite.Field name="clientId" validate={[valiField(IsValidClientId)]}>
+              {(field) => (
+                <>
+                  <Form.Label class="mb-1">Assign Website to Client</Form.Label>
+                  <Form.Select
+                    id={field.name}
+                    name={field.name}
+                    value={field.value ?? ''}
+                    onChange={(e) =>
+                      setValue(editWebsiteForm, field.name, e.target.value)
+                    }
+                    size="sm"
+                  >
+                    <Show when={clientsQuery.isSuccess}>
+                      <For each={clientsQuery.data?.results}>
+                        {(client) => (
+                          <option
+                            selected={field.value === client.id}
+                            value={client.id}
+                          >
+                            {client.title}
+                          </option>
+                        )}
+                      </For>
+                    </Show>
+                  </Form.Select>
+                </>
+              )}
+            </EditWebsite.Field>
           </Form.Group>
         </Row>
-      </Form>
+      </EditWebsite.Form>
     </Dialog>
   );
 };

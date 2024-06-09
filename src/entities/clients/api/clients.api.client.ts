@@ -10,7 +10,7 @@ export async function fetchClientsList(
   queryContext: QueryFunctionContext
 ): Promise<Paginated_ClientRead_> {
   const queryKey = queryContext.queryKey;
-  const _key = queryKey[0];
+  const _key = queryKey[0] as string;
   const page = queryKey[1] as number;
   const size = queryKey[2] as number;
   try {
@@ -29,8 +29,8 @@ export async function fetchClientById(
   queryContext: QueryFunctionContext
 ): Promise<ClientRead | undefined> {
   const queryKey = queryContext.queryKey;
-  const _key = queryKey[0];
-  const clientId = queryKey[1];
+  const _key = queryKey[0] as string;
+  const clientId = queryKey[1] as string;
   try {
     const response = await ClientsService.clientsReadApiV1ClientsClientIdGet({
       clientId

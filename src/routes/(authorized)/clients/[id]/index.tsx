@@ -1,6 +1,10 @@
 import { RouteDefinition, createAsync, useParams } from '@solidjs/router';
+import { clientOnly } from '@solidjs/start';
 import { ssrFetchClientById } from '~/entities/clients';
-import { WebsitesDataTable } from '~/widgets/data-tables';
+
+const WebsitesDataTable = clientOnly(
+  () => import('~/widgets/data-tables/websites-table')
+);
 
 export const route = {
   load({ params }) {

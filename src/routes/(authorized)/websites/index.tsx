@@ -1,6 +1,13 @@
 import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
+import { clientOnly } from '@solidjs/start';
 import { ssrFetchWebsitesList } from '~/entities/websites';
-import { WebsitesDataTable } from '~/widgets/data-tables';
+
+const WebsitesActionsMenu = clientOnly(
+  () => import('~/entities/websites/ui/action-menu')
+);
+const WebsitesDataTable = clientOnly(
+  () => import('~/widgets/data-tables/websites-table')
+);
 
 export const route = {
   load({ location }) {
@@ -20,7 +27,7 @@ export default function Websites(props: RouteSectionProps) {
   return (
     <main>
       <h1 class="my-2">Websites</h1>
-      {/* <WebsitesActionsMenu /> */}
+      <WebsitesActionsMenu />
       <WebsitesDataTable initialData={data()} clientId={clientId()} />
     </main>
   );

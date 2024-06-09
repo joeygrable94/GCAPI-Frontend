@@ -1,25 +1,32 @@
-import { createForm } from '@tanstack/solid-form';
+import {
+  SubmitHandler,
+  createForm,
+  setValue,
+  submit,
+  valiField,
+  valiForm
+} from '@modular-forms/solid';
 import { createQuery } from '@tanstack/solid-query';
-import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, For, JSX, Show, createEffect, createSignal } from 'solid-js';
+import toast from 'solid-toast';
 import { fetchClientsList } from '~/entities/clients';
-import {
-  IsValidWebsiteDomain,
-  IsValidWebsiteIsActive,
-  IsValidWebsiteIsSecure,
-  SCreateWebsite
-} from '~/entities/websites';
+import { SCreateWebsite, SchemaCreateWebsite } from '~/entities/websites';
 import {
   ClientWebsiteCreate,
   ClientsService,
   WebsiteRead,
   WebsitesService
 } from '~/shared/api';
+import {
+  IsValidClientId,
+  IsValidWebsiteDomain,
+  IsValidWebsiteIsActive,
+  IsValidWebsiteIsSecure
+} from '~/shared/db';
 import { Dialog, DialogTriggerType } from '~/shared/dialogs';
-import { FormFieldInfo } from '~/shared/forms';
+import { CheckboxInput, TextInput } from '~/shared/forms';
 import { queryClient } from '~/shared/tanstack';
-import { log, logError } from '~/shared/utils';
 
 type WebsiteCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -27,6 +34,10 @@ type WebsiteCreateFormDialogProps = {
 };
 
 const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props) => {
+  const clientsQuery = createQuery(() => ({
+    queryKey: ['clients', 1, 1000],
+    queryFn: fetchClientsList
+  }));
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -35,55 +46,51 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
   };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
-  const clientsQuery = createQuery(() => ({
-    queryKey: ['clients', 1, 1000],
-    queryFn: fetchClientsList
-  }));
-  const Frm = createForm<SCreateWebsite, typeof zodValidator>(() => ({
-    defaultValues: {
+  const [createWebsiteForm, CreateWebsite] = createForm<SCreateWebsite>({
+    initialValues: {
       domain: '',
       is_secure: true,
       is_active: true,
       clientId: ''
     },
-    onSubmit: async ({ value }) => {
-      setPending(true);
-      const { domain, is_secure, is_active, clientId } = value;
-      WebsitesService.websitesCreateApiV1WebsitesPost({
-        requestBody: {
-          domain: domain,
-          is_secure: is_secure,
-          is_active: is_active
-        }
-      })
-        .then((website: WebsiteRead) => {
-          log('create website response', website);
-          ClientsService.clientsAssignWebsiteApiV1ClientsClientIdAssignWebsitePost({
-            clientId: clientId,
-            requestBody: {
-              client_id: clientId,
-              website_id: website.id
-            }
+    validate: valiForm(SchemaCreateWebsite)
+  });
+  const handleSubmit: SubmitHandler<SCreateWebsite> = (values) => {
+    setPending(true);
+    const { domain, is_secure, is_active, clientId } = values;
+    WebsitesService.websitesCreateApiV1WebsitesPost({
+      requestBody: {
+        domain: domain,
+        is_secure: is_secure,
+        is_active: is_active
+      }
+    })
+      .then((website: WebsiteRead) => {
+        toast.success(`created website: ${website.domain}`);
+        ClientsService.clientsAssignWebsiteApiV1ClientsClientIdAssignWebsitePost({
+          clientId: clientId,
+          requestBody: {
+            client_id: clientId,
+            website_id: website.id
+          }
+        })
+          .then((r: ClientWebsiteCreate) => {
+            toast.success(`assigned website to client: ${r.client_id}`);
+            setIsSubmitted(true);
           })
-            .then((r: ClientWebsiteCreate) => {
-              log('assigned website to client response', r);
-              setIsSubmitted(true);
-            })
-            .catch((e) => {
-              logError('error assigning website to client', e);
-              setIsSubmitted(false);
-            });
-        })
-        .catch((e) => {
-          logError('create website error', e);
-          setIsSubmitted(false);
-        })
-        .finally(() => {
-          setPending(false);
-        });
-    },
-    validatorAdapter: zodValidator
-  }));
+          .catch((e) => {
+            toast.error(`error assigning website to client: ${e.message}`);
+            setIsSubmitted(false);
+          });
+      })
+      .catch((e) => {
+        toast.error(`error creating website: ${e.message}`);
+        setIsSubmitted(false);
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
@@ -105,145 +112,111 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
             <Button variant="secondary" onClick={() => handleClose()}>
               Close
             </Button>
-            <Frm.Subscribe
-              selector={(state) => ({
-                canSubmit: state.canSubmit,
-                isSubmitting: state.isSubmitting
-              })}
-              children={(state) => {
-                return (
-                  <Button
-                    type="submit"
-                    disabled={!state().canSubmit || pending() || isSubmitted()}
-                    onClick={() => Frm.handleSubmit()}
-                  >
-                    {state().isSubmitting ? '...' : 'Create Website'}
-                  </Button>
-                );
-              }}
-            />
+            <Button
+              type="submit"
+              disabled={pending() || isSubmitted()}
+              onClick={() => submit(createWebsiteForm)}
+            >
+              {createWebsiteForm.submitting ? '...' : 'Create Website'}
+            </Button>
           </Form.Group>
         </>
       }
     >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          void Frm.handleSubmit();
-        }}
-      >
+      <CreateWebsite.Form onSubmit={handleSubmit}>
         <Row>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
+            <CreateWebsite.Field
               name="domain"
-              validators={{
-                onChange: IsValidWebsiteDomain
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Website Domain</Form.Label>
-                    <Form.Control
-                      required
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ''}
-                      onBlur={field().handleBlur}
-                      onInput={(e) => field().handleChange(e.target.value)}
-                      placeholder="Domain Name"
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidWebsiteDomain)]}
+            >
+              {(field, props) => (
+                <TextInput
+                  {...props}
+                  type="text"
+                  required
+                  label="Website Domain"
+                  placeholder="Domain Name"
+                  value={field.value}
+                  error={field.error}
+                />
+              )}
+            </CreateWebsite.Field>
           </Form.Group>
           <Form.Group as={Col} xs={6} class="mb-2">
-            <Frm.Field
+            <Form.Label class="mb-1">Website Is Secure (HTTPS)?</Form.Label>
+            <CreateWebsite.Field
               name="is_secure"
-              validators={{
-                onChange: IsValidWebsiteIsSecure
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Website Is Secure (HTTPS)?</Form.Label>
-                    <Form.Check
-                      type="switch"
-                      required
-                      id={field().name}
-                      name={field().name}
-                      label={field().state.value ? 'Secure' : 'Insecure'}
-                      checked={field().state.value ?? true}
-                      onInput={(e) => field().handleChange(e.target.checked)}
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidWebsiteIsSecure)]}
+              type="boolean"
+            >
+              {(field, props) => (
+                <CheckboxInput
+                  {...props}
+                  type="checkbox"
+                  required
+                  label={field.value ? 'Secure' : 'Insecure'}
+                  checked={field.value}
+                  error={field.error}
+                />
+              )}
+            </CreateWebsite.Field>
           </Form.Group>
           <Form.Group as={Col} xs={6} class="mb-2">
-            <Frm.Field
+            <Form.Label class="mb-1">Website Is Active?</Form.Label>
+            <CreateWebsite.Field
               name="is_active"
-              validators={{
-                onChange: IsValidWebsiteIsActive
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Website Is Active?</Form.Label>
-                    <Form.Check
-                      type="switch"
-                      required
-                      id={field().name}
-                      name={field().name}
-                      label={field().state.value ? 'Active' : 'Inactive'}
-                      checked={field().state.value ?? true}
-                      onInput={(e) => field().handleChange(e.target.checked)}
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidWebsiteIsActive)]}
+              type="boolean"
+            >
+              {(field, props) => (
+                <CheckboxInput
+                  {...props}
+                  type="checkbox"
+                  required
+                  label={field.value ? 'Active' : 'Inactive'}
+                  checked={field.value}
+                  error={field.error}
+                />
+              )}
+            </CreateWebsite.Field>
           </Form.Group>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
+            <CreateWebsite.Field
               name="clientId"
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Assign Website to Client</Form.Label>
-                    <Form.Select
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ''}
-                      onChange={(e) => field().handleChange(e.target.value)}
-                      size="sm"
-                    >
-                      <Show when={clientsQuery.isSuccess}>
-                        <For each={clientsQuery.data?.results}>
-                          {(client) => (
-                            <option
-                              selected={field().state.value === client.id}
-                              value={client.id}
-                            >
-                              {client.title}
-                            </option>
-                          )}
-                        </For>
-                      </Show>
-                    </Form.Select>
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidClientId)]}
+            >
+              {(field) => (
+                <>
+                  <Form.Label class="mb-1">Assign Website to Client</Form.Label>
+                  <Form.Select
+                    id={field.name}
+                    name={field.name}
+                    value={field.value ?? ''}
+                    onChange={(e) =>
+                      setValue(createWebsiteForm, field.name, e.target.value)
+                    }
+                    size="sm"
+                  >
+                    <Show when={clientsQuery.isSuccess}>
+                      <For each={clientsQuery.data?.results}>
+                        {(client) => (
+                          <option
+                            selected={field.value === client.id}
+                            value={client.id}
+                          >
+                            {client.title}
+                          </option>
+                        )}
+                      </For>
+                    </Show>
+                  </Form.Select>
+                </>
+              )}
+            </CreateWebsite.Field>
           </Form.Group>
         </Row>
-      </Form>
+      </CreateWebsite.Form>
     </Dialog>
   );
 };

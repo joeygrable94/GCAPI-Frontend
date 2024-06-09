@@ -1,4 +1,4 @@
-import { cache, redirect } from '@solidjs/router';
+import { cache } from '@solidjs/router';
 import { getUserSessionApiToken } from '~/providers/auth';
 import { Paginated_WebsiteRead_, WebsiteRead, WebsitesService } from '~/shared/api';
 import { defaultPagination } from '~/shared/tanstack';
@@ -34,7 +34,7 @@ export const ssrFetchWebsitesList = cache(
  */
 export const ssrFetchWebsiteById = cache(async (id: string) => {
   'use server';
-  let website: WebsiteRead;
+  let website: WebsiteRead | undefined = undefined;
   try {
     await getUserSessionApiToken();
     website = await WebsitesService.websitesReadApiV1WebsitesWebsiteIdGet({
@@ -42,7 +42,6 @@ export const ssrFetchWebsiteById = cache(async (id: string) => {
     });
   } catch (err: Error | unknown) {
     logError('Error fetching website:', err);
-    throw redirect('/404');
   }
   return website;
 }, 'ssrFetchWebsiteById');

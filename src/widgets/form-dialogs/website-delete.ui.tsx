@@ -1,10 +1,10 @@
 import { Button, Spinner, Stack } from 'solid-bootstrap';
 import { Component, Match, Switch, createEffect, createSignal } from 'solid-js';
+import toast from 'solid-toast';
 import { WebsiteRead, WebsitesService } from '~/shared/api';
 import { Dialog } from '~/shared/dialogs';
 import { DeleteIcon } from '~/shared/icons';
 import { queryClient } from '~/shared/tanstack';
-import { log } from '~/shared/utils';
 
 type WebsiteDeleteFormDialogProps = {
   website: WebsiteRead;
@@ -24,12 +24,12 @@ const WebsiteDeleteFormDialog: Component<WebsiteDeleteFormDialogProps> = (props)
     WebsitesService.websitesDeleteApiV1WebsitesWebsiteIdDelete({
       websiteId: props.website.id
     })
-      .then((v: unknown) => {
-        log('deleted website response', v);
+      .then(() => {
+        toast.success(`deleted website: ${props.website.domain}`);
         setIsSubmitted(true);
       })
       .catch((e) => {
-        log('error deleting website', e);
+        toast.error(`error deleting website: ${e.message}`);
         setIsSubmitted(false);
       })
       .finally(() => {

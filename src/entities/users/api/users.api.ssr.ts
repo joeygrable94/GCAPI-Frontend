@@ -1,4 +1,4 @@
-import { cache, redirect } from '@solidjs/router';
+import { cache } from '@solidjs/router';
 import { getUserSessionApiToken } from '~/providers/auth';
 import {
   Paginated_UserReadAsAdmin_,
@@ -54,13 +54,12 @@ export const ssrFetchUsersList = cache(async (page: number, size: number) => {
  */
 export const ssrFetchUserById = cache(async (id: string) => {
   'use server';
-  let user: UserReadAsAdmin | UserReadAsManager | UserRead;
+  let user: UserReadAsAdmin | UserReadAsManager | UserRead | undefined = undefined;
   try {
     await getUserSessionApiToken();
     user = await UsersService.usersReadApiV1UsersUserIdGet({ userId: id });
   } catch (err: Error | unknown) {
     logError('Error fetching user:', err);
-    throw redirect('/404');
   }
   return user;
 }, 'ssrFetchUserById');

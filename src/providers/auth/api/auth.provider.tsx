@@ -16,8 +16,7 @@ import {
   AuthContextProvider,
   AuthMode
 } from '~/providers/auth';
-import { OpenAPI } from '~/shared/api';
-import { decryptData, encryptData } from '~/shared/utils';
+import { decryptData, encryptData, setOpenApiToken } from '~/shared/utils';
 
 export const AuthConfigContext = createContext<AuthContextProvider>();
 
@@ -59,17 +58,15 @@ export const AuthProvider = (props: AuthConfigProps) => {
       setIsAuthenticated(false);
     }
   };
-  const setOpenApiToken = (mode: AuthMode) => {
+  const setAuthProviderOpenApiToken = async (mode: AuthMode) => {
     setAuthMode(mode);
-    if (authOptions.accessToken !== undefined && authOptions.accessToken?.length > 0) {
-      OpenAPI.TOKEN = authOptions.accessToken;
-    } else if (state.accessToken !== undefined && state.accessToken?.length > 0) {
-      OpenAPI.TOKEN = state.accessToken;
+    if (state.accessToken !== undefined && state.accessToken?.length > 0) {
+      setOpenApiToken(mode, state.accessToken);
     }
   };
-  if (isServer) setOpenApiToken('server');
-  onMount(() => setOpenApiToken('mount'));
-  createEffect(() => setOpenApiToken('effect'));
+  if (isServer) setAuthProviderOpenApiToken('server');
+  onMount(() => setAuthProviderOpenApiToken('mount'));
+  createEffect(() => setAuthProviderOpenApiToken('effect'));
   const store: AuthContextProvider = [state, actions];
   return (
     <AuthConfigContext.Provider value={store}>

@@ -10,7 +10,7 @@ export async function fetchWebsitesList(
   queryContext: QueryFunctionContext
 ): Promise<Paginated_WebsiteRead_> {
   const queryKey = queryContext.queryKey;
-  const _key = queryKey[0];
+  const _key = queryKey[0] as string;
   const page = queryKey[1] as number;
   const size = queryKey[2] as number;
   const clientId = queryKey[3] as string;
@@ -34,8 +34,8 @@ export async function fetchWebsiteById(
   queryContext: QueryFunctionContext
 ): Promise<WebsiteRead | undefined> {
   const queryKey = queryContext.queryKey;
-  const _key = queryKey[0];
-  const websiteId = queryKey[1];
+  const _key = queryKey[0] as string;
+  const websiteId = queryKey[1] as string;
   try {
     const response = await WebsitesService.websitesReadApiV1WebsitesWebsiteIdGet({
       websiteId

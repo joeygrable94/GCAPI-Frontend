@@ -1,17 +1,23 @@
-import { createForm } from '@tanstack/solid-form';
-import { zodValidator } from '@tanstack/zod-form-adapter';
+import {
+  SubmitHandler,
+  createForm,
+  submit,
+  valiField,
+  valiForm
+} from '@modular-forms/solid';
 import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
-import {
-  IsValidWebsiteSitemapIsActive,
-  IsValidWebsiteSitemapUrl,
-  SCreateWebsiteSitemap
-} from '~/entities/sitemaps';
+import toast from 'solid-toast';
+import { SCreateWebsiteSitemap, SchemaCreateWebsiteSitemap } from '~/entities/sitemaps';
 import { WebsiteMapRead, WebsiteRead, WebsiteSitemapsService } from '~/shared/api';
+import {
+  IsValidWebsiteId,
+  IsValidWebsiteSitemapIsActive,
+  IsValidWebsiteSitemapUrl
+} from '~/shared/db';
 import { Dialog, DialogTriggerType } from '~/shared/dialogs';
-import { FormFieldInfo } from '~/shared/forms';
+import { CheckboxInput, TextInput } from '~/shared/forms';
 import { queryClient } from '~/shared/tanstack';
-import { log } from '~/shared/utils';
 
 type WebsiteSitemapCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -30,31 +36,32 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
   };
   const [pending, setPending] = createSignal(false);
   const [isSubmitted, setIsSubmitted] = createSignal(false);
-  const Frm = createForm<SCreateWebsiteSitemap, typeof zodValidator>(() => ({
-    defaultValues: {
-      url: '',
-      is_active: true,
-      website_id: props.website.id
-    },
-    onSubmit: async ({ value }) => {
-      setPending(true);
-      WebsiteSitemapsService.websiteSitemapsCreateApiV1SitemapsPost({
-        requestBody: value
+  const [createWebsiteSitemapForm, CreateWebsiteSitemap] =
+    createForm<SCreateWebsiteSitemap>({
+      initialValues: {
+        url: '',
+        is_active: true,
+        website_id: props.website.id
+      },
+      validate: valiForm(SchemaCreateWebsiteSitemap)
+    });
+  const handleSubmit: SubmitHandler<SCreateWebsiteSitemap> = (values) => {
+    setPending(true);
+    WebsiteSitemapsService.websiteSitemapsCreateApiV1SitemapsPost({
+      requestBody: values
+    })
+      .then((r: WebsiteMapRead) => {
+        toast.success(`created website sitemap: ${r.url}`);
+        setIsSubmitted(true);
       })
-        .then((r: WebsiteMapRead) => {
-          log('created website sitemap response', r);
-          setIsSubmitted(true);
-        })
-        .catch((e) => {
-          log('error creating website sitemap', e);
-          setIsSubmitted(false);
-        })
-        .finally(() => {
-          setPending(false);
-        });
-    },
-    validatorAdapter: zodValidator
-  }));
+      .catch((e) => {
+        toast.error(`error creating website sitemap: ${e.message}`);
+        setIsSubmitted(false);
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
@@ -76,99 +83,74 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
             <Button variant="secondary" onClick={() => handleClose()}>
               Close
             </Button>
-            <Frm.Subscribe
-              selector={(state) => ({
-                canSubmit: state.canSubmit,
-                isSubmitting: state.isSubmitting
-              })}
-              children={(state) => {
-                return (
-                  <Button
-                    type="submit"
-                    disabled={!state().canSubmit || pending() || isSubmitted()}
-                    onClick={() => Frm.handleSubmit()}
-                  >
-                    {state().isSubmitting ? '...' : 'Create Website Sitemap'}
-                  </Button>
-                );
-              }}
-            />
+            <Button
+              type="submit"
+              disabled={
+                pending() || isSubmitted() || createWebsiteSitemapForm.submitting
+              }
+              onClick={() => submit(createWebsiteSitemapForm)}
+            >
+              {createWebsiteSitemapForm.submitting ? '...' : 'Create Website Sitemap'}
+            </Button>
           </Form.Group>
         </>
       }
     >
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          void Frm.handleSubmit();
-        }}
-      >
+      <CreateWebsiteSitemap.Form onSubmit={handleSubmit}>
         <Row>
+          <CreateWebsiteSitemap.Field
+            name="website_id"
+            validate={[valiField(IsValidWebsiteId)]}
+          >
+            {(field, props) => (
+              <TextInput
+                {...props}
+                type="hidden"
+                value={field.value}
+                error={field.error}
+                required
+              />
+            )}
+          </CreateWebsiteSitemap.Field>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
-              name="website_id"
-              children={(field) => (
-                <Form.Control
+            <CreateWebsiteSitemap.Field
+              name="url"
+              validate={[valiField(IsValidWebsiteSitemapUrl)]}
+            >
+              {(field, props) => (
+                <TextInput
+                  {...props}
+                  type="text"
                   required
-                  id={field().name}
-                  name={field().name}
-                  value={props.website.id}
-                  hidden
+                  label="Website Sitemap URL"
+                  placeholder="https://example.com/sitemap.xml"
+                  value={field.value}
+                  error={field.error}
                 />
               )}
-            />
-            <Frm.Field
-              name="url"
-              validators={{
-                onChange: IsValidWebsiteSitemapUrl
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Website Sitemap URL</Form.Label>
-                    <Form.Control
-                      required
-                      id={field().name}
-                      name={field().name}
-                      value={field().state.value ?? ''}
-                      onBlur={field().handleBlur}
-                      onInput={(e) => field().handleChange(e.target.value)}
-                      placeholder="Domain Name"
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+            </CreateWebsiteSitemap.Field>
           </Form.Group>
           <Form.Group as={Col} xs={12} class="mb-2">
-            <Frm.Field
+            <Form.Label class="mb-1">Website Sitemap Is Active?</Form.Label>
+            <CreateWebsiteSitemap.Field
               name="is_active"
-              validators={{
-                onChange: IsValidWebsiteSitemapIsActive
-              }}
-              children={(field) => {
-                return (
-                  <>
-                    <Form.Label class="mb-1">Website Sitemap Is Active?</Form.Label>
-                    <Form.Check
-                      type="switch"
-                      required
-                      id={field().name}
-                      name={field().name}
-                      label={field().state.value ? 'Active' : 'Inactive'}
-                      checked={field().state.value ?? true}
-                      onInput={(e) => field().handleChange(e.target.checked)}
-                    />
-                    <FormFieldInfo field={field()} />
-                  </>
-                );
-              }}
-            />
+              validate={[valiField(IsValidWebsiteSitemapIsActive)]}
+              type="boolean"
+            >
+              {(field, props) => (
+                <CheckboxInput
+                  {...props}
+                  type="checkbox"
+                  required
+                  label={field.value ? 'Active' : 'Inactive'}
+                  checked={field.value}
+                  error={field.error}
+                />
+              )}
+            </CreateWebsiteSitemap.Field>
           </Form.Group>
         </Row>
-      </Form>
+      </CreateWebsiteSitemap.Form>
     </Dialog>
   );
 };

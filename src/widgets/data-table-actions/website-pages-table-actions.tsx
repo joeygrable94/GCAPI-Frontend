@@ -6,7 +6,6 @@ import { useTheme } from '~/providers/theme';
 import { WebsitePageRead } from '~/shared/api';
 import { ViewIcon } from '~/shared/icons';
 import { KeywordCorpusIcon, PageSpeedInsightsIcon } from '~/shared/icons/process.icons';
-import { log } from '~/shared/utils';
 const WebsitePageDeleteFormDialog = clientOnly(
   () => import('~/widgets/form-dialogs/website-page-delete.ui')
 );
@@ -35,7 +34,7 @@ const WebsitePagesTableActions: Component<IWebsitePagesTableActionsProps> = (pro
         size="sm"
         variant={theme.darkMode ? 'outline-light' : 'outline-dark'}
         onClick={() => {
-          log('Fetch Page Speed Insights');
+          console.log('Fetch Page Speed Insights');
         }}
       >
         <PageSpeedInsightsIcon />
@@ -44,7 +43,7 @@ const WebsitePagesTableActions: Component<IWebsitePagesTableActionsProps> = (pro
         size="sm"
         variant={theme.darkMode ? 'outline-light' : 'outline-dark'}
         onClick={() => {
-          log('Fetch Page Keyword Corpus');
+          console.log('Fetch Page Keyword Corpus');
         }}
       >
         <KeywordCorpusIcon />

@@ -1,3 +1,4 @@
+import { AuthMode } from '~/providers/auth';
 import { OpenAPI } from '~/shared/api';
 import { once } from '~/shared/utils';
 
@@ -16,6 +17,11 @@ export const API_HOST: string = import.meta.env.VITE_API_BASE_URL
 
 export const APP_URL_BASE = `${APP_PROTOCOL}://${APP_HOST}`;
 export const API_URL_BASE = `${APP_PROTOCOL}://${API_HOST}`;
+
+export const setOpenApiToken = (mode: AuthMode, token: string) => {
+  OpenAPI.TOKEN = token;
+  console.log('Set API token:', mode, OpenAPI.TOKEN?.length);
+};
 
 // set base url for OpenAPI once
 once(() => {

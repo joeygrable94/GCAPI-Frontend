@@ -1,6 +1,9 @@
 import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router';
+import { clientOnly } from '@solidjs/start';
 import { ssrFetchUsersList } from '~/entities/users';
-import { UsersDataTable } from '~/widgets/data-tables';
+
+const UsersActionsMenu = clientOnly(() => import('~/entities/users/ui/action-menu'));
+const UsersDataTable = clientOnly(() => import('~/widgets/data-tables/users-table'));
 
 export const route = {
   load({ location }) {
@@ -15,6 +18,7 @@ export default function UserList(props: RouteSectionProps) {
   return (
     <main>
       <h1 class="my-2">Users</h1>
+      <UsersActionsMenu />
       <UsersDataTable initialData={data()} />
     </main>
   );
