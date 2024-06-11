@@ -6,8 +6,12 @@ const UsersActionsMenu = clientOnly(() => import('~/entities/users/ui/action-men
 const UsersDataTable = clientOnly(() => import('~/widgets/data-tables/users-table'));
 
 export const route = {
-  load({ location }) {
-    void ssrFetchUsersList(+location.query.page || 1, +location.query.size || 10);
+  async load({ location }) {
+    const users = await ssrFetchUsersList(
+      +location.query.page || 1,
+      +location.query.size || 10
+    );
+    return { users };
   }
 } satisfies RouteDefinition;
 

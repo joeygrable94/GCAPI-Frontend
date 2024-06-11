@@ -17,10 +17,7 @@ const PrimaryNavAuthRight: Component = () => {
   return (
     <Show when={auth()} keyed fallback={<PrimaryNavAuthLogin />}>
       <NavDropdown title="Account" menuVariant={bg()}>
-        <NavDropdown.Item as={A} href="/dashboard">
-          Dashboard
-        </NavDropdown.Item>
-        <NavDropdown.Item as={A} href="/users/profile">
+        <NavDropdown.Item as={A} href={`/users/profile`}>
           Profile
         </NavDropdown.Item>
         <NavDropdown.Divider />

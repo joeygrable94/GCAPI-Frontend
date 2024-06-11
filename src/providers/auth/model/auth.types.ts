@@ -1,7 +1,7 @@
 import { Accessor, ParentProps } from 'solid-js';
 import { UserRead, UserReadAsAdmin, UserReadAsManager } from '~/shared/api';
 
-export type AuthMode = 'token' | 'session' | 'server' | 'mount' | 'effect';
+export type AuthMode = 'token' | 'session' | 'server' | 'client' | 'mount' | 'effect';
 export type UserRole = 'admin' | 'manager' | 'user' | 'guest';
 export type AuthorizedUser = UserReadAsAdmin | UserReadAsManager | UserRead;
 

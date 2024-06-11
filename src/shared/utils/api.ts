@@ -1,6 +1,6 @@
 import { AuthMode } from '~/providers/auth';
 import { OpenAPI } from '~/shared/api';
-import { once } from '~/shared/utils';
+import { once } from './global';
 
 /**
  * @summary OpenAPI settings

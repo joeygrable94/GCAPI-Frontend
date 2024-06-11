@@ -25,6 +25,7 @@ export const authOptions = {
       if (account) {
         token.accessToken = account?.access_token;
         token.refreshToken = account?.refresh_token;
+        setOpenApiToken('token', account?.accessToken as string);
       }
       return token;
     },

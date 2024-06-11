@@ -60,6 +60,9 @@ export const AuthProvider = (props: AuthConfigProps) => {
   };
   const setAuthProviderOpenApiToken = async (mode: AuthMode) => {
     setAuthMode(mode);
+    if (authOptions.accessToken !== undefined && authOptions.accessToken?.length > 0) {
+      setOpenApiToken(mode, authOptions.accessToken);
+    }
     if (state.accessToken !== undefined && state.accessToken?.length > 0) {
       setOpenApiToken(mode, state.accessToken);
     }

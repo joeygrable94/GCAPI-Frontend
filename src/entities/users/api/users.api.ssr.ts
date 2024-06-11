@@ -1,5 +1,5 @@
-import { cache } from '@solidjs/router';
-import { getUserSessionApiToken } from '~/providers/auth';
+import { cache, redirect } from '@solidjs/router';
+import { getUserSessionApiToken, getUserSessionOrLogin } from '~/providers/auth';
 import {
   Paginated_UserReadAsAdmin_,
   Paginated_UserReadAsManager_,
@@ -16,13 +16,11 @@ import { logError } from '~/shared/utils';
 export const ssrFetchCurrentUser = cache(async () => {
   'use server';
   try {
-    await getUserSessionApiToken();
-    const currentUser: UserReadAsAdmin | UserReadAsManager | UserRead =
-      await UsersService.usersCurrentApiV1UsersMeGet();
-    return currentUser;
+    await getUserSessionOrLogin();
+    return await UsersService.usersCurrentApiV1UsersMeGet();
   } catch (err: Error | unknown) {
     logError('Error fetching current user:', err);
-    return { username: 'guest' };
+    throw redirect('/login');
   }
 }, 'currentUser');
 
