@@ -1,4 +1,5 @@
 // @refresh reload
+import { client, createClient } from '@hey-api/client-fetch';
 import { SessionProvider } from '@solid-mediakit/auth/client';
 import { Link, MetaProvider } from '@solidjs/meta';
 import { Router, createAsync } from '@solidjs/router';
@@ -15,6 +16,10 @@ import '~/shared/sass/index.scss';
 import { queryClient } from '~/shared/tanstack';
 const PrimaryNavigation = clientOnly(() => import('~/widgets/navigation/primary'));
 
+createClient({
+  baseUrl: 'http://localhost:8888'
+});
+
 export const route = {
   load: () => getUserSessionApiToken()
 };
@@ -25,6 +30,14 @@ export default function App() {
       <Router
         root={(props) => {
           const session = createAsync(() => getUserSessionApiToken());
+          client.interceptors.request.use(async (request) => {
+            const url = new URL(request.url);
+            const token = await session();
+            request.headers.set('Authorization', `Bearer ${token?.accessToken}`);
+            console.log('API Client Request', url.pathname, token?.accessToken?.length);
+            return request;
+          });
+
           return (
             <MetaProvider>
               <Link

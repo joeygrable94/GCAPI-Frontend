@@ -2,7 +2,7 @@
   "name": "example-with-auth",
   "type": "module",
   "scripts": {
-    "generate-client": "openapi -i http://localhost:3333/api/docs/openapi.json -o ./src/shared/api -c axios --useOptions --exportSchemas true",
+    "generate-client": "openapi -i http://localhost:8888/api/docs/openapi.json -o ./src/shared/api -c axios --useOptions --exportSchemas true",
     "openapi-ts": "openapi-ts",
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "lint": "eslint --config .eslintrc.js 'src/**/*.ts' --fix",
