@@ -1,6 +1,7 @@
-import { cache, redirect } from '@solidjs/router';
-import { getUserSessionApiToken, getUserSessionOrLogin } from '~/providers/auth';
+import { cache } from '@solidjs/router';
+import { getUserSessionApiToken } from '~/providers/auth';
 import {
+  OpenAPI,
   Paginated_UserReadAsAdmin_,
   Paginated_UserReadAsManager_,
   UserRead,
@@ -16,11 +17,12 @@ import { logError } from '~/shared/utils';
 export const ssrFetchCurrentUser = cache(async () => {
   'use server';
   try {
-    await getUserSessionOrLogin();
+    await getUserSessionApiToken();
+    console.log(OpenAPI.TOKEN?.length);
     return await UsersService.usersCurrentApiV1UsersMeGet();
   } catch (err: Error | unknown) {
     logError('Error fetching current user:', err);
-    throw redirect('/login');
+    return undefined;
   }
 }, 'currentUser');
 

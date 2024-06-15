@@ -6,7 +6,7 @@ interface ITableColumnIsActiveProps {
   isActive: boolean;
 }
 
-const TableColumnIsActive: Component<ITableColumnIsActiveProps> = (props) => {
+export const TableColumnIsActive: Component<ITableColumnIsActiveProps> = (props) => {
   return (
     <Stack
       direction="horizontal"
@@ -24,5 +24,3 @@ const TableColumnIsActive: Component<ITableColumnIsActiveProps> = (props) => {
     </Stack>
   );
 };
-
-export default TableColumnIsActive;

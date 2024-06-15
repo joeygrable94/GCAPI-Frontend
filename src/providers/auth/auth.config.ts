@@ -3,6 +3,7 @@ import type { SolidAuthConfig } from '@solid-mediakit/auth';
 import { setOpenApiToken } from '~/shared/utils';
 
 export const authOptions = {
+  debug: false,
   providers: [
     Auth0Provider({
       clientId: process.env.AUTH_AUTH0_ID,
@@ -25,7 +26,7 @@ export const authOptions = {
       if (account) {
         token.accessToken = account?.access_token;
         token.refreshToken = account?.refresh_token;
-        setOpenApiToken('token', account?.accessToken as string);
+        setOpenApiToken('token', account.accessToken as string);
       }
       return token;
     },

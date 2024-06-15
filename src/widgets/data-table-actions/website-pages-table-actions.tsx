@@ -6,6 +6,7 @@ import { useTheme } from '~/providers/theme';
 import { WebsitePageRead } from '~/shared/api';
 import { ViewIcon } from '~/shared/icons';
 import { KeywordCorpusIcon, PageSpeedInsightsIcon } from '~/shared/icons/process.icons';
+
 const WebsitePageDeleteFormDialog = clientOnly(
   () => import('~/widgets/form-dialogs/website-page-delete.ui')
 );
