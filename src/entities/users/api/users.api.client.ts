@@ -1,4 +1,5 @@
 import { QueryFunctionContext } from '@tanstack/solid-query';
+import { AuthorizedUser } from '~/providers/auth';
 import {
   Paginated_UserReadAsAdmin_,
   Paginated_UserReadAsManager_,
@@ -13,13 +14,13 @@ import { logError } from '~/shared/utils';
 /**
  * @summary Fetches the current user or guest on the client.
  */
-export async function fetchCurrentUserOrLogin(
+export async function fetchCurrentUser(
   queryContext: QueryFunctionContext
-): Promise<UserReadAsAdmin | UserReadAsManager | UserRead | undefined> {
+): Promise<AuthorizedUser | undefined> {
   const queryKey = queryContext.queryKey;
   const _key = queryKey[0] as string;
   try {
-    const currentUser: UserReadAsAdmin | UserReadAsManager | UserRead =
+    const currentUser: AuthorizedUser =
       await UsersService.usersCurrentApiV1UsersMeGet();
     return currentUser;
   } catch (err: Error | unknown) {

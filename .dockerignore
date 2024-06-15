@@ -1,0 +1,16 @@
+.DS_Store
+.editorconfig
+.eslintrc.*
+.github
+.git
+.gitattributes
+.gitignore
+.prettierignore
+.prettierrc
+NOTES.md
+README.md
+SECURITY.md
+TODO.md
+.idea
+node_modules
+*.code-workspace

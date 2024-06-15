@@ -2,7 +2,7 @@ import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router
 import { clientOnly } from '@solidjs/start';
 import { ssrFetchUserById } from '~/entities/users';
 
-const UserProfileCard = clientOnly(() => import('~/entities/users/ui/profile-card'));
+const UserCard = clientOnly(() => import('~/entities/users/ui/user-card'));
 
 export const route = {
   async load({ params }) {
@@ -16,7 +16,7 @@ export default function UserById(props: RouteSectionProps) {
   const data = createAsync(() => ssrFetchUserById(userId()));
   return (
     <main>
-      <UserProfileCard initialData={data()} />
+      <UserCard initialData={data()} userId={userId()} />
     </main>
   );
 }

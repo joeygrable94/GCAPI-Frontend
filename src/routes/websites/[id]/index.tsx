@@ -6,7 +6,7 @@ import {
   useParams
 } from '@solidjs/router';
 import { clientOnly } from '@solidjs/start';
-import { Show } from 'solid-js';
+import { Show, Suspense } from 'solid-js';
 import {
   SITEMAP_PAGE_SIZE,
   SITEMAP_PAGE_START,
@@ -79,21 +79,26 @@ export default function WebsiteById(props: RouteSectionProps) {
   const data = createAsync(() => ssrFetchWebsiteData(websiteId(), sitemapId()));
   return (
     <main>
-      <Show when={data() !== undefined}>
-        <h1 class="my-2">Website {data()!.website.domain}</h1>
-        <pre>{JSON.stringify(data(), null, 2)}</pre>
-        <WebsiteSitemapsActionsMenu website={data()!.website} />
-        <WebsiteSitemapsDataTable
-          initialData={data()!.sitemaps}
-          website={data()!.website}
-        />
-        <WebsitePagesActionsMenu website={data()!.website} />
-        <WebsitePagesDataTable
-          initialData={data()!.pages}
-          websiteId={websiteId()}
-          sitemapId={sitemapId()}
-        />
-      </Show>
+      <Suspense>
+        <Show when={data()}>
+          {(data) => (
+            <>
+              <h1 class="my-2">Website {data().website.domain}</h1>
+              <WebsiteSitemapsActionsMenu website={data().website} />
+              <WebsiteSitemapsDataTable
+                initialData={data().sitemaps}
+                website={data().website}
+              />
+              <WebsitePagesActionsMenu website={data().website} />
+              <WebsitePagesDataTable
+                initialData={data().pages}
+                websiteId={websiteId()}
+                sitemapId={sitemapId()}
+              />
+            </>
+          )}
+        </Show>
+      </Suspense>
     </main>
   );
 }

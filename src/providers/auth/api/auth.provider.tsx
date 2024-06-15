@@ -23,12 +23,12 @@ export const AuthConfigContext = createContext<AuthContextProvider>();
 export const AuthProvider = (props: AuthConfigProps) => {
   const [isAuthenticated, setIsAuthenticated] = createSignal<boolean | undefined>();
   const [authMode, setAuthMode] = createSignal<AuthMode>('server');
-  const [authOptions] = splitProps(props, ['accessToken', 'refreshToken', 'expiresAt']);
+  const [authOptions] = splitProps(props, ['accessToken', 'refreshToken', 'expires']);
   const [state, setState] = makePersisted(
     createStore<AuthConfig>({
-      accessToken: authOptions.accessToken,
-      refreshToken: authOptions.refreshToken,
-      expiresAt: authOptions.expiresAt ? new Date(authOptions.expiresAt) : undefined
+      accessToken: authOptions.accessToken ?? '',
+      refreshToken: authOptions.refreshToken ?? '',
+      expires: authOptions.expires ? new Date(authOptions.expires) : undefined
     }),
     {
       name: 'gcapi-auth',
@@ -41,11 +41,19 @@ export const AuthProvider = (props: AuthConfigProps) => {
     isInitialized: () => isAuthenticated() !== undefined,
     isAuthenticated: () => !!isAuthenticated(),
     getAuthMode: () => authMode(),
-    setAccess: (accessToken: string, refreshToken: string, expires: string) => {
+    setAccess: (
+      accessToken: string,
+      refreshToken: string,
+      expires: Date | string | undefined
+    ) => {
       setState({
         accessToken: accessToken,
         refreshToken: refreshToken,
-        expiresAt: new Date(expires)
+        expires: expires
+          ? typeof expires === 'string'
+            ? new Date(expires)
+            : expires
+          : undefined
       });
       setIsAuthenticated(true);
     },
@@ -53,7 +61,7 @@ export const AuthProvider = (props: AuthConfigProps) => {
       setState({
         accessToken: undefined,
         refreshToken: undefined,
-        expiresAt: undefined
+        expires: undefined
       });
       setIsAuthenticated(false);
     }
@@ -62,12 +70,18 @@ export const AuthProvider = (props: AuthConfigProps) => {
     setAuthMode(mode);
     if (authOptions.accessToken !== undefined && authOptions.accessToken?.length > 0) {
       setOpenApiToken(mode, authOptions.accessToken);
+      setIsAuthenticated(true);
     }
     if (state.accessToken !== undefined && state.accessToken?.length > 0) {
       setOpenApiToken(mode, state.accessToken);
+      setIsAuthenticated(true);
     }
   };
-  if (isServer) setAuthProviderOpenApiToken('server');
+  if (isServer) {
+    setAuthProviderOpenApiToken('server');
+  } else {
+    setAuthProviderOpenApiToken('client');
+  }
   onMount(() => setAuthProviderOpenApiToken('mount'));
   createEffect(() => setAuthProviderOpenApiToken('effect'));
   const store: AuthContextProvider = [state, actions];

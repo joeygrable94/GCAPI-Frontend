@@ -1,5 +1,5 @@
 export * from './table-actions.ui';
-export { default as TableColumnIsActive } from './table-column-is-active.ui';
+export * from './table-column-is-active.ui';
 export * from './table-filter-column.ui';
 export * from './table-pagination.ui';
 export * from './table-rows-body.ui';

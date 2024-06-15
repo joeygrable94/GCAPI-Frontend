@@ -1,7 +1,7 @@
 import { Session, getSession as getAuthSession } from '@solid-mediakit/auth';
 import { cache, redirect } from '@solidjs/router';
 import { getWebRequest } from 'vinxi/http';
-import { logError } from '~/shared/utils';
+import { logError, setOpenApiToken } from '~/shared/utils';
 import { authOptions } from './auth.config';
 
 export const getUserSessionOrLogin = cache(async () => {
@@ -10,6 +10,8 @@ export const getUserSessionOrLogin = cache(async () => {
     const request = getWebRequest();
     const session = await getAuthSession(request, authOptions);
     if (!session) throw redirect('/login');
+    if (session.accessToken !== undefined)
+      setOpenApiToken('server', session.accessToken);
     return session;
   } catch (error) {
     logError(error);
@@ -27,6 +29,8 @@ export const getUserSessionApiToken = cache(async () => {
     const request = getWebRequest();
     const session = await getAuthSession(request, authOptions);
     if (!session) return defaultSession;
+    if (session.accessToken !== undefined)
+      setOpenApiToken('server', session.accessToken);
     return session;
   } catch (error) {
     logError(error);

@@ -3,6 +3,7 @@ import { clientOnly } from '@solidjs/start';
 import { Button, Stack } from 'solid-bootstrap';
 import { Component, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
+import { useTasksManager } from '~/providers/tasks';
 import { useTheme } from '~/providers/theme';
 import {
   WebsiteMapProcessing,
@@ -23,6 +24,7 @@ const WebsiteSitemapsTableActions: Component<IWebsiteSitemapsTableActionsProps> 
   props
 ) => {
   const [theme] = useTheme();
+  const [, taskAct] = useTasksManager();
   const navigate = useNavigate();
   const [sitemap, setSitemap] = createSignal<WebsiteMapRead>(props.sitemap);
   const handleProcessPages = () => {
@@ -32,7 +34,8 @@ const WebsiteSitemapsTableActions: Component<IWebsiteSitemapsTableActionsProps> 
       }
     )
       .then((r: WebsiteMapProcessing) => {
-        toast.success(`pages processed: ${r.url}`);
+        if (r.task_id) taskAct.queueTask(r.task_id);
+        toast.success(`processing pages: ${r.url}`);
       })
       .catch((e) => {
         toast.error(`process Error: ${e.message}`);

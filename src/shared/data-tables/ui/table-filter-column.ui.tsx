@@ -77,6 +77,11 @@ export const TableColumnFilter: Component<ITableColumnFilterProps> = (props) => 
     setFilterTagIds([tagsInclusive(), tagsList()]);
   };
   */
+  onMount(() => {
+    setFirstValue(
+      props.table.getPreFilteredRowModel().flatRows[0]?.getValue(props.column.id)
+    );
+  });
   const handleSetFirstValue = () => {
     setFirstValue(
       props.table.getPreFilteredRowModel().flatRows[0]?.getValue(props.column.id)

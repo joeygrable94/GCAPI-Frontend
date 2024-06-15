@@ -6,7 +6,6 @@ import { clientOnly } from '@solidjs/start';
 import { FileRoutes } from '@solidjs/start/router';
 import { QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
-import { Container } from 'solid-bootstrap';
 import { ErrorBoundary, Suspense } from 'solid-js';
 import { Toaster } from 'solid-toast';
 import { AuthProvider, getUserSessionApiToken } from '~/providers/auth';
@@ -25,7 +24,6 @@ export default function App() {
       <Router
         root={(props) => {
           const session = createAsync(() => getUserSessionApiToken());
-
           return (
             <MetaProvider>
               <Link
@@ -42,21 +40,15 @@ export default function App() {
                         <AuthProvider
                           accessToken={session()?.accessToken}
                           refreshToken={session()?.refreshToken}
-                          expiresAt={session()?.expires}
+                          expires={session()?.expires}
                         >
                           <Suspense>
                             <ErrorBoundary fallback={<>Theme Provider Error</>}>
                               <ThemeProvider>
                                 <Suspense>
-                                  <ErrorBoundary
-                                    fallback={<>Primary Navigation Error</>}
-                                  >
-                                    <PrimaryNavigation />
-                                  </ErrorBoundary>
-                                </Suspense>
-                                <Suspense>
                                   <ErrorBoundary fallback={<>Route Children Error</>}>
-                                    <Container>{props.children}</Container>
+                                    <PrimaryNavigation />
+                                    <div class="container">{props.children}</div>
                                   </ErrorBoundary>
                                 </Suspense>
                                 <Toaster position="bottom-right" />

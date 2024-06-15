@@ -1,8 +1,6 @@
 import { RouteDefinition, createAsync } from '@solidjs/router';
-import { clientOnly } from '@solidjs/start';
-import { ssrFetchCurrentUser } from '~/entities/users';
-
-const UserProfileCard = clientOnly(() => import('~/entities/users/ui/profile-card'));
+import { Suspense } from 'solid-js';
+import { ProfileCard, ssrFetchCurrentUser } from '~/entities/users';
 
 export const route = {
   async load() {
@@ -16,7 +14,9 @@ export default function UserProfile() {
 
   return (
     <main>
-      <UserProfileCard initialData={data()} />
+      <Suspense>
+        <ProfileCard initialData={data()} />
+      </Suspense>
     </main>
   );
 }
