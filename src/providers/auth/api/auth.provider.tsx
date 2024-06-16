@@ -1,10 +1,9 @@
-import { cookieStorage, makePersisted } from '@solid-primitives/storage';
 import {
   createContext,
   createEffect,
   createSignal,
+  mergeProps,
   onMount,
-  splitProps,
   useContext
 } from 'solid-js';
 import { createStore } from 'solid-js/store';
@@ -16,27 +15,22 @@ import {
   AuthContextProvider,
   AuthMode
 } from '~/providers/auth';
-import { decryptData, encryptData, setOpenApiToken } from '~/shared/utils';
+import { setOpenApiToken } from '~/shared/utils';
 
 export const AuthConfigContext = createContext<AuthContextProvider>();
 
 export const AuthProvider = (props: AuthConfigProps) => {
   const [isAuthenticated, setIsAuthenticated] = createSignal<boolean | undefined>();
   const [authMode, setAuthMode] = createSignal<AuthMode>('server');
-  const [authOptions] = splitProps(props, ['accessToken', 'refreshToken', 'expires']);
-  const [state, setState] = makePersisted(
-    createStore<AuthConfig>({
-      accessToken: authOptions.accessToken ?? '',
-      refreshToken: authOptions.refreshToken ?? '',
-      expires: authOptions.expires ? new Date(authOptions.expires) : undefined
-    }),
-    {
-      name: 'gcapi-auth',
-      storage: cookieStorage,
-      serialize: encryptData,
-      deserialize: decryptData
-    }
+  const authOptions = mergeProps(
+    { accessToken: '', refreshToken: '', expires: undefined },
+    props
   );
+  const [state, setState] = createStore<AuthConfig>({
+    accessToken: authOptions.accessToken,
+    refreshToken: authOptions.refreshToken,
+    expires: authOptions.expires ? new Date(authOptions.expires) : undefined
+  });
   const actions: AuthConfigActions = {
     isInitialized: () => isAuthenticated() !== undefined,
     isAuthenticated: () => !!isAuthenticated(),

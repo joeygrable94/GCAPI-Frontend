@@ -6,8 +6,14 @@ export default defineConfig({
   middleware: './src/middleware.ts',
   vite: {
     plugins: [
-      // @ts-expect-error - custom plugin
-      authVite({ log: true })
+      authVite({
+        log: true,
+        authOpts: {
+          name: 'authOptions',
+          dir: '~/providers/auth'
+        },
+        redirectTo: '/login'
+      })
     ]
   }
 });
