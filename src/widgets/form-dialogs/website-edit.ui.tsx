@@ -1,3 +1,4 @@
+import { Button } from '@kobalte/core/button';
 import {
   SubmitHandler,
   createForm,
@@ -7,12 +8,11 @@ import {
   valiForm
 } from '@modular-forms/solid';
 import { createQuery } from '@tanstack/solid-query';
-import { Button, Col, Form, Row } from 'solid-bootstrap';
-import { Component, For, Show, createEffect, createSignal } from 'solid-js';
+import { Component, For, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { fetchClientsList } from '~/entities/clients';
 import { SEditWebsite, SchemaEditWebsite } from '~/entities/websites';
-import { ClientsService, WebsiteRead, WebsitesService } from '~/shared/api';
+import { ClientRead, ClientsService, WebsiteRead, WebsitesService } from '~/shared/api';
 import {
   IsValidClientId,
   IsValidWebsiteDomain,
@@ -20,10 +20,10 @@ import {
   IsValidWebsiteIsActive,
   IsValidWebsiteIsSecure
 } from '~/shared/db';
-import { Dialog } from '~/shared/dialogs';
-import { CheckboxInput, TextInput } from '~/shared/forms';
-import { EditIcon } from '~/shared/icons';
 import { queryClient } from '~/shared/tanstack';
+import { Dialog } from '~/shared/ui/dialog';
+import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
+import { EditIcon } from '~/shared/ui/icon';
 
 type WebsiteEditFormDialogProps = {
   website: WebsiteRead;
@@ -34,6 +34,12 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
     queryKey: ['clients', 1, 1000],
     queryFn: fetchClientsList
   }));
+  const [clientsData, setClientsData] = createSignal<ClientRead[]>([]);
+  createEffect(() => {
+    if (clientsQuery.data !== undefined && clientsQuery.data !== null) {
+      setClientsData(clientsQuery.data.results.map((r: ClientRead) => r));
+    }
+  });
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -105,28 +111,22 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
       title={`Edit Website: ${props.website.domain}`}
       description={'Fill out the form below to and click save to edit this website.'}
       footerActions={
-        <>
-          <Form.Group
-            as={Col}
-            xs={12}
-            class="mb-2 d-flex flex-row flex-nowrap justify-content-between"
+        <div class="justify-content-between mb-2 flex w-full flex-row flex-nowrap">
+          <Button class="secondary" onClick={() => handleClose()}>
+            Close
+          </Button>
+          <Button
+            type="submit"
+            disabled={pending() || isSubmitted()}
+            onClick={() => submit(editWebsiteForm)}
           >
-            <Button variant="secondary" onClick={() => handleClose()}>
-              Close
-            </Button>
-            <Button
-              type="submit"
-              disabled={pending() || isSubmitted()}
-              onClick={() => submit(editWebsiteForm)}
-            >
-              {editWebsiteForm.submitting ? '...' : 'Update Website'}
-            </Button>
-          </Form.Group>
-        </>
+            {editWebsiteForm.submitting ? '...' : 'Update Website'}
+          </Button>
+        </div>
       }
     >
       <EditWebsite.Form onSubmit={handleSubmit}>
-        <Row>
+        <div class="columns-1">
           <EditWebsite.Field name="websiteId" validate={[valiField(IsValidWebsiteId)]}>
             {(field, props) => (
               <TextInput
@@ -138,7 +138,7 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
               />
             )}
           </EditWebsite.Field>
-          <Form.Group as={Col} xs={12} class="mb-2">
+          <div class="mb-2 w-full">
             <EditWebsite.Field
               name="domain"
               validate={[valiField(IsValidWebsiteDomain)]}
@@ -155,9 +155,9 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
                 />
               )}
             </EditWebsite.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={6} class="mb-2">
-            <Form.Label class="mb-1">Website Is Secure (HTTPS)?</Form.Label>
+          </div>
+          <div class="mb-2 w-full">
+            <label class="mb-1">Website Is Secure (HTTPS)?</label>
             <EditWebsite.Field
               name="is_secure"
               validate={[valiField(IsValidWebsiteIsSecure)]}
@@ -174,9 +174,9 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
                 />
               )}
             </EditWebsite.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={6} class="mb-2">
-            <Form.Label class="mb-1">Website Is Active?</Form.Label>
+          </div>
+          <div class="mb-2 w-full">
+            <label class="mb-1">Website Is Active?</label>
             <EditWebsite.Field
               name="is_active"
               validate={[valiField(IsValidWebsiteIsActive)]}
@@ -193,13 +193,13 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
                 />
               )}
             </EditWebsite.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={12} class="mb-2">
+          </div>
+          <div class="mb-2 w-full">
             <EditWebsite.Field name="clientId" validate={[valiField(IsValidClientId)]}>
               {(field) => (
                 <>
-                  <Form.Label class="mb-1">Assign Website to Client</Form.Label>
-                  <Form.Select
+                  <label class="mb-1">Assign Website to Client</label>
+                  <select
                     id={field.name}
                     name={field.name}
                     value={field.value ?? ''}
@@ -208,24 +208,19 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
                     }
                     size="sm"
                   >
-                    <Show when={clientsQuery.isSuccess}>
-                      <For each={clientsQuery.data?.results}>
-                        {(client) => (
-                          <option
-                            selected={field.value === client.id}
-                            value={client.id}
-                          >
-                            {client.title}
-                          </option>
-                        )}
-                      </For>
-                    </Show>
-                  </Form.Select>
+                    <For each={clientsData()}>
+                      {(client) => (
+                        <option selected={field.value === client.id} value={client.id}>
+                          {client.title}
+                        </option>
+                      )}
+                    </For>
+                  </select>
                 </>
               )}
             </EditWebsite.Field>
-          </Form.Group>
-        </Row>
+          </div>
+        </div>
       </EditWebsite.Form>
     </Dialog>
   );

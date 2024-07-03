@@ -21,7 +21,7 @@ export default function UserList(props: RouteSectionProps) {
   const data = createAsync(() => ssrFetchUsersList(page(), size()));
   return (
     <main>
-      <h1 class="my-2">Users</h1>
+      <h1 class="my-5 text-5xl">Users</h1>
       <UsersActionsMenu />
       <UsersDataTable initialData={data()} />
     </main>

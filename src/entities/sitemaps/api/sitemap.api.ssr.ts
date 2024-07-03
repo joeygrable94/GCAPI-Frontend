@@ -1,8 +1,8 @@
 import { cache } from '@solidjs/router';
-import { getUserSessionApiToken } from '~/providers/auth';
+import { getRequestEvent } from 'solid-js/web';
 import { Paginated_WebsiteMapRead_, WebsiteSitemapsService } from '~/shared/api';
 import { defaultPagination } from '~/shared/tanstack';
-import { logError } from '~/shared/utils';
+import { logError, setOpenApiToken } from '~/shared/utils';
 
 /**
  * @summary Fetches a list of websites on the server.
@@ -18,7 +18,8 @@ export const ssrFetchWebsiteSitemapsList = cache(
     let sitemaps: Paginated_WebsiteMapRead_ =
       defaultPagination<Paginated_WebsiteMapRead_>(page, size);
     try {
-      await getUserSessionApiToken();
+      const event = getRequestEvent();
+      setOpenApiToken('server', event?.locals.accessToken);
       sitemaps = await WebsiteSitemapsService.websiteSitemapsListApiV1SitemapsGet({
         page: page,
         size: size,

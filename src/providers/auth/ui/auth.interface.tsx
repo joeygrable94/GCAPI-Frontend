@@ -1,3 +1,4 @@
+import { Button } from '@kobalte/core/button';
 import { createSession, signIn, signOut } from '@solid-mediakit/auth/client';
 import { Show, VoidComponent } from 'solid-js';
 
@@ -8,27 +9,27 @@ export const AuthInterface: VoidComponent = () => {
       <Show
         when={session()}
         fallback={
-          <button
+          <Button
             onClick={() => signIn('auth0', { redirectTo: '/' })}
-            class="rounded-full bg-black/50 px-10 py-3 font-semibold text-white no-underline transition hover:bg-black/70"
+            class="my-4 rounded-full bg-black/50 px-10 py-3 font-semibold text-white no-underline transition hover:bg-black/70"
           >
-            Sign in
-          </button>
+            Sign In
+          </Button>
         }
       >
         {(session) => {
           return (
-            <>
-              <span class="text-xl text-black">
+            <div class="my-4 text-center">
+              <p class="text-xl text-black dark:text-white">
                 Hello there {session()?.user?.name}
-              </span>
-              <button
+              </p>
+              <Button
                 onClick={() => signOut({ redirectTo: '/' })}
                 class="rounded-full bg-black/50 px-10 py-3 font-semibold text-white no-underline transition hover:bg-black/70"
               >
                 Sign out
-              </button>
-            </>
+              </Button>
+            </div>
           );
         }}
       </Show>

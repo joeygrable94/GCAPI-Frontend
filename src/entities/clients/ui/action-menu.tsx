@@ -1,22 +1,21 @@
-import { Nav } from 'solid-bootstrap';
 import { Component } from 'solid-js';
-import { CreateIcon } from '~/shared/icons';
+import { CreateIcon } from '~/shared/ui/icon';
 import { ClientCreateFormDialog } from '~/widgets/form-dialogs';
 
 // type ClientsActionsMenuProps = {};
 
 const ClientsActionsMenu: Component = () => {
   return (
-    <Nav class="my-2">
+    <div class="my-2">
       <ClientCreateFormDialog
-        triggerType="nav"
+        triggerType="link"
         triggerElm={
           <>
             <CreateIcon /> Create
           </>
         }
       />
-    </Nav>
+    </div>
   );
 };
 

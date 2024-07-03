@@ -1,3 +1,4 @@
+import { Button } from '@kobalte/core/button';
 import {
   SubmitHandler,
   createForm,
@@ -5,7 +6,6 @@ import {
   valiField,
   valiForm
 } from '@modular-forms/solid';
-import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { SEditClient, SchemaEditClient } from '~/entities/clients';
@@ -16,10 +16,10 @@ import {
   IsValidDescription,
   IsValidTitle
 } from '~/shared/db';
-import { Dialog } from '~/shared/dialogs';
-import { CheckboxInput, TextInput, TextareaInput } from '~/shared/forms';
-import { EditIcon } from '~/shared/icons';
 import { queryClient } from '~/shared/tanstack';
+import { Dialog } from '~/shared/ui/dialog';
+import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
+import { EditIcon } from '~/shared/ui/icon';
 
 type ClientEditFormDialogProps = {
   client: ClientRead;
@@ -78,28 +78,22 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
       title={`Edit Client: ${props.client.title}`}
       description={'Fill out the form below to and click save to edit this client.'}
       footerActions={
-        <>
-          <Form.Group
-            as={Col}
-            xs={12}
-            class="mb-2 d-flex flex-row flex-nowrap justify-content-between"
+        <div class="justify-content-between mb-2 flex w-full flex-row flex-nowrap">
+          <Button class="secondary" onClick={() => handleClose()}>
+            Close
+          </Button>
+          <Button
+            type="submit"
+            disabled={pending() || isSubmitted()}
+            onClick={() => submit(editClientForm)}
           >
-            <Button variant="secondary" onClick={() => handleClose()}>
-              Close
-            </Button>
-            <Button
-              type="submit"
-              disabled={pending() || isSubmitted()}
-              onClick={() => submit(editClientForm)}
-            >
-              {editClientForm.submitting ? '...' : 'Update Client'}
-            </Button>
-          </Form.Group>
-        </>
+            {editClientForm.submitting ? '...' : 'Update Client'}
+          </Button>
+        </div>
       }
     >
       <EditClient.Form onSubmit={handleSubmit}>
-        <Row>
+        <div class="columns-1">
           <EditClient.Field name="clientId" validate={[valiField(IsValidClientId)]}>
             {(field, props) => (
               <TextInput
@@ -111,7 +105,7 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
               />
             )}
           </EditClient.Field>
-          <Form.Group as={Col} xs={12} class="mb-2">
+          <div class="mb-2 w-full">
             <EditClient.Field name="title" validate={[valiField(IsValidTitle)]}>
               {(field, props) => (
                 <TextInput
@@ -124,14 +118,14 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
                 />
               )}
             </EditClient.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={12} class="mb-2">
+          </div>
+          <div class="mb-2 w-full">
             <EditClient.Field
               name="description"
               validate={[valiField(IsValidDescription)]}
             >
               {(field, props) => (
-                <TextareaInput
+                <TextInput
                   {...props}
                   rows={3}
                   label="Client Description"
@@ -140,9 +134,9 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
                 />
               )}
             </EditClient.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={12} class="mb-2">
-            <Form.Label class="mb-1">Client Is Active?</Form.Label>
+          </div>
+          <div class="mb-2 w-full">
+            <label class="mb-1">Client Is Active?</label>
             <EditClient.Field
               name="is_active"
               validate={[valiField(IsValidClientIsActive)]}
@@ -159,8 +153,8 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
                 />
               )}
             </EditClient.Field>
-          </Form.Group>
-        </Row>
+          </div>
+        </div>
       </EditClient.Form>
     </Dialog>
   );

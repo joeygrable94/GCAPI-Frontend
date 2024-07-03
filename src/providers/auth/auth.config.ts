@@ -3,6 +3,7 @@ import type { SolidAuthConfig } from '@solid-mediakit/auth';
 import { setOpenApiToken } from '~/shared/utils';
 
 export const authOptions = {
+  basePath: '/api/auth',
   debug: false,
   providers: [
     Auth0Provider({

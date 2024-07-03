@@ -1,3 +1,4 @@
+import { Button } from '@kobalte/core/button';
 import {
   SubmitHandler,
   createForm,
@@ -5,7 +6,6 @@ import {
   valiField,
   valiForm
 } from '@modular-forms/solid';
-import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { SCreateWebsiteSitemap, SchemaCreateWebsiteSitemap } from '~/entities/sitemaps';
@@ -15,9 +15,9 @@ import {
   IsValidWebsiteSitemapIsActive,
   IsValidWebsiteSitemapUrl
 } from '~/shared/db';
-import { Dialog, DialogTriggerType } from '~/shared/dialogs';
-import { CheckboxInput, TextInput } from '~/shared/forms';
 import { queryClient } from '~/shared/tanstack';
+import { Dialog, DialogTriggerType } from '~/shared/ui/dialog';
+import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
 
 type WebsiteSitemapCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -74,30 +74,22 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
       title={`Create Website Sitemap`}
       description={'Fill out the form below to create a new sitemap.'}
       footerActions={
-        <>
-          <Form.Group
-            as={Col}
-            xs={12}
-            class="mb-2 d-flex flex-row flex-nowrap justify-content-between"
+        <div class="justify-content-between mb-2 flex w-full flex-row flex-nowrap">
+          <Button class="secondary" onClick={() => handleClose()}>
+            Close
+          </Button>
+          <Button
+            type="submit"
+            disabled={pending() || isSubmitted() || createWebsiteSitemapForm.submitting}
+            onClick={() => submit(createWebsiteSitemapForm)}
           >
-            <Button variant="secondary" onClick={() => handleClose()}>
-              Close
-            </Button>
-            <Button
-              type="submit"
-              disabled={
-                pending() || isSubmitted() || createWebsiteSitemapForm.submitting
-              }
-              onClick={() => submit(createWebsiteSitemapForm)}
-            >
-              {createWebsiteSitemapForm.submitting ? '...' : 'Create Website Sitemap'}
-            </Button>
-          </Form.Group>
-        </>
+            {createWebsiteSitemapForm.submitting ? '...' : 'Create Website Sitemap'}
+          </Button>
+        </div>
       }
     >
       <CreateWebsiteSitemap.Form onSubmit={handleSubmit}>
-        <Row>
+        <div class="columns-1">
           <CreateWebsiteSitemap.Field
             name="website_id"
             validate={[valiField(IsValidWebsiteId)]}
@@ -112,7 +104,7 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
               />
             )}
           </CreateWebsiteSitemap.Field>
-          <Form.Group as={Col} xs={12} class="mb-2">
+          <div class="mb-2 w-full">
             <CreateWebsiteSitemap.Field
               name="url"
               validate={[valiField(IsValidWebsiteSitemapUrl)]}
@@ -129,9 +121,9 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
                 />
               )}
             </CreateWebsiteSitemap.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={12} class="mb-2">
-            <Form.Label class="mb-1">Website Sitemap Is Active?</Form.Label>
+          </div>
+          <div class="mb-2 w-full">
+            <label class="mb-1">Website Sitemap Is Active?</label>
             <CreateWebsiteSitemap.Field
               name="is_active"
               validate={[valiField(IsValidWebsiteSitemapIsActive)]}
@@ -148,8 +140,8 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
                 />
               )}
             </CreateWebsiteSitemap.Field>
-          </Form.Group>
-        </Row>
+          </div>
+        </div>
       </CreateWebsiteSitemap.Form>
     </Dialog>
   );

@@ -1,7 +1,6 @@
 import { cache } from '@solidjs/router';
-import { getUserSessionApiToken } from '~/providers/auth';
+import { getRequestEvent } from 'solid-js/web';
 import {
-  OpenAPI,
   Paginated_UserReadAsAdmin_,
   Paginated_UserReadAsManager_,
   UserRead,
@@ -9,7 +8,7 @@ import {
   UserReadAsManager,
   UsersService
 } from '~/shared/api';
-import { logError } from '~/shared/utils';
+import { logError, setOpenApiToken } from '~/shared/utils';
 
 /**
  * @summary Fetches the current user or redirects to login page
@@ -17,8 +16,8 @@ import { logError } from '~/shared/utils';
 export const ssrFetchCurrentUser = cache(async () => {
   'use server';
   try {
-    await getUserSessionApiToken();
-    console.log(OpenAPI.TOKEN?.length);
+    const event = getRequestEvent();
+    setOpenApiToken('server', event?.locals.accessToken);
     return await UsersService.usersCurrentApiV1UsersMeGet();
   } catch (err: Error | unknown) {
     logError('Error fetching current user:', err);
@@ -38,7 +37,8 @@ export const ssrFetchUsersList = cache(async (page: number, size: number) => {
     results: []
   };
   try {
-    await getUserSessionApiToken();
+    const event = getRequestEvent();
+    setOpenApiToken('server', event?.locals.accessToken);
     users = await UsersService.usersListApiV1UsersGet({
       page: page,
       size: size
@@ -56,7 +56,8 @@ export const ssrFetchUserById = cache(async (id: string) => {
   'use server';
   let user: UserReadAsAdmin | UserReadAsManager | UserRead | undefined = undefined;
   try {
-    await getUserSessionApiToken();
+    const event = getRequestEvent();
+    setOpenApiToken('server', event?.locals.accessToken);
     user = await UsersService.usersReadApiV1UsersUserIdGet({ userId: id });
   } catch (err: Error | unknown) {
     logError('Error fetching user:', err);

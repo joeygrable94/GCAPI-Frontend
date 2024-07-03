@@ -8,7 +8,6 @@ import {
   ThemeContextProvider
 } from '~/providers/theme';
 import { decryptData, encryptData } from '~/shared/utils';
-import './theme-viewport-height.scss';
 
 const ThemeConfigContext = createContext<ThemeContextProvider>();
 
@@ -54,13 +53,13 @@ export const ThemeProvider = (props: ThemeConfigProps) => {
   const setPageTheme = () => {
     setTheme('darkMode', theme.darkMode);
     document.documentElement.setAttribute(
-      'data-bs-theme',
+      'data-theme',
       theme.darkMode ? 'dark' : 'light'
     );
-    document.body.setAttribute('data-bs-theme', theme.darkMode ? 'dark' : 'light');
+    document.body.setAttribute('data-theme', theme.darkMode ? 'dark' : 'light');
     rootDiv = document.getElementById('app');
     if (rootDiv !== null)
-      rootDiv.setAttribute('data-bs-theme', theme.darkMode ? 'dark' : 'light');
+      rootDiv.setAttribute('data-theme', theme.darkMode ? 'dark' : 'light');
   };
 
   onMount(() => {
@@ -80,7 +79,7 @@ export const ThemeProvider = (props: ThemeConfigProps) => {
       ref={pageDiv}
       id="page"
       class="viewport-height"
-      data-bs-theme={theme.darkMode ? 'dark' : 'light'}
+      data-theme={theme.darkMode ? 'dark' : 'light'}
     >
       <ThemeConfigContext.Provider value={state}>
         {props.children}

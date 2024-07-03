@@ -1,6 +1,5 @@
+import { Button } from '@kobalte/core/button';
 import { useNavigate } from '@solidjs/router';
-import { clientOnly } from '@solidjs/start';
-import { Button, Stack } from 'solid-bootstrap';
 import { Component, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { useTheme } from '~/providers/theme';
@@ -9,11 +8,8 @@ import {
   WebsiteMapRead,
   WebsiteSitemapsService
 } from '~/shared/api';
-import { ProcessIcon, ViewIcon } from '~/shared/icons';
-
-const WebsiteSitemapDeleteFormDialog = clientOnly(
-  () => import('~/widgets/form-dialogs/sitemap-delete.ui')
-);
+import { ProcessIcon, ViewIcon } from '~/shared/ui/icon';
+import { WebsiteSitemapDeleteFormDialog } from '~/widgets/form-dialogs';
 
 interface IWebsiteSitemapsTableActionsProps {
   sitemap: WebsiteMapRead;
@@ -42,23 +38,21 @@ const WebsiteSitemapsTableActions: Component<IWebsiteSitemapsTableActionsProps> 
   };
   createEffect(() => setSitemap(props.sitemap));
   return (
-    <Stack direction="horizontal" gap={2} class="d-flex flex-row flex-nowrap">
+    <div class="d-flex flex-gap-2 flex-row flex-nowrap">
       <Button
-        size="sm"
-        variant={theme.darkMode ? 'outline-light' : 'outline-dark'}
+        class={theme.darkMode ? 'outline-light' : 'outline-dark'}
         onClick={() => navigate(`/sitemaps/${sitemap().id}`)}
       >
         <ViewIcon />
       </Button>
       <Button
-        size="sm"
-        variant={theme.darkMode ? 'outline-light' : 'outline-dark'}
+        class={theme.darkMode ? 'outline-light' : 'outline-dark'}
         onClick={() => handleProcessPages()}
       >
         <ProcessIcon />
       </Button>
       <WebsiteSitemapDeleteFormDialog sitemap={sitemap()} />
-    </Stack>
+    </div>
   );
 };
 

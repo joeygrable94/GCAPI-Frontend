@@ -21,7 +21,7 @@ export default function Clients(props: RouteSectionProps) {
   const data = createAsync(() => ssrFetchClientsList(page(), size()));
   return (
     <main>
-      <h1 class="my-2">Clients</h1>
+      <h1 class="my-5 text-5xl">Clients</h1>
       <ClientsActionsMenu />
       <ClientsDataTable initialData={data()} />
     </main>

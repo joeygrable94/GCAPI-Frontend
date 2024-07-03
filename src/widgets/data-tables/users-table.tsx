@@ -1,4 +1,3 @@
-import { clientOnly } from '@solidjs/start';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -10,8 +9,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel
 } from '@tanstack/solid-table';
-import { Table } from 'solid-bootstrap';
-import { createEffect, createSignal } from 'solid-js';
+import { createEffect, createSignal, lazy } from 'solid-js';
 import {
   USERS_PAGE_SIZE,
   USERS_PAGE_START,
@@ -28,12 +26,13 @@ import {
 import {
   TableBody,
   TableColumnIsActive,
+  TableContent,
   TableFooter,
   TableHeader
-} from '~/shared/data-tables';
+} from '~/shared/ui/table-data';
 import { formatDateString } from '~/shared/utils';
 
-const UsersTableActions = clientOnly(
+const UsersTableActions = lazy(
   () => import('~/widgets/data-table-actions/users-table-actions')
 );
 
@@ -141,14 +140,7 @@ const UsersDataTable = (props: UsersDataTableProps) => {
   };
   return (
     <>
-      <Table
-        size="sm"
-        variant={theme.darkMode ? 'dark' : 'light'}
-        responsive
-        striped
-        bordered
-        hover
-      >
+      <TableContent>
         {/* @ts-expect-error table type unknown */}
         <TableHeader table={table} setIsFiltering={setIsFiltering} />
         {/* @ts-expect-error table type unknown */}
@@ -161,7 +153,7 @@ const UsersDataTable = (props: UsersDataTableProps) => {
           fetchTotal={fetchTotal}
           resetFilter={resetFilter}
         />
-      </Table>
+      </TableContent>
     </>
   );
 };

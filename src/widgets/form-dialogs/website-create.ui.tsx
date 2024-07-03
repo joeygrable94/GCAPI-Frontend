@@ -7,26 +7,31 @@ import {
   valiForm
 } from '@modular-forms/solid';
 import { createQuery } from '@tanstack/solid-query';
-import { Button, Col, Form, Row } from 'solid-bootstrap';
-import { Component, For, JSX, Show, createEffect, createSignal } from 'solid-js';
+import { Component, JSX, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { fetchClientsList } from '~/entities/clients';
 import { SCreateWebsite, SchemaCreateWebsite } from '~/entities/websites';
 import {
+  ClientRead,
   ClientWebsiteCreate,
   ClientsService,
   WebsiteRead,
   WebsitesService
 } from '~/shared/api';
 import {
-  IsValidClientId,
   IsValidWebsiteDomain,
   IsValidWebsiteIsActive,
   IsValidWebsiteIsSecure
 } from '~/shared/db';
-import { Dialog, DialogTriggerType } from '~/shared/dialogs';
-import { CheckboxInput, TextInput } from '~/shared/forms';
 import { queryClient } from '~/shared/tanstack';
+import { Button } from '~/shared/ui/button';
+import { Dialog, DialogTriggerType } from '~/shared/ui/dialog';
+import {
+  CheckboxInput,
+  CheckboxSwitchInput,
+  SelectInput,
+  TextInput
+} from '~/shared/ui/form-input';
 
 type WebsiteCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -38,6 +43,12 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
     queryKey: ['clients', 1, 1000],
     queryFn: fetchClientsList
   }));
+  const [clientsData, setClientsData] = createSignal<ClientRead[]>([]);
+  createEffect(() => {
+    if (clientsQuery.data !== undefined && clientsQuery.data !== null) {
+      setClientsData(clientsQuery.data.results.map((r: ClientRead) => r));
+    }
+  });
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -51,11 +62,13 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
       domain: '',
       is_secure: true,
       is_active: true,
-      clientId: ''
+      clientId: undefined
     },
     validate: valiForm(SchemaCreateWebsite)
   });
   const handleSubmit: SubmitHandler<SCreateWebsite> = (values) => {
+    console.log('Submitting...', values);
+    return;
     setPending(true);
     const { domain, is_secure, is_active, clientId } = values;
     WebsitesService.websitesCreateApiV1WebsitesPost({
@@ -103,67 +116,70 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
       title={`Create Website`}
       description={'Fill out the form below to create a new website.'}
       footerActions={
-        <>
-          <Form.Group
-            as={Col}
-            xs={12}
-            class="mb-2 d-flex flex-row flex-nowrap justify-content-between"
+        <div class="mb-2 flex w-full flex-nowrap justify-between">
+          <Button color="light" onClick={() => handleClose()}>
+            Close
+          </Button>
+          <Button
+            color="info"
+            disabled={pending() || isSubmitted()}
+            onClick={() => submit(createWebsiteForm)}
           >
-            <Button variant="secondary" onClick={() => handleClose()}>
-              Close
-            </Button>
-            <Button
-              type="submit"
-              disabled={pending() || isSubmitted()}
-              onClick={() => submit(createWebsiteForm)}
-            >
-              {createWebsiteForm.submitting ? '...' : 'Create Website'}
-            </Button>
-          </Form.Group>
-        </>
+            {createWebsiteForm.submitting ? '...' : 'Create Website'}
+          </Button>
+        </div>
       }
     >
       <CreateWebsite.Form onSubmit={handleSubmit}>
-        <Row>
-          <Form.Group as={Col} xs={12} class="mb-2">
+        <div class="columns-1">
+          <div class="mb-2 w-full">
             <CreateWebsite.Field
               name="domain"
               validate={[valiField(IsValidWebsiteDomain)]}
             >
               {(field, props) => (
                 <TextInput
-                  {...props}
                   type="text"
-                  required
+                  value={field.value ?? ''}
+                  defaultValue=""
+                  name={field.name}
                   label="Website Domain"
-                  placeholder="Domain Name"
-                  value={field.value}
+                  required={true}
+                  description='Enter a domain name like "example.com" or "subdomain.example.com".'
                   error={field.error}
+                  disabled={pending() || isSubmitted()}
+                  onChange={(value: string | null) =>
+                    setValue(createWebsiteForm, field.name, value ?? '')
+                  }
                 />
               )}
             </CreateWebsite.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={6} class="mb-2">
-            <Form.Label class="mb-1">Website Is Secure (HTTPS)?</Form.Label>
+          </div>
+          <div class="mb-2 w-full">
             <CreateWebsite.Field
               name="is_secure"
               validate={[valiField(IsValidWebsiteIsSecure)]}
               type="boolean"
             >
               {(field, props) => (
-                <CheckboxInput
-                  {...props}
-                  type="checkbox"
-                  required
-                  label={field.value ? 'Secure' : 'Insecure'}
+                <CheckboxSwitchInput
+                  value={field.value ? '1' : '0'}
                   checked={field.value}
+                  defaultChecked={true}
+                  name={field.name}
+                  label={field.value ? 'Is Secure' : 'Is Insecure'}
+                  required={true}
+                  description="Check this box if the website uses HTTPS."
                   error={field.error}
+                  disabled={pending() || isSubmitted()}
+                  onChange={(checked: boolean) =>
+                    setValue(createWebsiteForm, field.name, checked)
+                  }
                 />
               )}
             </CreateWebsite.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={6} class="mb-2">
-            <Form.Label class="mb-1">Website Is Active?</Form.Label>
+          </div>
+          <div class="mb-2 w-full">
             <CreateWebsite.Field
               name="is_active"
               validate={[valiField(IsValidWebsiteIsActive)]}
@@ -171,51 +187,47 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
             >
               {(field, props) => (
                 <CheckboxInput
-                  {...props}
-                  type="checkbox"
-                  required
-                  label={field.value ? 'Active' : 'Inactive'}
+                  name={field.name}
+                  value={field.value ? '1' : '0'}
                   checked={field.value}
+                  defaultChecked={true}
+                  label={field.value ? 'Is Active' : 'Is Inactive'}
+                  required={true}
+                  description="Is the website active?"
                   error={field.error}
+                  disabled={pending() || isSubmitted()}
+                  onChange={(checked: boolean) =>
+                    setValue(createWebsiteForm, field.name, checked)
+                  }
                 />
               )}
             </CreateWebsite.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={12} class="mb-2">
-            <CreateWebsite.Field
-              name="clientId"
-              validate={[valiField(IsValidClientId)]}
-            >
-              {(field) => (
-                <>
-                  <Form.Label class="mb-1">Assign Website to Client</Form.Label>
-                  <Form.Select
-                    id={field.name}
+          </div>
+          <div class="mb-2 w-full">
+            <CreateWebsite.Field name="clientId">
+              {(field) => {
+                return (
+                  <SelectInput<ClientRead>
+                    label="Assign Website to Client"
                     name={field.name}
-                    value={field.value ?? ''}
-                    onChange={(e) =>
-                      setValue(createWebsiteForm, field.name, e.target.value)
+                    value={clientsData().filter((c) => c.id === field.value)[0] ?? null}
+                    options={clientsData() ?? []}
+                    optionValue="id"
+                    optionTextValue="title"
+                    optionDisabled={(option: ClientRead) => option.is_active === false}
+                    triggerLabel="Clients"
+                    placeholder="Select a Client"
+                    error={field.error}
+                    disabled={pending() || isSubmitted()}
+                    onChange={(value) =>
+                      setValue(createWebsiteForm, field.name, value?.id as string)
                     }
-                    size="sm"
-                  >
-                    <Show when={clientsQuery.isSuccess}>
-                      <For each={clientsQuery.data?.results}>
-                        {(client) => (
-                          <option
-                            selected={field.value === client.id}
-                            value={client.id}
-                          >
-                            {client.title}
-                          </option>
-                        )}
-                      </For>
-                    </Show>
-                  </Form.Select>
-                </>
-              )}
+                  />
+                );
+              }}
             </CreateWebsite.Field>
-          </Form.Group>
-        </Row>
+          </div>
+        </div>
       </CreateWebsite.Form>
     </Dialog>
   );
