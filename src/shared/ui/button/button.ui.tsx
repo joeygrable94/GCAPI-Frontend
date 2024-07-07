@@ -3,11 +3,11 @@ import { children } from 'solid-js';
 import { ButtonProps } from './button.types';
 
 export default function Button(props: ButtonProps) {
-  const size = props.size || 'default';
-  const color = props.color || 'info';
-  const styleType = props.styleType || 'fill';
+  const size = props.size ?? 'default';
+  const color = props.color ?? 'info';
+  const styleType = props.styleType ?? 'fill';
   const width = props.fullWidth ? 'w-full' : 'w-auto';
-  const curve = props.curve || 'default';
+  const curve = props.curve ?? 'default';
   const buttonColorKey = {
     info: {
       fill: 'bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-700 active:bg-blue-400 ui-disabled:bg-blue-600/90 ui-disabled:border-blue-600 ui-disabled:text-blue-300',

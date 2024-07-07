@@ -7,7 +7,7 @@ export const TableBody: Component<ITableBodyProps> = (props) => {
     <tbody class="border-0 border-solid border-inherit">
       <For each={props.table.getRowModel().rows}>
         {(row) => (
-          <tr class="border-0 border-solid border-inherit">
+          <tr class="border-0 border-solid border-inherit hover:bg-gray-100 dark:hover:bg-gray-800">
             <For each={row.getVisibleCells()}>
               {(cell) => (
                 <td class="border-b-1 p-2">

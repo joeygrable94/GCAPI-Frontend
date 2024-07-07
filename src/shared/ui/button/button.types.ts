@@ -1,10 +1,10 @@
-import { JSX } from 'solid-js';
+import { JSX, Setter } from 'solid-js';
 import {
   ThemeElementColor,
   ThemeElementCurve,
   ThemeElementSize,
   ThemeElementStyleType
-} from '~/shared/ui/ui.constants';
+} from '~/shared/ui';
 
 export type ButtonGroupGap = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '8';
 
@@ -43,4 +43,14 @@ export type ButtonGroupProps = ButtonVariables & {
   disabled?: boolean;
   gap?: ButtonGroupGap;
   items: ButtonGroupButtonProps[];
+};
+
+export type ButtonToggleProps = ButtonVariables & {
+  iconActive: JSX.Element;
+  iconInactive: JSX.Element;
+  label?: string;
+  defaultPressed?: boolean;
+  pressed?: boolean;
+  onPressed?: (pressed: boolean) => void | Setter<boolean>;
+  tabIndex?: number;
 };

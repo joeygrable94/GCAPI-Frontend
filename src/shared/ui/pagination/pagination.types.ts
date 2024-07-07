@@ -4,7 +4,7 @@ import {
   ThemeElementCurve,
   ThemeElementSize,
   ThemeElementStyleType
-} from '~/shared/ui/ui.constants';
+} from '~/shared/ui';
 
 export type PaginationProps = {
   count: number | Accessor<number>;

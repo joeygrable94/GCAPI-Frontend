@@ -1,3 +1,4 @@
+export * from './accessibility.icons';
 export * from './close.icon';
 export * from './crud.icons';
 export * from './form.icons';

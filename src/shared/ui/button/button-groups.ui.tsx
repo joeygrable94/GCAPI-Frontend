@@ -23,7 +23,7 @@ export default function ButtonGroup(props: ButtonGroupProps) {
   const gap = props.gap ? props.gap : '0';
   const hasGap = gap !== '0';
   const color = props.color ?? 'info';
-  const type = props.type ?? 'fill';
+  const styleType = props.styleType ?? 'fill';
   const curve = props.curve ?? 'default';
   const size = props.size ?? 'default';
   const width = props.fullWidth ? 'w-full' : 'w-auto';
@@ -194,7 +194,7 @@ export default function ButtonGroup(props: ButtonGroupProps) {
                 const buttonContent = children(() => item.children);
                 return (
                   <ToggleGroup.Item
-                    class={`toggle-group__item ${buttonSizeKey[size]} ${buttonColorKey[color][type]}`}
+                    class={`toggle-group__item ${buttonSizeKey[size]} ${buttonColorKey[color][styleType]}`}
                     value={item.value}
                     aria-label={item.label}
                     onClick={item.onClick}
@@ -238,7 +238,7 @@ export default function ButtonGroup(props: ButtonGroupProps) {
                 });
                 return (
                   <ToggleGroup.Item
-                    class={`toggle-group__item ${buttonSizeKey[size]} ${buttonColorKey[color][type]} ${buttonCurve()}`}
+                    class={`toggle-group__item ${buttonSizeKey[size]} ${buttonColorKey[color][styleType]} ${buttonCurve()}`}
                     value={item.value}
                     aria-label={item.label}
                     onClick={item.onClick}
