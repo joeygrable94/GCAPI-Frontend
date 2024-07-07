@@ -1,5 +1,5 @@
 import { JSX } from 'solid-js';
-import { ThemeElementColor } from '~/shared/ui/ui.constants';
+import { ThemeElementColor } from '~/shared/ui';
 
 export type LinkProps = {
   href: string;

@@ -1,7 +1,7 @@
 import { Alert } from '@kobalte/core/alert';
 import { JSX, Show, children, createSignal, onCleanup, onMount } from 'solid-js';
+import { ThemeElementColor } from '~/shared/ui';
 import { CloseIcon } from '~/shared/ui/icon';
-import { ThemeElementColor } from '~/shared/ui/ui.constants';
 
 export type AlertMessageProps = {
   message: string;

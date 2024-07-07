@@ -4,7 +4,7 @@ import { Pagination } from '~/shared/ui/pagination';
 const PaginationExample: Component = () => {
   const [page, setPage] = createSignal<number>(1);
   return (
-    <div id="links" class="flex flex-col gap-1 pb-24 pt-12">
+    <div id="pagination" class="flex flex-col gap-1 pb-24 pt-12">
       <h2 class="text-3xl font-bold">Pagination</h2>
       <p class="text-lg">This section demonstrates pagination.</p>
       <div class="flex w-full flex-col items-center gap-2">

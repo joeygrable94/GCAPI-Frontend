@@ -10,7 +10,7 @@ const ButtonsExample: Component = () => {
       <p class="text">Button Fill</p>
       <div class="flex flex-row items-center justify-start gap-2">
         <Button
-          type="fill"
+          styleType="fill"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -18,7 +18,7 @@ const ButtonsExample: Component = () => {
           Info Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="error"
           onClick={() => console.log('Error Button clicked')}
           tabIndex={0}
@@ -26,7 +26,7 @@ const ButtonsExample: Component = () => {
           Error Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="warning"
           onClick={() => console.log('Warning Button clicked')}
           tabIndex={0}
@@ -34,7 +34,7 @@ const ButtonsExample: Component = () => {
           Warning Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="success"
           onClick={() => console.log('Success Button clicked')}
           tabIndex={0}
@@ -42,7 +42,7 @@ const ButtonsExample: Component = () => {
           Success Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="light"
           onClick={() => console.log('Light Button clicked')}
           tabIndex={0}
@@ -50,7 +50,7 @@ const ButtonsExample: Component = () => {
           Light Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="dark"
           onClick={() => console.log('Dark Button clicked')}
           tabIndex={0}
@@ -60,7 +60,7 @@ const ButtonsExample: Component = () => {
       </div>
       <div class="flex flex-row items-center justify-start gap-2">
         <Button
-          type="fill"
+          styleType="fill"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -69,7 +69,7 @@ const ButtonsExample: Component = () => {
           Info Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="error"
           onClick={() => console.log('Error Button clicked')}
           tabIndex={0}
@@ -78,7 +78,7 @@ const ButtonsExample: Component = () => {
           Error Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="warning"
           onClick={() => console.log('Warning Button clicked')}
           tabIndex={0}
@@ -87,7 +87,7 @@ const ButtonsExample: Component = () => {
           Warning Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="success"
           onClick={() => console.log('Success Button clicked')}
           tabIndex={0}
@@ -96,7 +96,7 @@ const ButtonsExample: Component = () => {
           Success Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="light"
           onClick={() => console.log('Light Button clicked')}
           tabIndex={0}
@@ -105,7 +105,7 @@ const ButtonsExample: Component = () => {
           Light Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="dark"
           onClick={() => console.log('Dark Button clicked')}
           tabIndex={0}
@@ -118,7 +118,7 @@ const ButtonsExample: Component = () => {
       <p class="text">Button Outline</p>
       <div class="flex flex-row items-center justify-start gap-2">
         <Button
-          type="outline"
+          styleType="outline"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -126,7 +126,7 @@ const ButtonsExample: Component = () => {
           Info Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="error"
           onClick={() => console.log('Error Button clicked')}
           tabIndex={0}
@@ -134,7 +134,7 @@ const ButtonsExample: Component = () => {
           Error Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="warning"
           onClick={() => console.log('Warning Button clicked')}
           tabIndex={0}
@@ -142,7 +142,7 @@ const ButtonsExample: Component = () => {
           Warning Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="success"
           onClick={() => console.log('Success Button clicked')}
           tabIndex={0}
@@ -150,7 +150,7 @@ const ButtonsExample: Component = () => {
           Success Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="light"
           onClick={() => console.log('Light Button clicked')}
           tabIndex={0}
@@ -158,7 +158,7 @@ const ButtonsExample: Component = () => {
           Light Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="dark"
           onClick={() => console.log('Dark Button clicked')}
           tabIndex={0}
@@ -168,7 +168,7 @@ const ButtonsExample: Component = () => {
       </div>
       <div class="flex flex-row items-center justify-start gap-2">
         <Button
-          type="outline"
+          styleType="outline"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -177,7 +177,7 @@ const ButtonsExample: Component = () => {
           Info Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="error"
           onClick={() => console.log('Error Button clicked')}
           tabIndex={0}
@@ -186,7 +186,7 @@ const ButtonsExample: Component = () => {
           Error Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="warning"
           onClick={() => console.log('Warning Button clicked')}
           tabIndex={0}
@@ -195,7 +195,7 @@ const ButtonsExample: Component = () => {
           Warning Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="success"
           onClick={() => console.log('Success Button clicked')}
           tabIndex={0}
@@ -204,7 +204,7 @@ const ButtonsExample: Component = () => {
           Success Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="light"
           onClick={() => console.log('Light Button clicked')}
           tabIndex={0}
@@ -213,7 +213,7 @@ const ButtonsExample: Component = () => {
           Light Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="dark"
           onClick={() => console.log('Dark Button clicked')}
           tabIndex={0}
@@ -226,7 +226,7 @@ const ButtonsExample: Component = () => {
       <p class="text">Button Sizes</p>
       <div class="flex flex-row items-center justify-start gap-2">
         <Button
-          type="fill"
+          styleType="fill"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -235,7 +235,7 @@ const ButtonsExample: Component = () => {
           Info Button Small
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -243,7 +243,7 @@ const ButtonsExample: Component = () => {
           Info Button
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -252,7 +252,7 @@ const ButtonsExample: Component = () => {
           Info Button Medium
         </Button>
         <Button
-          type="fill"
+          styleType="fill"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -263,7 +263,7 @@ const ButtonsExample: Component = () => {
       </div>
       <div class="flex flex-row items-center justify-start gap-2">
         <Button
-          type="outline"
+          styleType="outline"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -272,7 +272,7 @@ const ButtonsExample: Component = () => {
           Info Button Small
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -280,7 +280,7 @@ const ButtonsExample: Component = () => {
           Info Button
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -289,7 +289,7 @@ const ButtonsExample: Component = () => {
           Info Button Medium
         </Button>
         <Button
-          type="outline"
+          styleType="outline"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}
@@ -301,7 +301,7 @@ const ButtonsExample: Component = () => {
       <p class="text">Full Width Button</p>
       <div class="flex flex-row items-center justify-start gap-2">
         <Button
-          type="fill"
+          styleType="fill"
           color="info"
           onClick={() => console.log('Info Button clicked')}
           tabIndex={0}

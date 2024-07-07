@@ -1,10 +1,14 @@
+export { default as AccordionsExample } from './accordion.ex';
 export { default as AlertsExample } from './alerts.ex';
 export { default as AvatarExample } from './avatar.ex';
 export { default as BreadcrumbsExample } from './breadcrumbs.ex';
 export { default as ButtonGroupsExample } from './button-groups.ex';
+export { default as ButtonTogglesExample } from './button-toggles.ex';
 export { default as ButtonsExample } from './buttons.ex';
+export { default as CollapsablesExample } from './collapsable.ex';
 export { default as FormInputsExample } from './form-inputs.ex';
 export { default as LinksExample } from './links.ex';
 export { default as PaginationExample } from './pagination.ex';
+export { default as ProgressBarsExample } from './progress-bars.ex';
 export { default as SeparatorsExample } from './separators.ex';
 export { default as TabsExample } from './tabs.ex';

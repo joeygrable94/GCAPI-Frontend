@@ -4,7 +4,7 @@ import {
   ThemeElementCurve,
   ThemeElementSize,
   ThemeElementStyleType
-} from '~/shared/ui/ui.constants';
+} from '~/shared/ui';
 
 export type TabsProps = {
   label: string;
