@@ -65,7 +65,7 @@ export type SelectInputProps<T> = {
   options: T[];
   optionValue: keyof T;
   optionTextValue: keyof T;
-  optionDisabled: (option: T) => boolean;
+  optionDisabled?: (option: T) => boolean;
   placeholder: string;
   triggerLabel: string;
   triggerIcon?: JSX.Element;

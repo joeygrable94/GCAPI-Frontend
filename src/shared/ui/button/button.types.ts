@@ -21,9 +21,10 @@ export type ButtonProps = ButtonVariables & {
   type?: string;
   label?: string;
   disabled?: boolean;
-  onClick: () => void;
+  onClick?: () => void;
   tabIndex?: number;
   active?: boolean;
+  id?: string;
 };
 
 export type ButtonGroupButtonProps = ButtonVariables & {

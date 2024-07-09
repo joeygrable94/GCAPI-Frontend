@@ -52,7 +52,7 @@ export default function ProgressBar(props: ProgressBarProps) {
         class={`progress__track border border-solid border-gray-200 bg-gray-100 dark:bg-gray-950 ${progressSizeKey[size]} ${progressEdgeCurve[curve]}`}
       >
         <KBProgress.Fill
-          class={`progress__fill data-[progress=loading]:animate-progress-pulse transition-width h-full w-[var(--kb-progress-fill-width)] ${progressColorKey[color]} ${progressEdgeCurve[curve]}`}
+          class={`progress__fill h-full w-[var(--kb-progress-fill-width)] min-w-2 transition-width data-[progress=loading]:animate-progress-pulse ${progressColorKey[color]} ${progressEdgeCurve[curve]}`}
         />
       </KBProgress.Track>
     </KBProgress>

@@ -49,7 +49,7 @@ const Dialog: ParentComponent<DialogProps> = (props) => {
             onPointerDownOutside={props.handleClose}
             // onFocusOutside={props.handleClose}
             // onInteractOutside={props.handleClose}
-            class="dialog__content max-w-[min(calc(100vw - 16px), 500px)] animate-dialog-content-hide rounded-md border-x border-y border-gray-200 bg-white p-4 shadow-sm ui-expanded:animate-dialog-content-show"
+            class="dialog__content max-w-[min(calc(100vw-16px),500px)] animate-dialog-content-hide rounded-md border-x border-y border-gray-200 bg-white p-4 shadow-sm ui-expanded:animate-dialog-content-show"
           >
             <div class="dialog__header mb-3 flex items-center justify-between">
               <KBDialog.Title class="dialog__title text-lg">
