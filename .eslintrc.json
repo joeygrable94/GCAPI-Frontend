@@ -6,8 +6,7 @@
     "extends": [
         "eslint:recommended",
         "plugin:solid/recommended",
-        "plugin:@typescript-eslint/recommended",
-        "@unocss"
+        "plugin:@typescript-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {

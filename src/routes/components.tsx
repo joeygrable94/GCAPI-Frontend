@@ -29,8 +29,10 @@ export default function ComponentsLayout(props: RouteSectionProps) {
         <a href="/components/form-inputs">Form Inputs</a>
         <a href="/components/links">Links</a>
         <a href="/components/pagination">Pagination</a>
+        <a href="/components/popovers">Popovers</a>
         <a href="/components/progress-bars">Progress Bars</a>
         <a href="/components/tabs">Tabs</a>
+        <a href="/components/toast">Toast</a>
       </div>
       <Show when={auth()} fallback={<p>You are not signed in.</p>}>
         <Suspense>{props.children}</Suspense>

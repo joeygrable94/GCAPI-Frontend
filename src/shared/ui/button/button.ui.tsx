@@ -59,6 +59,7 @@ export default function Button(props: ButtonProps) {
     <KBButton
       tabIndex={props.tabIndex ? 0 : undefined}
       onClick={props.onClick}
+      id={props.id}
       class={`button inline-flex ${width} appearance-none items-center justify-center outline-none transition focus-visible:outline focus-visible:outline-2 ui-disabled:cursor-not-allowed ${buttonSizeKey[size]} ${buttonEdgeCurve[curve]} ${buttonColorKey[color][styleType]}`}
       disabled={props.disabled}
       aria-label={props.label}

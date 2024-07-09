@@ -4,10 +4,9 @@ import { ProgressBar } from '~/shared/ui/progress';
 const ProgressBarsExample: Component = () => {
   const [progressValue, setProgressValue] = createSignal(0);
   const [direction, setDirection] = createSignal<'up' | 'down'>('up');
-  // write a timeout function that oscillates between 0 and 20
   const oscillateProgress = () => {
     let progress = 0;
-    const interval = setInterval(() => {
+    setInterval(() => {
       if (direction() === 'up') {
         if (progress >= 20) {
           progress = 20;
@@ -19,7 +18,7 @@ const ProgressBarsExample: Component = () => {
       if (direction() === 'down') {
         if (progress <= 0) {
           progress = 0;
-          setDirection('up');
+          setTimeout(() => setDirection('up'), 1500);
         } else {
           progress -= 1;
         }

@@ -9,6 +9,8 @@ export { default as CollapsablesExample } from './collapsable.ex';
 export { default as FormInputsExample } from './form-inputs.ex';
 export { default as LinksExample } from './links.ex';
 export { default as PaginationExample } from './pagination.ex';
+export { default as PopoversExample } from './popovers.ex';
 export { default as ProgressBarsExample } from './progress-bars.ex';
 export { default as SeparatorsExample } from './separators.ex';
 export { default as TabsExample } from './tabs.ex';
+export { default as ToastExample } from './toast.ex';

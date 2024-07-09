@@ -1,3 +1,6 @@
+export type ThemeVerticalPlacement = 'top' | 'bottom';
+export type ThemeHorizontalPlacement = 'left' | 'right';
+export type ThemeBasePlacement = 'top' | 'bottom' | 'left' | 'right';
 export type ThemeElementColor =
   | 'info'
   | 'error'
