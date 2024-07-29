@@ -43,7 +43,8 @@
 
 ### Theme & Styles
 
-- [Solid Boostrap](https://solid-libs.github.io/solid-bootstrap/)
+- [Kobalte](https://kobalte.dev/)
+- [TailwindCSS](https://tailwindcss.com/)
 
 ----
 

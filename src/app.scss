@@ -1,0 +1,7 @@
+// Tailwind CSS
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+// Custom CSS
+@import './providers/theme/api/theme-viewport-height.scss';
+@import './shared/sass/index.scss';

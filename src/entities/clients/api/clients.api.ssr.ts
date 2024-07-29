@@ -1,7 +1,7 @@
 import { cache, redirect } from '@solidjs/router';
-import { getUserSessionApiToken } from '~/providers/auth';
+import { getRequestEvent } from 'solid-js/web';
 import { ClientRead, ClientsService, Paginated_ClientRead_ } from '~/shared/api';
-import { logError } from '~/shared/utils';
+import { logError, setOpenApiToken } from '~/shared/utils';
 
 /**
  * @summary Fetches a list of clients on the server.
@@ -15,7 +15,8 @@ export const ssrFetchClientsList = cache(async (page: number, size: number) => {
     results: []
   };
   try {
-    await getUserSessionApiToken();
+    const event = getRequestEvent();
+    setOpenApiToken('server', event?.locals.accessToken);
     clients = await ClientsService.clientsListApiV1ClientsGet({
       page,
       size
@@ -33,7 +34,8 @@ export const ssrFetchClientById = cache(async (id: string) => {
   'use server';
   let client: ClientRead | undefined = undefined;
   try {
-    await getUserSessionApiToken();
+    const event = getRequestEvent();
+    setOpenApiToken('server', event?.locals.accessToken);
     client = await ClientsService.clientsReadApiV1ClientsClientIdGet({ clientId: id });
   } catch (err: Error | unknown) {
     logError('Error fetching client:', err);

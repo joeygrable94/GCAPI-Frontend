@@ -26,7 +26,7 @@ export default function Websites(props: RouteSectionProps) {
   const data = createAsync(() => ssrFetchWebsitesList(page(), size(), clientId()));
   return (
     <main>
-      <h1 class="my-2">Websites</h1>
+      <h1 class="my-5 text-5xl">Websites</h1>
       <WebsitesActionsMenu />
       <WebsitesDataTable initialData={data()} clientId={clientId()} />
     </main>

@@ -1,4 +1,4 @@
-import { Card } from 'solid-bootstrap';
+import { Image } from '@kobalte/core/image';
 import { Component } from 'solid-js';
 import { UserRead } from '~/shared/api';
 import { formatDateString } from '~/shared/utils';
@@ -9,14 +9,18 @@ type UserCardBaseProps = {
 
 const UserCardBase: Component<UserCardBaseProps> = (props) => {
   return (
-    <Card style={{ width: '20rem', margin: '1rem auto' }}>
-      <Card.Img
-        variant="top"
-        src={props.user.picture ?? 'https://www.gravatar.com/avatar/?d=identicon'}
-      />
-      <Card.Body>
-        <Card.Title>{props.user.username}</Card.Title>
-        <Card.Text>
+    <div class="mx-auto my-4 grid max-w-md place-items-center overflow-hidden rounded-md shadow-sm">
+      <Image>
+        <Image.Img
+          class="mx-auto aspect-video object-cover"
+          src={props.user.picture ?? 'https://www.gravatar.com/avatar/?d=identicon'}
+          alt="Profile Picture"
+        />
+        <Image.Fallback class="image__fallback">User</Image.Fallback>
+      </Image>
+      <div>
+        <h2>{props.user.username}</h2>
+        <div>
           <dl>
             <dd>
               <small>{props.user.id}</small>
@@ -26,10 +30,9 @@ const UserCardBase: Component<UserCardBaseProps> = (props) => {
             <dt>Created</dt>
             <dd>{formatDateString(new Date(props.user.created))}</dd>
           </dl>
-          {/* <AuthScopesList user={props.user} /> */}
-        </Card.Text>
-      </Card.Body>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 };
 

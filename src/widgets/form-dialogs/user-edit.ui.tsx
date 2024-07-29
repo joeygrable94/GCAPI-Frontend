@@ -1,3 +1,4 @@
+import { Button } from '@kobalte/core/button';
 import {
   createForm,
   submit,
@@ -5,16 +6,15 @@ import {
   valiField,
   valiForm
 } from '@modular-forms/solid';
-import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { SchemaEditUser, SEditUser } from '~/entities/users';
 import { UserRead, UsersService } from '~/shared/api';
 import { IsValidUserId, IsValidUsername } from '~/shared/db';
-import { Dialog } from '~/shared/dialogs';
-import { TextInput } from '~/shared/forms';
-import { EditIcon } from '~/shared/icons';
 import { queryClient } from '~/shared/tanstack';
+import { Dialog } from '~/shared/ui/dialog';
+import { TextInput } from '~/shared/ui/form-input';
+import { EditIcon } from '~/shared/ui/icon';
 
 type UserEditFormDialogProps = {
   user: UserRead;
@@ -71,28 +71,22 @@ const UserEditFormDialog: Component<UserEditFormDialogProps> = (props) => {
       title={`Edit User: ${props.user.email}`}
       description={'Fill out the form below to and click save to edit this user.'}
       footerActions={
-        <>
-          <Form.Group
-            as={Col}
-            xs={12}
-            class="mb-2 d-flex flex-row flex-nowrap justify-content-between"
+        <div class="justify-content-between mb-2 flex w-full flex-row flex-nowrap">
+          <Button class="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button
+            type="submit"
+            disabled={pending() || isSubmitted()}
+            onClick={() => submit(loginForm)}
           >
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button
-              type="submit"
-              disabled={pending() || isSubmitted()}
-              onClick={() => submit(loginForm)}
-            >
-              {loginForm.submitting ? '...' : 'Update User'}
-            </Button>
-          </Form.Group>
-        </>
+            {loginForm.submitting ? '...' : 'Update User'}
+          </Button>
+        </div>
       }
     >
       <Login.Form onSubmit={handleSubmit}>
-        <Row>
+        <div class="columns-1">
           <Login.Field name="userId" validate={[valiField(IsValidUserId)]}>
             {(field, props) => (
               <TextInput
@@ -104,7 +98,7 @@ const UserEditFormDialog: Component<UserEditFormDialogProps> = (props) => {
               />
             )}
           </Login.Field>
-          <Form.Group as={Col} xs={12} class="mb-2">
+          <div class="mb-2 w-full">
             <Login.Field name="username" validate={[valiField(IsValidUsername)]}>
               {(field, props) => (
                 <TextInput
@@ -116,8 +110,8 @@ const UserEditFormDialog: Component<UserEditFormDialogProps> = (props) => {
                 />
               )}
             </Login.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={12} class="mb-2">
+          </div>
+          <div class="mb-2 w-full">
             <Login.Field name="picture">
               {(field, props) => (
                 <TextInput
@@ -129,8 +123,8 @@ const UserEditFormDialog: Component<UserEditFormDialogProps> = (props) => {
                 />
               )}
             </Login.Field>
-          </Form.Group>
-        </Row>
+          </div>
+        </div>
       </Login.Form>
     </Dialog>
   );

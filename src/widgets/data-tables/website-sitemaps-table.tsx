@@ -1,4 +1,3 @@
-import { clientOnly } from '@solidjs/start';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -10,8 +9,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel
 } from '@tanstack/solid-table';
-import { Table } from 'solid-bootstrap';
-import { createEffect, createSignal } from 'solid-js';
+import { createEffect, createSignal, lazy } from 'solid-js';
 import {
   SITEMAP_PAGE_SIZE,
   SITEMAP_PAGE_START,
@@ -22,12 +20,13 @@ import { Paginated_WebsiteMapRead_, WebsiteMapRead, WebsiteRead } from '~/shared
 import {
   TableBody,
   TableColumnIsActive,
+  TableContent,
   TableFooter,
   TableHeader,
   columnSortByUrl
-} from '~/shared/data-tables';
+} from '~/shared/ui/table-data';
 
-const WebsiteSitemapsTableActions = clientOnly(
+const WebsiteSitemapsTableActions = lazy(
   () => import('~/widgets/data-table-actions/sitemaps-table-actions')
 );
 
@@ -113,14 +112,7 @@ const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
   };
   return (
     <>
-      <Table
-        size="sm"
-        variant={theme.darkMode ? 'dark' : 'light'}
-        responsive
-        striped
-        bordered
-        hover
-      >
+      <TableContent>
         {/* @ts-expect-error table type unknown */}
         <TableHeader table={table} setIsFiltering={setIsFiltering} />
         {/* @ts-expect-error table type unknown */}
@@ -133,7 +125,7 @@ const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
           fetchTotal={fetchTotal}
           resetFilter={resetFilter}
         />
-      </Table>
+      </TableContent>
     </>
   );
 };

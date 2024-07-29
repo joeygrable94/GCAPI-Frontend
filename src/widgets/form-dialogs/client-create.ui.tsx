@@ -1,3 +1,4 @@
+import { Button } from '@kobalte/core/button';
 import {
   SubmitHandler,
   createForm,
@@ -5,7 +6,6 @@ import {
   valiField,
   valiForm
 } from '@modular-forms/solid';
-import { Button, Col, Form, Row } from 'solid-bootstrap';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { SCreateClient, SchemaCreateClient } from '~/entities/clients';
@@ -16,9 +16,9 @@ import {
   IsValidSlug,
   IsValidTitle
 } from '~/shared/db';
-import { Dialog, DialogTriggerType } from '~/shared/dialogs';
-import { CheckboxInput, TextInput, TextareaInput } from '~/shared/forms';
 import { queryClient } from '~/shared/tanstack';
+import { Dialog, DialogTriggerType } from '~/shared/ui/dialog';
+import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
 
 type ClientCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -78,29 +78,23 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
       title={`Create Client`}
       description={'Fill out the form below to create a new client.'}
       footerActions={
-        <>
-          <Form.Group
-            as={Col}
-            xs={12}
-            class="mb-2 d-flex flex-row flex-nowrap justify-content-between"
+        <div class="justify-content-between mb-2 flex w-full flex-row flex-nowrap">
+          <Button class="secondary" onClick={() => handleClose()}>
+            Close
+          </Button>
+          <Button
+            type="submit"
+            disabled={pending() || isSubmitted()}
+            onClick={() => submit(createClientForm)}
           >
-            <Button variant="secondary" onClick={() => handleClose()}>
-              Close
-            </Button>
-            <Button
-              type="submit"
-              disabled={pending() || isSubmitted()}
-              onClick={() => submit(createClientForm)}
-            >
-              {createClientForm.submitting ? '...' : 'Create Client'}
-            </Button>
-          </Form.Group>
-        </>
+            {createClientForm.submitting ? '...' : 'Create Client'}
+          </Button>
+        </div>
       }
     >
       <CreateClient.Form onSubmit={handleSubmit}>
-        <Row>
-          <Form.Group as={Col} xs={12} class="mb-2">
+        <div class="columns-1">
+          <div class="mb-2 w-full">
             <CreateClient.Field name="slug" validate={[valiField(IsValidSlug)]}>
               {(field, props) => (
                 <TextInput
@@ -113,8 +107,8 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
                 />
               )}
             </CreateClient.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={12} class="mb-2">
+          </div>
+          <div class="mb-2 w-full">
             <CreateClient.Field name="title" validate={[valiField(IsValidTitle)]}>
               {(field, props) => (
                 <TextInput
@@ -127,14 +121,14 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
                 />
               )}
             </CreateClient.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={12} class="mb-2">
+          </div>
+          <div class="mb-2 w-full">
             <CreateClient.Field
               name="description"
               validate={[valiField(IsValidDescription)]}
             >
               {(field, props) => (
-                <TextareaInput
+                <TextInput
                   {...props}
                   rows={3}
                   label="Client Description"
@@ -143,9 +137,9 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
                 />
               )}
             </CreateClient.Field>
-          </Form.Group>
-          <Form.Group as={Col} xs={12} class="mb-2">
-            <Form.Label class="mb-1">Client Is Active?</Form.Label>
+          </div>
+          <div class="mb-2 w-full">
+            <label class="mb-1">Client Is Active?</label>
             <CreateClient.Field
               name="is_active"
               validate={[valiField(IsValidClientIsActive)]}
@@ -162,8 +156,8 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
                 />
               )}
             </CreateClient.Field>
-          </Form.Group>
-        </Row>
+          </div>
+        </div>
       </CreateClient.Form>
     </Dialog>
   );

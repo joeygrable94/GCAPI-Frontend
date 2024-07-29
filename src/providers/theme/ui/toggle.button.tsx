@@ -1,8 +1,12 @@
-import { Button } from 'solid-bootstrap';
+import { Button } from '@kobalte/core/button';
 import { Component, createMemo } from 'solid-js';
 import { ThemeMode, useTheme } from '~/providers/theme';
 
-const ButtonToggleDarkMode: Component = () => {
+interface ButtonToggleDarkModeProps {
+  class: string;
+}
+
+const ButtonToggleDarkMode: Component<ButtonToggleDarkModeProps> = (props) => {
   const [theme, themeAct] = useTheme();
   const handleToggleSessionTheme = () => {
     themeAct.setDarkMode(!theme.darkMode);
@@ -11,7 +15,7 @@ const ButtonToggleDarkMode: Component = () => {
     return theme.darkMode === true ? 'light' : 'dark';
   });
   return (
-    <Button onClick={() => handleToggleSessionTheme()}>
+    <Button onClick={() => handleToggleSessionTheme()} class={props.class}>
       Toggle {themeText()} mode
     </Button>
   );

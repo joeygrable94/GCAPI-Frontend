@@ -1,44 +1,69 @@
+import { createSession, signIn, signOut } from '@solid-mediakit/auth/client';
 import { A } from '@solidjs/router';
-import { clientOnly } from '@solidjs/start';
-import { Container, Nav, Navbar } from 'solid-bootstrap';
-import { Component, createMemo } from 'solid-js';
-import { NavlinkToggleDarkMode, ThemeMode, useTheme } from '~/providers/theme';
-
-const PrimaryNavAuthLeft = clientOnly(
-  () => import('~/providers/auth/ui/auth.nav.left')
-);
-const PrimaryNavAuthRight = clientOnly(
-  () => import('~/providers/auth/ui/auth.nav.right')
-);
+import { Component, Show } from 'solid-js';
+import { NavlinkToggleDarkMode } from '~/providers/theme';
 
 const PrimaryNavigation: Component = () => {
-  const [theme] = useTheme();
-  const bg = createMemo<ThemeMode>(() => (theme.darkMode ? 'dark' : 'light'));
+  const auth = createSession();
+  const links = [
+    ['Users', '/users'],
+    ['Clients', '/clients'],
+    ['Websites', '/websites']
+  ];
+  const navClass =
+    'rounded-full px-3 py-2 text-md text-gray-900 no-underline hover:text-inherit hover:bg-gray-300 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-50';
   return (
-    <Navbar bg={bg()} variant={bg()} expand="lg" style={{ padding: 0 }}>
-      <Container>
-        <Navbar.Brand
-          as={A}
+    <nav
+      style={{ padding: 0 }}
+      class="border-b-2 bg-gray-50 dark:border-gray-700 dark:bg-black"
+    >
+      <div class="container mx-auto flex flex-row items-center gap-1">
+        <A
           href="/"
-          style={{
-            display: 'flex',
-            'align-items': 'center'
-          }}
+          class="inline-flex flex-row flex-nowrap items-center justify-center px-2 py-1 text-lg text-gray-900 no-underline hover:text-inherit dark:text-gray-100"
         >
           <img alt="" src={'/favicon.ico'} width="50" height="50" />
-          <span style={{ 'margin-left': '10px' }}>{'Get Community Inc'}</span>
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav style={{ width: '100%', 'justify-content': 'flex-start' }}>
-            <PrimaryNavAuthLeft />
-            <div style={{ 'margin-left': 'auto' }} />
-            <PrimaryNavAuthRight />
-            <NavlinkToggleDarkMode />
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+          <span class="ml-2">Get Community Inc</span>
+        </A>
+        <Show when={auth()} keyed>
+          {links.map(([title, url]) => (
+            <A href={url} class={navClass}>
+              {title}
+            </A>
+          ))}
+        </Show>
+        <div style={{ 'margin-left': 'auto' }} />
+        <A href={`/components`} class={navClass}>
+          Components
+        </A>
+        <Show
+          when={auth()}
+          keyed
+          fallback={
+            <a href="#login" onClick={() => void signIn('auth0')} class={navClass}>
+              Login
+            </a>
+          }
+        >
+          <A href={`/users/profile`} class={navClass}>
+            Profile
+          </A>
+          <a
+            href="#logout"
+            onClick={() =>
+              void signOut({
+                redirectTo: '/login',
+                redirect: true
+              })
+            }
+            class={navClass}
+          >
+            Logout
+          </a>
+        </Show>
+        <NavlinkToggleDarkMode class={navClass} />
+      </div>
+    </nav>
   );
 };
 

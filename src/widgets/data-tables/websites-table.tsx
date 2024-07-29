@@ -1,4 +1,3 @@
-import { clientOnly } from '@solidjs/start';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -10,8 +9,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel
 } from '@tanstack/solid-table';
-import { Table } from 'solid-bootstrap';
-import { createEffect, createSignal } from 'solid-js';
+import { createEffect, createSignal, lazy } from 'solid-js';
 import {
   WEBSITES_PAGE_SIZE,
   WEBSITES_PAGE_START,
@@ -22,11 +20,12 @@ import { Paginated_WebsiteRead_, WebsiteRead } from '~/shared/api';
 import {
   TableBody,
   TableColumnIsActive,
+  TableContent,
   TableFooter,
   TableHeader
-} from '~/shared/data-tables';
+} from '~/shared/ui/table-data';
 
-const WebsitesTableActions = clientOnly(
+const WebsitesTableActions = lazy(
   () => import('~/widgets/data-table-actions/websites-table-actions')
 );
 
@@ -112,14 +111,7 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
   };
   return (
     <>
-      <Table
-        size="sm"
-        variant={theme.darkMode ? 'dark' : 'light'}
-        responsive
-        striped
-        bordered
-        hover
-      >
+      <TableContent>
         {/* @ts-expect-error table type unknown */}
         <TableHeader table={table} setIsFiltering={setIsFiltering} />
         {/* @ts-expect-error table type unknown */}
@@ -132,7 +124,7 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
           fetchTotal={fetchTotal}
           resetFilter={resetFilter}
         />
-      </Table>
+      </TableContent>
     </>
   );
 };
