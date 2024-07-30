@@ -13,6 +13,12 @@
     "run": "node -r dotenv/config .output/server/index.mjs"
   },
   "devDependencies": {
+    "@getcommunity/client-styleguides": "workspace:*",
+    "@getcommunity/config-eslint": "workspace:*",
+    "@getcommunity/config-prettier": "workspace:*",
+    "@getcommunity/gcui": "workspace:*",
+    "@getcommunity/gcui-tailwind": "workspace:*",
+    "@tailwindcss/typography": "^0.5.13",
     "@types/crypto-js": "^4.2.2",
     "@types/node": "^20.14.0",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
