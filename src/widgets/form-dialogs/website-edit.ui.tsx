@@ -1,11 +1,14 @@
+import { Dialog } from '@getcommunity/gcui/dialog';
+import { CheckboxInput, TextInput } from '@getcommunity/gcui/form-input';
+import { EditIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import {
-  SubmitHandler,
-  createForm,
-  setValue,
-  submit,
-  valiField,
-  valiForm
+    SubmitHandler,
+    createForm,
+    setValue,
+    submit,
+    valiField,
+    valiForm
 } from '@modular-forms/solid';
 import { createQuery } from '@tanstack/solid-query';
 import { Component, For, createEffect, createSignal } from 'solid-js';
@@ -14,16 +17,13 @@ import { fetchClientsList } from '~/entities/clients';
 import { SEditWebsite, SchemaEditWebsite } from '~/entities/websites';
 import { ClientRead, ClientsService, WebsiteRead, WebsitesService } from '~/shared/api';
 import {
-  IsValidClientId,
-  IsValidWebsiteDomain,
-  IsValidWebsiteId,
-  IsValidWebsiteIsActive,
-  IsValidWebsiteIsSecure
+    IsValidClientId,
+    IsValidWebsiteDomain,
+    IsValidWebsiteId,
+    IsValidWebsiteIsActive,
+    IsValidWebsiteIsSecure
 } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog } from '~/shared/ui/dialog';
-import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
-import { EditIcon } from '~/shared/ui/icon';
 
 type WebsiteEditFormDialogProps = {
   website: WebsiteRead;

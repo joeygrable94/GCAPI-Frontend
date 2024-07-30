@@ -1,8 +1,8 @@
+import { ButtonToggle } from '@getcommunity/gcui/button';
 import { Icon } from 'solid-heroicons';
 import { moon, sun } from 'solid-heroicons/outline';
 import { Component } from 'solid-js';
 import { useTheme } from '~/providers/theme';
-import { ButtonToggle } from '~/shared/ui/button';
 
 interface NavLinkToggleDarkModeProps {
   class: string;

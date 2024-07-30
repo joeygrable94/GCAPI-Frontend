@@ -1,10 +1,18 @@
+import { Button } from '@getcommunity/gcui/button';
+import { Dialog, DialogTriggerType } from '@getcommunity/gcui/dialog';
 import {
-  SubmitHandler,
-  createForm,
-  setValue,
-  submit,
-  valiField,
-  valiForm
+    CheckboxInput,
+    CheckboxSwitchInput,
+    SelectInput,
+    TextInput
+} from '@getcommunity/gcui/form-input';
+import {
+    SubmitHandler,
+    createForm,
+    setValue,
+    submit,
+    valiField,
+    valiForm
 } from '@modular-forms/solid';
 import { createQuery } from '@tanstack/solid-query';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
@@ -12,26 +20,18 @@ import toast from 'solid-toast';
 import { fetchClientsList } from '~/entities/clients';
 import { SCreateWebsite, SchemaCreateWebsite } from '~/entities/websites';
 import {
-  ClientRead,
-  ClientWebsiteCreate,
-  ClientsService,
-  WebsiteRead,
-  WebsitesService
+    ClientRead,
+    ClientWebsiteCreate,
+    ClientsService,
+    WebsiteRead,
+    WebsitesService
 } from '~/shared/api';
 import {
-  IsValidWebsiteDomain,
-  IsValidWebsiteIsActive,
-  IsValidWebsiteIsSecure
+    IsValidWebsiteDomain,
+    IsValidWebsiteIsActive,
+    IsValidWebsiteIsSecure
 } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Button } from '~/shared/ui/button';
-import { Dialog, DialogTriggerType } from '~/shared/ui/dialog';
-import {
-  CheckboxInput,
-  CheckboxSwitchInput,
-  SelectInput,
-  TextInput
-} from '~/shared/ui/form-input';
 
 type WebsiteCreateFormDialogProps = {
   triggerType: DialogTriggerType;

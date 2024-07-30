@@ -1,10 +1,10 @@
+import { Dialog } from '@getcommunity/gcui/dialog';
+import { DeleteIcon, LoadingIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import { Component, Show, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { WebsiteMapRead, WebsiteSitemapsService } from '~/shared/api';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog } from '~/shared/ui/dialog';
-import { DeleteIcon, LoadingIcon } from '~/shared/ui/icon';
 
 type WebsiteSitemapDeleteFormDialogProps = {
   sitemap: WebsiteMapRead;

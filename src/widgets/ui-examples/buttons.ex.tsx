@@ -1,6 +1,6 @@
+import { Button } from '@getcommunity/gcui/button';
+import { Separator } from '@getcommunity/gcui/separator';
 import { Component } from 'solid-js';
-import { Button } from '~/shared/ui/button';
-import { Separator } from '~/shared/ui/separator';
 
 const ButtonsExample: Component = () => {
   return (

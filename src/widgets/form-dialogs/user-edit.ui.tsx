@@ -1,10 +1,13 @@
+import { Dialog } from '@getcommunity/gcui/dialog';
+import { TextInput } from '@getcommunity/gcui/form-input';
+import { EditIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import {
-  createForm,
-  submit,
-  SubmitHandler,
-  valiField,
-  valiForm
+    createForm,
+    submit,
+    SubmitHandler,
+    valiField,
+    valiForm
 } from '@modular-forms/solid';
 import { Component, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
@@ -12,9 +15,6 @@ import { SchemaEditUser, SEditUser } from '~/entities/users';
 import { UserRead, UsersService } from '~/shared/api';
 import { IsValidUserId, IsValidUsername } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog } from '~/shared/ui/dialog';
-import { TextInput } from '~/shared/ui/form-input';
-import { EditIcon } from '~/shared/ui/icon';
 
 type UserEditFormDialogProps = {
   user: UserRead;

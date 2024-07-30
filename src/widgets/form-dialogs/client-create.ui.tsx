@@ -1,24 +1,24 @@
+import { Dialog, DialogTriggerType } from '@getcommunity/gcui/dialog';
+import { CheckboxInput, TextInput } from '@getcommunity/gcui/form-input';
 import { Button } from '@kobalte/core/button';
 import {
-  SubmitHandler,
-  createForm,
-  submit,
-  valiField,
-  valiForm
+    SubmitHandler,
+    createForm,
+    submit,
+    valiField,
+    valiForm
 } from '@modular-forms/solid';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { SCreateClient, SchemaCreateClient } from '~/entities/clients';
 import { ClientRead, ClientsService } from '~/shared/api';
 import {
-  IsValidClientIsActive,
-  IsValidDescription,
-  IsValidSlug,
-  IsValidTitle
+    IsValidClientIsActive,
+    IsValidDescription,
+    IsValidSlug,
+    IsValidTitle
 } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog, DialogTriggerType } from '~/shared/ui/dialog';
-import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
 
 type ClientCreateFormDialogProps = {
   triggerType: DialogTriggerType;

@@ -1,30 +1,30 @@
+import {
+    TableBody,
+    TableColumnIsActive,
+    TableContent,
+    TableFooter,
+    TableHeader,
+    columnSortByUrl
+} from '@getcommunity/gcui/table-data';
 import { createQuery } from '@tanstack/solid-query';
 import {
-  ColumnDef,
-  SortingState,
-  createColumnHelper,
-  createSolidTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel
+    ColumnDef,
+    SortingState,
+    createColumnHelper,
+    createSolidTable,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel
 } from '@tanstack/solid-table';
 import { createEffect, createSignal, lazy } from 'solid-js';
 import {
-  SITEMAP_PAGE_SIZE,
-  SITEMAP_PAGE_START,
-  fetchWebsiteSitemapsList
+    SITEMAP_PAGE_SIZE,
+    SITEMAP_PAGE_START,
+    fetchWebsiteSitemapsList
 } from '~/entities/sitemaps';
 import { useTheme } from '~/providers/theme';
 import { Paginated_WebsiteMapRead_, WebsiteMapRead, WebsiteRead } from '~/shared/api';
-import {
-  TableBody,
-  TableColumnIsActive,
-  TableContent,
-  TableFooter,
-  TableHeader,
-  columnSortByUrl
-} from '~/shared/ui/table-data';
 
 const WebsiteSitemapsTableActions = lazy(
   () => import('~/widgets/data-table-actions/sitemaps-table-actions')

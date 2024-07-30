@@ -1,30 +1,30 @@
+import {
+    TableBody,
+    TableColumnIsActive,
+    TableContent,
+    TableFooter,
+    TableHeader,
+    columnSortByUrl
+} from '@getcommunity/gcui/table-data';
 import { createQuery } from '@tanstack/solid-query';
 import {
-  ColumnDef,
-  SortingState,
-  createColumnHelper,
-  createSolidTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel
+    ColumnDef,
+    SortingState,
+    createColumnHelper,
+    createSolidTable,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel
 } from '@tanstack/solid-table';
 import { createEffect, createSignal, lazy } from 'solid-js';
 import {
-  WEBSITEPAGE_PAGE_SIZE,
-  WEBSITEPAGE_PAGE_START,
-  fetchWebsitePagesList
+    WEBSITEPAGE_PAGE_SIZE,
+    WEBSITEPAGE_PAGE_START,
+    fetchWebsitePagesList
 } from '~/entities/website-pages';
 import { useTheme } from '~/providers/theme';
 import { Paginated_WebsitePageRead_, WebsitePageRead } from '~/shared/api';
-import {
-  TableBody,
-  TableColumnIsActive,
-  TableContent,
-  TableFooter,
-  TableHeader,
-  columnSortByUrl
-} from '~/shared/ui/table-data';
 import { formatDateString } from '~/shared/utils';
 
 const WebsitePagesTableActions = lazy(

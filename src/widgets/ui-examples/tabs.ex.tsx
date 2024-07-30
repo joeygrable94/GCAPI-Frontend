@@ -1,5 +1,5 @@
+import { Tab, Tabs } from '@getcommunity/gcui/tabs';
 import { Component } from 'solid-js';
-import { Tab, Tabs } from '~/shared/ui/tabs';
 
 const TabsExample: Component = () => {
   return (
@@ -9,7 +9,7 @@ const TabsExample: Component = () => {
       <p class="text-lg">Tab Colors</p>
       <div class="flex flex-wrap">
         <div class="w-full max-w-[33%]">
-          <Tabs label="My Tabs" className="my-8">
+          <Tabs label="My Tabs">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -20,7 +20,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="info">
+          <Tabs label="My Tabs" color="info">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -31,7 +31,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="error">
+          <Tabs label="My Tabs" color="error">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -42,7 +42,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="warning">
+          <Tabs label="My Tabs" color="warning">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -53,7 +53,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="success">
+          <Tabs label="My Tabs" color="success">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -64,7 +64,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="light">
+          <Tabs label="My Tabs" color="light">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -75,86 +75,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="dark">
-            <Tab label="Tab 1" value="tab-1">
-              Tab Content 1
-            </Tab>
-            <Tab label="Tab 2" value="tab-2">
-              Tab Content 2
-            </Tab>
-            <Tab label="Tab 3" value="tab-3">
-              Tab Content 3
-            </Tab>
-          </Tabs>
-        </div>
-        <div class="w-full max-w-[33%]">
-          <Tabs label="My Tabs" className="my-8" styleType="fill">
-            <Tab label="Tab 1" value="tab-1">
-              Tab Content 1
-            </Tab>
-            <Tab label="Tab 2" value="tab-2">
-              Tab Content 2
-            </Tab>
-            <Tab label="Tab 3" value="tab-3">
-              Tab Content 3
-            </Tab>
-          </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="info" styleType="fill">
-            <Tab label="Tab 1" value="tab-1">
-              Tab Content 1
-            </Tab>
-            <Tab label="Tab 2" value="tab-2">
-              Tab Content 2
-            </Tab>
-            <Tab label="Tab 3" value="tab-3">
-              Tab Content 3
-            </Tab>
-          </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="error" styleType="fill">
-            <Tab label="Tab 1" value="tab-1">
-              Tab Content 1
-            </Tab>
-            <Tab label="Tab 2" value="tab-2">
-              Tab Content 2
-            </Tab>
-            <Tab label="Tab 3" value="tab-3">
-              Tab Content 3
-            </Tab>
-          </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="warning" styleType="fill">
-            <Tab label="Tab 1" value="tab-1">
-              Tab Content 1
-            </Tab>
-            <Tab label="Tab 2" value="tab-2">
-              Tab Content 2
-            </Tab>
-            <Tab label="Tab 3" value="tab-3">
-              Tab Content 3
-            </Tab>
-          </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="success" styleType="fill">
-            <Tab label="Tab 1" value="tab-1">
-              Tab Content 1
-            </Tab>
-            <Tab label="Tab 2" value="tab-2">
-              Tab Content 2
-            </Tab>
-            <Tab label="Tab 3" value="tab-3">
-              Tab Content 3
-            </Tab>
-          </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="light" styleType="fill">
-            <Tab label="Tab 1" value="tab-1">
-              Tab Content 1
-            </Tab>
-            <Tab label="Tab 2" value="tab-2">
-              Tab Content 2
-            </Tab>
-            <Tab label="Tab 3" value="tab-3">
-              Tab Content 3
-            </Tab>
-          </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="dark" styleType="fill">
+          <Tabs label="My Tabs" color="dark">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -167,7 +88,7 @@ const TabsExample: Component = () => {
           </Tabs>
         </div>
         <div class="w-full max-w-[33%]">
-          <Tabs label="My Tabs" className="my-8" styleType="outline">
+          <Tabs label="My Tabs" styleType="fill">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -178,7 +99,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="info" styleType="outline">
+          <Tabs label="My Tabs" color="info" styleType="fill">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -189,7 +110,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="error" styleType="outline">
+          <Tabs label="My Tabs" color="error" styleType="fill">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -200,7 +121,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="warning" styleType="outline">
+          <Tabs label="My Tabs" color="warning" styleType="fill">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -211,7 +132,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="success" styleType="outline">
+          <Tabs label="My Tabs" color="success" styleType="fill">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -222,7 +143,7 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="light" styleType="outline">
+          <Tabs label="My Tabs" color="light" styleType="fill">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -233,7 +154,86 @@ const TabsExample: Component = () => {
               Tab Content 3
             </Tab>
           </Tabs>
-          <Tabs label="My Tabs" className="my-8" color="dark" styleType="outline">
+          <Tabs label="My Tabs" color="dark" styleType="fill">
+            <Tab label="Tab 1" value="tab-1">
+              Tab Content 1
+            </Tab>
+            <Tab label="Tab 2" value="tab-2">
+              Tab Content 2
+            </Tab>
+            <Tab label="Tab 3" value="tab-3">
+              Tab Content 3
+            </Tab>
+          </Tabs>
+        </div>
+        <div class="w-full max-w-[33%]">
+          <Tabs label="My Tabs" styleType="outline">
+            <Tab label="Tab 1" value="tab-1">
+              Tab Content 1
+            </Tab>
+            <Tab label="Tab 2" value="tab-2">
+              Tab Content 2
+            </Tab>
+            <Tab label="Tab 3" value="tab-3">
+              Tab Content 3
+            </Tab>
+          </Tabs>
+          <Tabs label="My Tabs" color="info" styleType="outline">
+            <Tab label="Tab 1" value="tab-1">
+              Tab Content 1
+            </Tab>
+            <Tab label="Tab 2" value="tab-2">
+              Tab Content 2
+            </Tab>
+            <Tab label="Tab 3" value="tab-3">
+              Tab Content 3
+            </Tab>
+          </Tabs>
+          <Tabs label="My Tabs" color="error" styleType="outline">
+            <Tab label="Tab 1" value="tab-1">
+              Tab Content 1
+            </Tab>
+            <Tab label="Tab 2" value="tab-2">
+              Tab Content 2
+            </Tab>
+            <Tab label="Tab 3" value="tab-3">
+              Tab Content 3
+            </Tab>
+          </Tabs>
+          <Tabs label="My Tabs" color="warning" styleType="outline">
+            <Tab label="Tab 1" value="tab-1">
+              Tab Content 1
+            </Tab>
+            <Tab label="Tab 2" value="tab-2">
+              Tab Content 2
+            </Tab>
+            <Tab label="Tab 3" value="tab-3">
+              Tab Content 3
+            </Tab>
+          </Tabs>
+          <Tabs label="My Tabs" color="success" styleType="outline">
+            <Tab label="Tab 1" value="tab-1">
+              Tab Content 1
+            </Tab>
+            <Tab label="Tab 2" value="tab-2">
+              Tab Content 2
+            </Tab>
+            <Tab label="Tab 3" value="tab-3">
+              Tab Content 3
+            </Tab>
+          </Tabs>
+          <Tabs label="My Tabs" color="light" styleType="outline">
+            <Tab label="Tab 1" value="tab-1">
+              Tab Content 1
+            </Tab>
+            <Tab label="Tab 2" value="tab-2">
+              Tab Content 2
+            </Tab>
+            <Tab label="Tab 3" value="tab-3">
+              Tab Content 3
+            </Tab>
+          </Tabs>
+          <Tabs label="My Tabs" color="dark" styleType="outline">
             <Tab label="Tab 1" value="tab-1">
               Tab Content 1
             </Tab>
@@ -248,7 +248,7 @@ const TabsExample: Component = () => {
       </div>
       <p class="text-lg">Tab Sizes</p>
       <div class="flex flex-col">
-        <Tabs label="My Tabs" className="my-8" size="small">
+        <Tabs label="My Tabs" size="small">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -259,7 +259,7 @@ const TabsExample: Component = () => {
             Tab Content 3
           </Tab>
         </Tabs>
-        <Tabs label="My Tabs" className="my-8" size="default">
+        <Tabs label="My Tabs" size="default">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -270,7 +270,7 @@ const TabsExample: Component = () => {
             Tab Content 3
           </Tab>
         </Tabs>
-        <Tabs label="My Tabs" className="my-8" size="medium">
+        <Tabs label="My Tabs" size="medium">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -281,7 +281,7 @@ const TabsExample: Component = () => {
             Tab Content 3
           </Tab>
         </Tabs>
-        <Tabs label="My Tabs" className="my-8" size="large">
+        <Tabs label="My Tabs" size="large">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -292,7 +292,7 @@ const TabsExample: Component = () => {
             Tab Content 3
           </Tab>
         </Tabs>
-        <Tabs label="My Tabs" className="my-8" orientation="vertical" size="small">
+        <Tabs label="My Tabs" orientation="vertical" size="small">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -303,7 +303,7 @@ const TabsExample: Component = () => {
             Tab Content 3
           </Tab>
         </Tabs>
-        <Tabs label="My Tabs" className="my-8" orientation="vertical" size="default">
+        <Tabs label="My Tabs" orientation="vertical" size="default">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -314,7 +314,7 @@ const TabsExample: Component = () => {
             Tab Content 3
           </Tab>
         </Tabs>
-        <Tabs label="My Tabs" className="my-8" orientation="vertical" size="medium">
+        <Tabs label="My Tabs" orientation="vertical" size="medium">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -325,7 +325,7 @@ const TabsExample: Component = () => {
             Tab Content 3
           </Tab>
         </Tabs>
-        <Tabs label="My Tabs" className="my-8" orientation="vertical" size="large">
+        <Tabs label="My Tabs" orientation="vertical" size="large">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -340,7 +340,7 @@ const TabsExample: Component = () => {
       <p class="text-xl">Tab States</p>
       <div class="flex flex-col">
         <p class="text-xl">Tabs Disabled</p>
-        <Tabs label="My Tabs" className="my-8" disabled>
+        <Tabs label="My Tabs" disabled>
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -352,7 +352,7 @@ const TabsExample: Component = () => {
           </Tab>
         </Tabs>
         <p class="text-xl">Inidividual Tab Disabled</p>
-        <Tabs label="My Tabs" className="my-8" orientation="vertical">
+        <Tabs label="My Tabs" orientation="vertical">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>
@@ -366,7 +366,7 @@ const TabsExample: Component = () => {
       </div>
       <p class="text-xl">Square Tabs</p>
       <div class="flex flex-col">
-        <Tabs label="My Tabs" className="my-8" curve="none">
+        <Tabs label="My Tabs" curve="none">
           <Tab label="Tab 1" value="tab-1">
             Tab Content 1
           </Tab>

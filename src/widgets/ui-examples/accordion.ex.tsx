@@ -1,5 +1,5 @@
+import { Accordion, AccordionItem } from '@getcommunity/gcui/accordion';
 import { Component } from 'solid-js';
-import { Accordion, AccordionItem } from '~/shared/ui/accordion';
 
 const AccordionsExample: Component = () => {
   return (

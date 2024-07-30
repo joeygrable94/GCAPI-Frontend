@@ -1,5 +1,5 @@
+import { ProgressBar } from '@getcommunity/gcui/progress';
 import { Component, createSignal, onMount } from 'solid-js';
-import { ProgressBar } from '~/shared/ui/progress';
 
 const ProgressBarsExample: Component = () => {
   const [progressValue, setProgressValue] = createSignal(0);

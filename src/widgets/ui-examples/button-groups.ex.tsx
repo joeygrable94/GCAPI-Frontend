@@ -1,5 +1,5 @@
+import { ButtonGroup } from '@getcommunity/gcui/button';
 import { Component } from 'solid-js';
-import { ButtonGroup } from '~/shared/ui/button';
 
 const ButtonGroupsExample: Component = () => {
   return (

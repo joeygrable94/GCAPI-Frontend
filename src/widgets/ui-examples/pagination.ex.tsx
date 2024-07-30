@@ -1,5 +1,5 @@
+import { Pagination } from '@getcommunity/gcui/pagination';
 import { Component, createSignal } from 'solid-js';
-import { Pagination } from '~/shared/ui/pagination';
 
 const PaginationExample: Component = () => {
   const [page, setPage] = createSignal<number>(1);

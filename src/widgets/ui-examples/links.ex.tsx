@@ -1,5 +1,5 @@
+import { Link } from '@getcommunity/gcui/link';
 import { Component } from 'solid-js';
-import { Link } from '~/shared/ui/link';
 
 const AlertsExample: Component = () => {
   return (

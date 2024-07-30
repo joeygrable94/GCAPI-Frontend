@@ -1,5 +1,5 @@
+import { AlertMessage } from '@getcommunity/gcui/alert';
 import { Component } from 'solid-js';
-import { AlertMessage } from '~/shared/ui/alert';
 
 const AlertsExample: Component = () => {
   return (

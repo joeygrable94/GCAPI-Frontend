@@ -1,20 +1,20 @@
+import {
+    CheckboxInput,
+    CheckboxSwitchInput,
+    ComboboxInput,
+    ComboboxMultiInput,
+    NumberInput,
+    NumberRangeInput,
+    RadioGroupInput,
+    SelectInput,
+    SelectMultipleInput,
+    TextInput
+} from '@getcommunity/gcui/form-input';
 import { SliderGetValueLabelParams } from '@kobalte/core/slider';
 import { createQuery } from '@tanstack/solid-query';
 import { Component, Show, createEffect, createMemo, createSignal } from 'solid-js';
 import { fetchClientsList } from '~/entities/clients';
 import { ClientRead } from '~/shared/api';
-import {
-  CheckboxInput,
-  CheckboxSwitchInput,
-  ComboboxInput,
-  ComboboxMultiInput,
-  NumberInput,
-  NumberRangeInput,
-  RadioGroupInput,
-  SelectInput,
-  SelectMultipleInput,
-  TextInput
-} from '~/shared/ui/form-input';
 
 const FormInputsExample: Component = () => {
   const clientsQuery = createQuery(() => ({

@@ -1,6 +1,6 @@
+import { Button } from '@getcommunity/gcui/button';
+import { toast } from '@getcommunity/gcui/toast';
 import { Component } from 'solid-js';
-import { Button } from '~/shared/ui/button';
-import { toast } from '~/shared/ui/toast';
 
 const ToastExample: Component = () => {
   return (

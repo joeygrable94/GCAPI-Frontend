@@ -1,5 +1,5 @@
+import { Separator } from '@getcommunity/gcui/separator';
 import { Component } from 'solid-js';
-import { Separator } from '~/shared/ui/separator';
 
 const SeparatorsExample: Component = () => {
   return (

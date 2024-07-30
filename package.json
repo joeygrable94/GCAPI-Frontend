@@ -35,6 +35,9 @@
   "dependencies": {
     "@auth/core": "^0.29.0",
     "@babel/core": "7.24.4",
+    "@getcommunity/client-styleguides": "^0.0.8",
+    "@getcommunity/gcui": "^0.0.1",
+    "@getcommunity/gcui-tailwind": "^0.0.1",
     "@kobalte/core": "^0.13.3",
     "@kobalte/tailwindcss": "^0.9.0",
     "@modular-forms/solid": "^0.21.0",
@@ -44,6 +47,7 @@
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.14.1",
     "@solidjs/start": "^1.0.6",
+    "@tailwindcss/typography": "^0.5.13",
     "@tanstack/solid-query": "^5.37.1",
     "@tanstack/solid-query-devtools": "^5.37.1",
     "@tanstack/solid-table": "^8.17.3",

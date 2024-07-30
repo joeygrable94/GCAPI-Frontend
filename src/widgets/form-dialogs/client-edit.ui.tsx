@@ -1,25 +1,25 @@
+import { Dialog } from '@getcommunity/gcui/dialog';
+import { CheckboxInput, TextInput } from '@getcommunity/gcui/form-input';
+import { EditIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import {
-  SubmitHandler,
-  createForm,
-  submit,
-  valiField,
-  valiForm
+    SubmitHandler,
+    createForm,
+    submit,
+    valiField,
+    valiForm
 } from '@modular-forms/solid';
 import { Component, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { SEditClient, SchemaEditClient } from '~/entities/clients';
 import { ClientRead, ClientsService } from '~/shared/api';
 import {
-  IsValidClientId,
-  IsValidClientIsActive,
-  IsValidDescription,
-  IsValidTitle
+    IsValidClientId,
+    IsValidClientIsActive,
+    IsValidDescription,
+    IsValidTitle
 } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog } from '~/shared/ui/dialog';
-import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
-import { EditIcon } from '~/shared/ui/icon';
 
 type ClientEditFormDialogProps = {
   client: ClientRead;

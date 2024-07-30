@@ -1,6 +1,6 @@
+import { Breadcrumbs } from '@getcommunity/gcui/breadcrumb';
+import { ArrowRightIcon } from '@getcommunity/gcui/icon';
 import { Component } from 'solid-js';
-import { Breadcrumbs } from '~/shared/ui/breadcrumb';
-import { ArrowRightIcon } from '~/shared/ui/icon';
 
 const BreadcrumbsExample: Component = () => {
   return (

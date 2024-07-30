@@ -1,6 +1,6 @@
+import { Button } from '@getcommunity/gcui/button';
+import { Popover } from '@getcommunity/gcui/popover';
 import { Component, createEffect, createSignal, onMount } from 'solid-js';
-import { Button } from '~/shared/ui/button';
-import { Popover } from '~/shared/ui/popover';
 
 let btnAnkrDefault: HTMLElement | undefined;
 let btnAnkrInfo: HTMLElement | undefined;

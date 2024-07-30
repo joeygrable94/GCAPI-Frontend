@@ -1,5 +1,5 @@
+import { Collapsable } from '@getcommunity/gcui/accordion';
 import { Component, createSignal } from 'solid-js';
-import { Collapsable } from '~/shared/ui/accordion';
 
 const CollapsablesExample: Component = () => {
   const [open, setOpen] = createSignal(false);

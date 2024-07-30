@@ -1,5 +1,5 @@
+import { CreateIcon } from '@getcommunity/gcui/icon';
 import { Component } from 'solid-js';
-import { CreateIcon } from '~/shared/ui/icon';
 import { WebsiteCreateFormDialog } from '~/widgets/form-dialogs';
 
 // type WebsitesActionsMenuProps = {};

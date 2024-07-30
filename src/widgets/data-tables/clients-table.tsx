@@ -1,29 +1,29 @@
+import {
+    TableBody,
+    TableColumnIsActive,
+    TableContent,
+    TableFooter,
+    TableHeader
+} from '@getcommunity/gcui/table-data';
 import { createQuery } from '@tanstack/solid-query';
 import {
-  ColumnDef,
-  SortingState,
-  createColumnHelper,
-  createSolidTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel
+    ColumnDef,
+    SortingState,
+    createColumnHelper,
+    createSolidTable,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel
 } from '@tanstack/solid-table';
 import { createEffect, createSignal, lazy } from 'solid-js';
 import {
-  CLIENTS_PAGE_SIZE,
-  CLIENTS_PAGE_START,
-  fetchClientsList
+    CLIENTS_PAGE_SIZE,
+    CLIENTS_PAGE_START,
+    fetchClientsList
 } from '~/entities/clients';
 import { useTheme } from '~/providers/theme';
 import { ClientRead, Paginated_ClientRead_ } from '~/shared/api';
-import {
-  TableBody,
-  TableColumnIsActive,
-  TableContent,
-  TableFooter,
-  TableHeader
-} from '~/shared/ui/table-data';
 
 const ClientsTableActions = lazy(
   () => import('~/widgets/data-table-actions/clients-table-actions')

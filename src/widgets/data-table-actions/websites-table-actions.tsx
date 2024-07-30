@@ -1,9 +1,9 @@
+import { ViewIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import { useNavigate } from '@solidjs/router';
 import { Component } from 'solid-js';
 import { useTheme } from '~/providers/theme';
 import { WebsiteRead } from '~/shared/api';
-import { ViewIcon } from '~/shared/ui/icon';
 import { WebsiteDeleteFormDialog, WebsiteEditFormDialog } from '~/widgets/form-dialogs';
 
 interface IWebsitesTableActionsProps {

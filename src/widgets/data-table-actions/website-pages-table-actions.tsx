@@ -1,9 +1,9 @@
+import { KeywordCorpusIcon, PageSpeedInsightsIcon, ViewIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import { useNavigate } from '@solidjs/router';
 import { Component } from 'solid-js';
 import { useTheme } from '~/providers/theme';
 import { WebsitePageRead } from '~/shared/api';
-import { KeywordCorpusIcon, PageSpeedInsightsIcon, ViewIcon } from '~/shared/ui/icon';
 import { WebsitePageDeleteFormDialog } from '~/widgets/form-dialogs';
 
 interface IWebsitePagesTableActionsProps {

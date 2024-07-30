@@ -1,35 +1,35 @@
+import {
+    TableBody,
+    TableColumnIsActive,
+    TableContent,
+    TableFooter,
+    TableHeader
+} from '@getcommunity/gcui/table-data';
 import { createQuery } from '@tanstack/solid-query';
 import {
-  ColumnDef,
-  SortingState,
-  createColumnHelper,
-  createSolidTable,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel
+    ColumnDef,
+    SortingState,
+    createColumnHelper,
+    createSolidTable,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel
 } from '@tanstack/solid-table';
 import { createEffect, createSignal, lazy } from 'solid-js';
 import {
-  USERS_PAGE_SIZE,
-  USERS_PAGE_START,
-  UserProfilePicturePreview,
-  fetchUsersList
+    USERS_PAGE_SIZE,
+    USERS_PAGE_START,
+    UserProfilePicturePreview,
+    fetchUsersList
 } from '~/entities/users';
 import { useTheme } from '~/providers/theme';
 import {
-  Paginated_UserReadAsAdmin_,
-  Paginated_UserReadAsManager_,
-  UserReadAsAdmin,
-  UserReadAsManager
+    Paginated_UserReadAsAdmin_,
+    Paginated_UserReadAsManager_,
+    UserReadAsAdmin,
+    UserReadAsManager
 } from '~/shared/api';
-import {
-  TableBody,
-  TableColumnIsActive,
-  TableContent,
-  TableFooter,
-  TableHeader
-} from '~/shared/ui/table-data';
 import { formatDateString } from '~/shared/utils';
 
 const UsersTableActions = lazy(

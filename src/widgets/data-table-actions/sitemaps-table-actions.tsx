@@ -1,14 +1,14 @@
+import { ProcessIcon, ViewIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import { useNavigate } from '@solidjs/router';
 import { Component, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { useTheme } from '~/providers/theme';
 import {
-  WebsiteMapProcessing,
-  WebsiteMapRead,
-  WebsiteSitemapsService
+    WebsiteMapProcessing,
+    WebsiteMapRead,
+    WebsiteSitemapsService
 } from '~/shared/api';
-import { ProcessIcon, ViewIcon } from '~/shared/ui/icon';
 import { WebsiteSitemapDeleteFormDialog } from '~/widgets/form-dialogs';
 
 interface IWebsiteSitemapsTableActionsProps {

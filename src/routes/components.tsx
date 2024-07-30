@@ -1,7 +1,7 @@
+import { Separator } from '@getcommunity/gcui/separator';
 import { createSession } from '@solid-mediakit/auth/client';
 import { RouteSectionProps } from '@solidjs/router';
 import { Show, Suspense } from 'solid-js';
-import { Separator } from '~/shared/ui/separator';
 
 export default function ComponentsLayout(props: RouteSectionProps) {
   const auth = createSession();

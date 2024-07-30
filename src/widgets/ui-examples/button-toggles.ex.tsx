@@ -1,6 +1,6 @@
+import { ButtonToggle } from '@getcommunity/gcui/button';
+import { AudioOff, AudioOn } from '@getcommunity/gcui/icon';
 import { Component } from 'solid-js';
-import { ButtonToggle } from '~/shared/ui/button';
-import { AudioOff, AudioOn } from '~/shared/ui/icon';
 
 const ButtonTogglesExample: Component = () => {
   return (

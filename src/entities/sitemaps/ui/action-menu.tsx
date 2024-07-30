@@ -1,6 +1,6 @@
+import { CreateIcon } from '@getcommunity/gcui/icon';
 import { Component } from 'solid-js';
 import { WebsiteRead } from '~/shared/api';
-import { CreateIcon } from '~/shared/ui/icon';
 import { WebsiteSitemapCreateFormDialog } from '~/widgets/form-dialogs';
 
 type WebsiteSitemapsActionsMenuProps = {

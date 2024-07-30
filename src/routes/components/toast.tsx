@@ -1,4 +1,4 @@
-import { ToastPortal } from '~/shared/ui/toast';
+import { ToastPortal } from '@getcommunity/gcui/toast';
 import { ToastExample } from '~/widgets/ui-examples';
 
 export default function ToastComponents() {
