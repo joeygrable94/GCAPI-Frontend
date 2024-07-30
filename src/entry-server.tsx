@@ -1,8 +1,9 @@
-import { createHandler, StartServer } from '@solidjs/start/server';
+// @refresh reload
+import { createHandler, StartServer } from "@solidjs/start/server";
 
 export default createHandler(() => (
   <StartServer
-    document={({ assets, children, scripts }: any) => {
+  document={({ assets, children, scripts }) => {
       return (
         <html lang="en" data-theme={'light'}>
           <head>
