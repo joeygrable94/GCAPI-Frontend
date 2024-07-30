@@ -9,6 +9,7 @@ dist
 .netlify
 netlify
 .vinxi
+.turbo
 
 # dependencies
 /node_modules
