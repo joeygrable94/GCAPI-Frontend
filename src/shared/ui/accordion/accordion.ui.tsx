@@ -133,7 +133,9 @@ export const Accordion: ParentComponent<AccordianProps> = (props) => {
                   <span
                     class={`${itemIconSize[itemSize]} rotate-90 transition-transform ui-group-expanded:rotate-0`}
                   >
-                    <ArrowDownIcon classes="accordion__item-trigger-icon" aria-hidden />
+                    <div class="accordion__item-trigger-icon">
+                      <ArrowDownIcon aria-hidden />
+                    </div>
                   </span>
                 </KBAccordion.Trigger>
               </KBAccordion.Header>

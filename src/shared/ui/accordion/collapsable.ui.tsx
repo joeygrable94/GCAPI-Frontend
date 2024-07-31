@@ -96,7 +96,9 @@ const Collapsable: ParentComponent<CollapsableProps> = (props) => {
         <span
           class={`collapsible__trigger-icon ${itemIconSize[size]} rotate-0 transition-transform ui-group-expanded:rotate-180`}
         >
-          <ArrowDownIcon classes="accordion__item-trigger-icon" aria-hidden />
+          <div class="accordion__item-trigger-icon">
+            <ArrowDownIcon aria-hidden />
+          </div>
         </span>
       </KBCollapsible.Trigger>
       <KBCollapsible.Content

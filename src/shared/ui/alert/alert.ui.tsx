@@ -1,5 +1,5 @@
 import { Alert } from '@kobalte/core/alert';
-import { JSX, Show, children, createSignal, onCleanup, onMount } from 'solid-js';
+import { JSX, Show, children } from 'solid-js';
 import { ThemeElementColor } from '~/shared/ui';
 import { CloseIcon } from '~/shared/ui/icon';
 
@@ -36,25 +36,29 @@ export default function AlertMessage(props: AlertMessageProps) {
     true: 'hover:bg-opacity-90 hover:cursor-pointer',
     false: ''
   };
-  const [tKey, setTKey] = createSignal<NodeJS.Timeout | undefined>(undefined);
-  const close = () => {
-    if (props.onClose) props.onClose();
-    alertElm?.remove();
-  };
-  const triggerTimeout = () => {
-    let tKey = setTimeout(() => {
-      close();
-    }, props.timeout);
-    setTKey(tKey);
-  };
-  onMount(() =>
-    props.timeout
-      ? props.triggerTimeoutOnClick
-        ? alertElm?.addEventListener('click', triggerTimeout)
-        : triggerTimeout()
-      : undefined
-  );
-  onCleanup(() => (tKey() ? clearTimeout(tKey()) : undefined));
+  // const [tKey, setTKey] = createSignal<NodeJS.Timeout | number | undefined>(undefined);
+  // const close = () => {
+  //   if (props.onClose) props.onClose();
+  //   alertElm?.remove();
+  // };
+  // onMount(() => {
+  //   if (props.timeout && props.triggerTimeoutOnClick) {
+  //     if (alertElm) {
+  //       alertElm.addEventListener('click', () => {
+  //         let tKey = setTimeout(close, props.timeout);
+  //         setTKey(tKey);
+  //       });
+  //     } else {
+  //       let tKey = setTimeout(close, props.timeout);
+  //       setTKey(tKey);
+  //     }
+  //   }
+  // });
+  // onCleanup(() => {
+  //   if (tKey()) {
+  //     clearTimeout(tKey());
+  //   }
+  // });
   return (
     <Alert
       class={`alert my-1 flex items-center justify-between rounded border-1 border-solid px-3 py-2 focus:outline focus:outline-2 focus:outline-offset-2 ${alertColorKey[color]} ${alertHoverAction[closable]}`}
