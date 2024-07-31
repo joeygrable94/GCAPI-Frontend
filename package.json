@@ -8,7 +8,7 @@
     "preview": "vinxi start",
     "run": "node -r dotenv/config .output/server/index.mjs",
     "clean": "rm -rf .output && rm -rf .vinxi && rm -rf node_modules",
-    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "format": "prettier --write \"./src/**/*.{ts,tsx,md,mdx}\"",
     "lint": "eslint ./src",
     "version": "vinxi version"
   },
