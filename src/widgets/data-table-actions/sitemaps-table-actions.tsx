@@ -1,3 +1,4 @@
+import { ProcessIcon, ViewIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import { useNavigate } from '@solidjs/router';
 import { Component, createEffect, createSignal } from 'solid-js';
@@ -6,9 +7,8 @@ import { useTheme } from '~/providers/theme';
 import {
   WebsiteMapProcessing,
   WebsiteMapRead,
-  WebsiteSitemapsService
+  WebsiteSitemapsService,
 } from '~/shared/api';
-import { ProcessIcon, ViewIcon } from '~/shared/ui/icon';
 import { WebsiteSitemapDeleteFormDialog } from '~/widgets/form-dialogs';
 
 interface IWebsiteSitemapsTableActionsProps {
@@ -25,7 +25,7 @@ const WebsiteSitemapsTableActions: Component<IWebsiteSitemapsTableActionsProps> 
   const handleProcessPages = () => {
     WebsiteSitemapsService.websiteSitemapsProcessSitemapPagesApiV1SitemapsSitemapIdProcessPagesGet(
       {
-        sitemapId: sitemap().id
+        sitemapId: sitemap().id,
       }
     )
       .then((r: WebsiteMapProcessing) => {
@@ -33,12 +33,13 @@ const WebsiteSitemapsTableActions: Component<IWebsiteSitemapsTableActionsProps> 
         toast.success(`processing pages: ${r.url}`);
       })
       .catch((e) => {
-        toast.error(`process Error: ${e.message}`);
+        console.error(e);
+        toast.error(`process Error`);
       });
   };
   createEffect(() => setSitemap(props.sitemap));
   return (
-    <div class="d-flex flex-gap-2 flex-row flex-nowrap">
+    <div class='d-flex flex-gap-2 flex-row flex-nowrap'>
       <Button
         class={theme.darkMode ? 'outline-light' : 'outline-dark'}
         onClick={() => navigate(`/sitemaps/${sitemap().id}`)}

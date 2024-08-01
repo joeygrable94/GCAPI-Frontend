@@ -1,313 +1,313 @@
+import { Pagination } from '@getcommunity/gcui/pagination';
 import { Component, createSignal } from 'solid-js';
-import { Pagination } from '~/shared/ui/pagination';
 
 const PaginationExample: Component = () => {
   const [page, setPage] = createSignal<number>(1);
   return (
-    <div id="pagination" class="flex flex-col gap-1 pb-24 pt-12">
-      <h2 class="text-3xl font-bold">Pagination</h2>
-      <p class="text-lg">This section demonstrates pagination.</p>
-      <div class="flex w-full flex-col items-center gap-2">
+    <div id='pagination' class='flex flex-col gap-1 pb-24 pt-12'>
+      <h2 class='text-3xl font-bold'>Pagination</h2>
+      <p class='text-lg'>This section demonstrates pagination.</p>
+      <div class='flex w-full flex-col items-center gap-2'>
         <Pagination
           count={10}
           page={page}
           setPage={setPage}
-          styleType="fill"
-          color="info"
-          curve="none"
+          styleType='fill'
+          color='info'
+          curve='none'
         />
         <Pagination
           count={10}
           page={page}
           setPage={setPage}
-          styleType="fill"
-          color="info"
-          curve="default"
+          styleType='fill'
+          color='info'
+          curve='default'
         />
         <Pagination
           count={10}
           page={page}
           setPage={setPage}
-          styleType="fill"
-          color="info"
-          curve="small"
+          styleType='fill'
+          color='info'
+          curve='small'
         />
         <Pagination
           count={10}
           page={page}
           setPage={setPage}
-          styleType="fill"
-          color="info"
-          curve="medium"
+          styleType='fill'
+          color='info'
+          curve='medium'
         />
         <Pagination
           count={10}
           page={page}
           setPage={setPage}
-          styleType="fill"
-          color="info"
-          curve="large"
+          styleType='fill'
+          color='info'
+          curve='large'
         />
         <Pagination
           count={10}
           page={page}
           setPage={setPage}
-          styleType="fill"
-          color="info"
-          curve="full"
+          styleType='fill'
+          color='info'
+          curve='full'
         />
       </div>
-      <div class="flex flex-row flex-wrap">
-        <div class="flex w-full flex-col items-center gap-2 lg:w-1/2">
-          <p class="">Rounded</p>
+      <div class='flex flex-row flex-wrap'>
+        <div class='flex w-full flex-col items-center gap-2 lg:w-1/2'>
+          <p class=''>Rounded</p>
           <Pagination count={10} page={page} setPage={setPage} />
-          <Pagination count={10} page={page} setPage={setPage} styleType="fill" />
-          <Pagination count={10} page={page} setPage={setPage} styleType="outline" />
-          <Pagination count={10} page={page} setPage={setPage} color="info" />
+          <Pagination count={10} page={page} setPage={setPage} styleType='fill' />
+          <Pagination count={10} page={page} setPage={setPage} styleType='outline' />
+          <Pagination count={10} page={page} setPage={setPage} color='info' />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            styleType="fill"
-            color="info"
+            styleType='fill'
+            color='info'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            styleType="outline"
-            color="info"
+            styleType='outline'
+            color='info'
           />
-          <Pagination count={10} page={page} setPage={setPage} color="error" />
+          <Pagination count={10} page={page} setPage={setPage} color='error' />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            styleType="fill"
-            color="error"
-          />
-          <Pagination
-            count={10}
-            page={page}
-            setPage={setPage}
-            styleType="outline"
-            color="error"
-          />
-          <Pagination count={10} page={page} setPage={setPage} color="warning" />
-          <Pagination
-            count={10}
-            page={page}
-            setPage={setPage}
-            styleType="fill"
-            color="warning"
+            styleType='fill'
+            color='error'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            styleType="outline"
-            color="warning"
+            styleType='outline'
+            color='error'
           />
-          <Pagination count={10} page={page} setPage={setPage} color="success" />
+          <Pagination count={10} page={page} setPage={setPage} color='warning' />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            styleType="fill"
-            color="success"
-          />
-          <Pagination
-            count={10}
-            page={page}
-            setPage={setPage}
-            styleType="outline"
-            color="success"
-          />
-          <Pagination count={10} page={page} setPage={setPage} color="light" />
-          <Pagination
-            count={10}
-            page={page}
-            setPage={setPage}
-            styleType="fill"
-            color="light"
+            styleType='fill'
+            color='warning'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            styleType="outline"
-            color="light"
+            styleType='outline'
+            color='warning'
           />
-          <Pagination count={10} page={page} setPage={setPage} color="dark" />
+          <Pagination count={10} page={page} setPage={setPage} color='success' />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            styleType="fill"
-            color="dark"
+            styleType='fill'
+            color='success'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            styleType="outline"
-            color="dark"
+            styleType='outline'
+            color='success'
+          />
+          <Pagination count={10} page={page} setPage={setPage} color='light' />
+          <Pagination
+            count={10}
+            page={page}
+            setPage={setPage}
+            styleType='fill'
+            color='light'
+          />
+          <Pagination
+            count={10}
+            page={page}
+            setPage={setPage}
+            styleType='outline'
+            color='light'
+          />
+          <Pagination count={10} page={page} setPage={setPage} color='dark' />
+          <Pagination
+            count={10}
+            page={page}
+            setPage={setPage}
+            styleType='fill'
+            color='dark'
+          />
+          <Pagination
+            count={10}
+            page={page}
+            setPage={setPage}
+            styleType='outline'
+            color='dark'
           />
         </div>
-        <div class="flex w-full flex-col items-center gap-2 lg:w-1/2">
-          <p class="">Squared</p>
-          <Pagination count={10} page={page} setPage={setPage} curve="none" />
+        <div class='flex w-full flex-col items-center gap-2 lg:w-1/2'>
+          <p class=''>Squared</p>
+          <Pagination count={10} page={page} setPage={setPage} curve='none' />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="fill"
+            curve='none'
+            styleType='fill'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="outline"
+            curve='none'
+            styleType='outline'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            color="info"
+            curve='none'
+            color='info'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="fill"
-            color="info"
+            curve='none'
+            styleType='fill'
+            color='info'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="outline"
-            color="info"
+            curve='none'
+            styleType='outline'
+            color='info'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            color="error"
+            curve='none'
+            color='error'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="fill"
-            color="error"
+            curve='none'
+            styleType='fill'
+            color='error'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="outline"
-            color="error"
+            curve='none'
+            styleType='outline'
+            color='error'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            color="warning"
+            curve='none'
+            color='warning'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="fill"
-            color="warning"
+            curve='none'
+            styleType='fill'
+            color='warning'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="outline"
-            color="warning"
+            curve='none'
+            styleType='outline'
+            color='warning'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            color="success"
+            curve='none'
+            color='success'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="fill"
-            color="success"
+            curve='none'
+            styleType='fill'
+            color='success'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="outline"
-            color="success"
+            curve='none'
+            styleType='outline'
+            color='success'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            color="light"
+            curve='none'
+            color='light'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="fill"
-            color="light"
+            curve='none'
+            styleType='fill'
+            color='light'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="outline"
-            color="light"
+            curve='none'
+            styleType='outline'
+            color='light'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            color="dark"
+            curve='none'
+            color='dark'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="fill"
-            color="dark"
+            curve='none'
+            styleType='fill'
+            color='dark'
           />
           <Pagination
             count={10}
             page={page}
             setPage={setPage}
-            curve="none"
-            styleType="outline"
-            color="dark"
+            curve='none'
+            styleType='outline'
+            color='dark'
           />
         </div>
       </div>

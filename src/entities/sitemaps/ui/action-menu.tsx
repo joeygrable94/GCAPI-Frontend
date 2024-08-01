@@ -1,6 +1,5 @@
 import { Component } from 'solid-js';
 import { WebsiteRead } from '~/shared/api';
-import { CreateIcon } from '~/shared/ui/icon';
 import { WebsiteSitemapCreateFormDialog } from '~/widgets/form-dialogs';
 
 type WebsiteSitemapsActionsMenuProps = {
@@ -11,15 +10,11 @@ const WebsiteSitemapsActionsMenu: Component<WebsiteSitemapsActionsMenuProps> = (
   props
 ) => {
   return (
-    <div class="my-2">
+    <div class='my-2'>
       <WebsiteSitemapCreateFormDialog
         website={props.website}
-        triggerType="nav"
-        triggerElm={
-          <>
-            <CreateIcon /> Add Sitemap
-          </>
-        }
+        triggerType='nav'
+        triggerElm={<>+ Add Sitemap</>}
       />
     </div>
   );

@@ -14,16 +14,16 @@ export const authOptions = {
         params: {
           audience: process.env.AUTH_AUTH0_AUDIENCE,
           scope: process.env.AUTH_AUTH0_SCOPE,
-          response_type: 'code'
-        }
-      }
-    })
+          response_type: 'code',
+        },
+      },
+    }),
   ],
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
   },
   callbacks: {
-    async jwt({ token, account }) {
+    jwt({ token, account }) {
       if (account) {
         token.accessToken = account?.access_token;
         token.refreshToken = account?.refresh_token;
@@ -31,13 +31,13 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ token, session }) {
+    session({ token, session }) {
       setOpenApiToken('session', token.accessToken as string);
       return {
         ...session,
         accessToken: token.accessToken,
-        refreshToken: token.refreshToken
+        refreshToken: token.refreshToken,
       };
-    }
-  }
+    },
+  },
 } satisfies SolidAuthConfig;

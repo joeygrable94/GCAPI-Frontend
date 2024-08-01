@@ -10,10 +10,10 @@ export default defineConfig({
         log: true,
         authOpts: {
           name: 'authOptions',
-          dir: '~/providers/auth'
+          dir: './src/providers/auth',
         },
-        redirectTo: '/login'
-      })
-    ]
-  }
+        redirectTo: '/login',
+      }),
+    ],
+  },
 });

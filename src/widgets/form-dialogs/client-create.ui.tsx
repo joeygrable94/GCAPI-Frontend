@@ -1,10 +1,12 @@
+import { Dialog, DialogTriggerType } from '@getcommunity/gcui/dialog';
+import { CheckboxInput, TextInput } from '@getcommunity/gcui/form-input';
 import { Button } from '@kobalte/core/button';
 import {
   SubmitHandler,
   createForm,
   submit,
   valiField,
-  valiForm
+  valiForm,
 } from '@modular-forms/solid';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
@@ -14,11 +16,9 @@ import {
   IsValidClientIsActive,
   IsValidDescription,
   IsValidSlug,
-  IsValidTitle
+  IsValidTitle,
 } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog, DialogTriggerType } from '~/shared/ui/dialog';
-import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
 
 type ClientCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -29,7 +29,10 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
-    queryClient.invalidateQueries({ queryKey: ['clients'] });
+    queryClient
+      .invalidateQueries({ queryKey: ['clients'] })
+      .then(() => {})
+      .catch(() => {});
     setOpen(false);
   };
   const [pending, setPending] = createSignal(false);
@@ -39,9 +42,9 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
       slug: '',
       title: '',
       description: undefined,
-      is_active: true
+      is_active: true,
     },
-    validate: valiForm(SchemaCreateClient)
+    validate: valiForm(SchemaCreateClient),
   });
   const handleSubmit: SubmitHandler<SCreateClient> = (values) => {
     const { slug, title, description, is_active } = values;
@@ -51,15 +54,16 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
         title,
         description,
         is_active,
-        slug: slug
-      }
+        slug: slug,
+      },
     })
       .then((r: ClientRead) => {
         toast.success(`created client: ${r.title}`);
         setIsSubmitted(true);
       })
       .catch((e) => {
-        toast.error(`error creating client: ${e.message}`);
+        console.error(e);
+        toast.error(`error creating client: ${e}`);
         setIsSubmitted(false);
       })
       .finally(() => {
@@ -78,12 +82,12 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
       title={`Create Client`}
       description={'Fill out the form below to create a new client.'}
       footerActions={
-        <div class="justify-content-between mb-2 flex w-full flex-row flex-nowrap">
-          <Button class="secondary" onClick={() => handleClose()}>
+        <div class='justify-content-between mb-2 flex w-full flex-row flex-nowrap'>
+          <Button class='secondary' onClick={handleClose}>
             Close
           </Button>
           <Button
-            type="submit"
+            type='submit'
             disabled={pending() || isSubmitted()}
             onClick={() => submit(createClientForm)}
           >
@@ -93,62 +97,62 @@ const ClientCreateFormDialog: Component<ClientCreateFormDialogProps> = (props) =
       }
     >
       <CreateClient.Form onSubmit={handleSubmit}>
-        <div class="columns-1">
-          <div class="mb-2 w-full">
-            <CreateClient.Field name="slug" validate={[valiField(IsValidSlug)]}>
+        <div class='columns-1'>
+          <div class='mb-2 w-full'>
+            <CreateClient.Field name='slug' validate={[valiField(IsValidSlug)]}>
               {(field, props) => (
                 <TextInput
                   {...props}
-                  type="text"
+                  type='text'
                   required
-                  label="Data Slug"
+                  label='Data Slug'
                   value={field.value}
                   error={field.error}
                 />
               )}
             </CreateClient.Field>
           </div>
-          <div class="mb-2 w-full">
-            <CreateClient.Field name="title" validate={[valiField(IsValidTitle)]}>
+          <div class='mb-2 w-full'>
+            <CreateClient.Field name='title' validate={[valiField(IsValidTitle)]}>
               {(field, props) => (
                 <TextInput
                   {...props}
-                  type="text"
+                  type='text'
                   required
-                  label="Client Name"
+                  label='Client Name'
                   value={field.value}
                   error={field.error}
                 />
               )}
             </CreateClient.Field>
           </div>
-          <div class="mb-2 w-full">
+          <div class='mb-2 w-full'>
             <CreateClient.Field
-              name="description"
+              name='description'
               validate={[valiField(IsValidDescription)]}
             >
               {(field, props) => (
                 <TextInput
                   {...props}
                   rows={3}
-                  label="Client Description"
+                  label='Client Description'
                   value={field.value}
                   error={field.error}
                 />
               )}
             </CreateClient.Field>
           </div>
-          <div class="mb-2 w-full">
-            <label class="mb-1">Client Is Active?</label>
+          <div class='mb-2 w-full'>
+            <label class='mb-1'>Client Is Active?</label>
             <CreateClient.Field
-              name="is_active"
+              name='is_active'
               validate={[valiField(IsValidClientIsActive)]}
-              type="boolean"
+              type='boolean'
             >
               {(field, props) => (
                 <CheckboxInput
                   {...props}
-                  type="checkbox"
+                  type='checkbox'
                   required
                   label={field.value ? 'Active' : 'Inactive'}
                   checked={field.value}

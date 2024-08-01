@@ -1,10 +1,18 @@
+import {
+  KeywordCorpusIcon,
+  PageSpeedInsightsIcon,
+  ViewIcon,
+} from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import { useNavigate } from '@solidjs/router';
+import { clientOnly } from '@solidjs/start';
 import { Component } from 'solid-js';
 import { useTheme } from '~/providers/theme';
 import { WebsitePageRead } from '~/shared/api';
-import { KeywordCorpusIcon, PageSpeedInsightsIcon, ViewIcon } from '~/shared/ui/icon';
-import { WebsitePageDeleteFormDialog } from '~/widgets/form-dialogs';
+
+const WebsitePageDeleteFormDialog = clientOnly(
+  () => import('~/widgets/form-dialogs/website-page-delete.ui')
+);
 
 interface IWebsitePagesTableActionsProps {
   websitePage: WebsitePageRead;
@@ -14,7 +22,7 @@ const WebsitePagesTableActions: Component<IWebsitePagesTableActionsProps> = (pro
   const [theme] = useTheme();
   const navigate = useNavigate();
   return (
-    <div class="d-flex flex-gap-2 flex-row flex-nowrap">
+    <div class='d-flex flex-gap-2 flex-row flex-nowrap'>
       <Button
         class={theme.darkMode ? 'outline-light' : 'outline-dark'}
         onClick={() =>

@@ -1,3 +1,10 @@
+import {
+  TableBody,
+  TableColumnIsActive,
+  TableContent,
+  TableFooter,
+  TableHeader,
+} from '@getcommunity/gcui/table-data';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -7,29 +14,22 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
 } from '@tanstack/solid-table';
 import { createEffect, createSignal, lazy } from 'solid-js';
 import {
   USERS_PAGE_SIZE,
   USERS_PAGE_START,
   UserProfilePicturePreview,
-  fetchUsersList
+  fetchUsersList,
 } from '~/entities/users';
 import { useTheme } from '~/providers/theme';
 import {
   Paginated_UserReadAsAdmin_,
   Paginated_UserReadAsManager_,
   UserReadAsAdmin,
-  UserReadAsManager
+  UserReadAsManager,
 } from '~/shared/api';
-import {
-  TableBody,
-  TableColumnIsActive,
-  TableContent,
-  TableFooter,
-  TableHeader
-} from '~/shared/ui/table-data';
 import { formatDateString } from '~/shared/utils';
 
 const UsersTableActions = lazy(
@@ -51,7 +51,7 @@ const UsersDataTable = (props: UsersDataTableProps) => {
   const query = createQuery(() => ({
     queryKey: ['users', fetchPage(), fetchSize()],
     queryFn: fetchUsersList,
-    initialData: props.initialData
+    initialData: props.initialData,
   }));
   createEffect(() => {
     if (query.data !== undefined && query.data !== null) {
@@ -68,41 +68,41 @@ const UsersDataTable = (props: UsersDataTableProps) => {
         columnHelper.accessor('picture', {
           header: () => 'Profile Picture',
           footer: (props) => props.column.id,
-          cell: (info) => <UserProfilePicturePreview src={info.getValue()} />
+          cell: (info) => <UserProfilePicturePreview src={info.getValue()} />,
         }),
         columnHelper.accessor('email', {
           header: () => 'Email',
           footer: (props) => props.column.id,
-          cell: (info) => info.getValue()
+          cell: (info) => info.getValue(),
         }),
         columnHelper.accessor('username', {
           header: () => 'Username',
           footer: (props) => props.column.id,
-          cell: (info) => info.getValue()
+          cell: (info) => info.getValue(),
         }),
         columnHelper.accessor('is_active', {
           header: () => 'Is Active',
           footer: (props) => props.column.id,
-          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />
+          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />,
         }),
         columnHelper.accessor('is_verified', {
           header: () => 'Is Verified',
           footer: (props) => props.column.id,
-          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />
+          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />,
         }),
         columnHelper.accessor('created', {
           header: () => 'Created',
           footer: (props) => props.column.id,
           cell: (info) =>
-            info.getValue() ? formatDateString(new Date(info.getValue())) : 'N/A'
+            info.getValue() ? formatDateString(new Date(info.getValue())) : 'N/A',
         }),
         columnHelper.accessor('updated', {
           header: () => 'Updated',
           footer: (props) => props.column.id,
           cell: (info) =>
-            info.getValue() ? formatDateString(new Date(info.getValue())) : 'N/A'
-        })
-      ]
+            info.getValue() ? formatDateString(new Date(info.getValue())) : 'N/A',
+        }),
+      ],
     }),
     columnHelper.group({
       header: 'Actions',
@@ -111,10 +111,10 @@ const UsersDataTable = (props: UsersDataTableProps) => {
           id: 'id',
           header: () => '',
           footer: (props) => props.column.id,
-          cell: (info) => <UsersTableActions user={info.row.original} />
-        })
-      ]
-    })
+          cell: (info) => <UsersTableActions user={info.row.original} />,
+        }),
+      ],
+    }),
   ];
   const table = createSolidTable({
     get data() {
@@ -124,14 +124,14 @@ const UsersDataTable = (props: UsersDataTableProps) => {
     state: {
       get sorting() {
         return sorting();
-      }
+      },
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    debugTable: import.meta.env.VITE_APP_ENV === 'development'
+    debugTable: import.meta.env.VITE_APP_ENV === 'development',
   });
   const [isFiltering, setIsFiltering] = createSignal(false);
   const resetFilter = () => {

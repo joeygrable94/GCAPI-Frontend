@@ -1,3 +1,11 @@
+import {
+  TableBody,
+  TableColumnIsActive,
+  TableContent,
+  TableFooter,
+  TableHeader,
+  columnSortByUrl,
+} from '@getcommunity/gcui/table-data';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -7,24 +15,16 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
 } from '@tanstack/solid-table';
 import { createEffect, createSignal, lazy } from 'solid-js';
 import {
   SITEMAP_PAGE_SIZE,
   SITEMAP_PAGE_START,
-  fetchWebsiteSitemapsList
+  fetchWebsiteSitemapsList,
 } from '~/entities/sitemaps';
 import { useTheme } from '~/providers/theme';
 import { Paginated_WebsiteMapRead_, WebsiteMapRead, WebsiteRead } from '~/shared/api';
-import {
-  TableBody,
-  TableColumnIsActive,
-  TableContent,
-  TableFooter,
-  TableHeader,
-  columnSortByUrl
-} from '~/shared/ui/table-data';
 
 const WebsiteSitemapsTableActions = lazy(
   () => import('~/widgets/data-table-actions/sitemaps-table-actions')
@@ -47,7 +47,7 @@ const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
   const query = createQuery(() => ({
     queryKey: ['websiteSitemaps', fetchPage(), fetchSize(), fetchWebsiteId()],
     queryFn: fetchWebsiteSitemapsList,
-    initialData: props.initialData
+    initialData: props.initialData,
   }));
   createEffect(() => {
     if (query.data !== undefined && query.data !== null) {
@@ -56,7 +56,7 @@ const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
     }
   });
   const [sorting, setSorting] = createSignal<SortingState>([
-    { id: 'url', desc: false }
+    { id: 'url', desc: false },
   ]);
   const columnHelper = createColumnHelper<WebsiteMapRead>();
   const columns: ColumnDef<WebsiteMapRead>[] = [
@@ -67,14 +67,14 @@ const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
           header: () => 'URL',
           footer: (props) => props.column.id,
           cell: (info) => info.getValue(),
-          sortingFn: columnSortByUrl
+          sortingFn: columnSortByUrl,
         }),
         columnHelper.accessor('is_active', {
           header: () => 'Is Active',
           footer: (props) => props.column.id,
-          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />
-        })
-      ]
+          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />,
+        }),
+      ],
     }),
     columnHelper.group({
       header: 'Actions',
@@ -83,10 +83,10 @@ const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
           id: 'id',
           header: () => '',
           footer: (props) => props.column.id,
-          cell: (info) => <WebsiteSitemapsTableActions sitemap={info.row.original} />
-        })
-      ]
-    })
+          cell: (info) => <WebsiteSitemapsTableActions sitemap={info.row.original} />,
+        }),
+      ],
+    }),
   ];
   const table = createSolidTable({
     get data() {
@@ -96,14 +96,14 @@ const WebsiteSitemapsDataTable = (props: WebsiteSitemapsDataTableProps) => {
     state: {
       get sorting() {
         return sorting();
-      }
+      },
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    debugTable: import.meta.env.VITE_APP_ENV === 'development'
+    debugTable: import.meta.env.VITE_APP_ENV === 'development',
   });
   const [isFiltering, setIsFiltering] = createSignal(false);
   const resetFilter = () => {

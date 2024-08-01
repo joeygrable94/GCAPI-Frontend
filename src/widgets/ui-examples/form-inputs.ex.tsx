@@ -1,8 +1,3 @@
-import { SliderGetValueLabelParams } from '@kobalte/core/slider';
-import { createQuery } from '@tanstack/solid-query';
-import { Component, Show, createEffect, createMemo, createSignal } from 'solid-js';
-import { fetchClientsList } from '~/entities/clients';
-import { ClientRead } from '~/shared/api';
 import {
   CheckboxInput,
   CheckboxSwitchInput,
@@ -13,13 +8,18 @@ import {
   RadioGroupInput,
   SelectInput,
   SelectMultipleInput,
-  TextInput
-} from '~/shared/ui/form-input';
+  TextInput,
+} from '@getcommunity/gcui/form-input';
+import { SliderGetValueLabelParams } from '@kobalte/core/slider';
+import { createQuery } from '@tanstack/solid-query';
+import { Component, Show, createEffect, createMemo, createSignal } from 'solid-js';
+import { fetchClientsList } from '~/entities/clients';
+import { ClientRead } from '~/shared/api';
 
 const FormInputsExample: Component = () => {
   const clientsQuery = createQuery(() => ({
     queryKey: ['clients', 1, 1000],
-    queryFn: fetchClientsList
+    queryFn: fetchClientsList,
   }));
   const [selectedClient, setSelectedClient] = createSignal<ClientRead>();
   const [selectedMultiClients, setSelectedMultiClients] = createSignal<ClientRead[]>();
@@ -63,41 +63,41 @@ const FormInputsExample: Component = () => {
     return errorMsg;
   });
   return (
-    <div id="form-inputs" class="flex flex-col gap-4 pb-24 pt-12">
-      <h2 class="text-3xl font-bold">Form Inputs</h2>
-      <p class="text-lg">
+    <div id='form-inputs' class='flex flex-col gap-4 pb-24 pt-12'>
+      <h2 class='text-3xl font-bold'>Form Inputs</h2>
+      <p class='text-lg'>
         This section demonstrates various form inputs and their validation states.
       </p>
       <Show when={clientsQuery.isSuccess}>
-        <div class="flex flex-wrap gap-4">
+        <div class='flex flex-wrap gap-4'>
           <SelectInput<ClientRead>
-            name="client"
+            name='client'
             options={clientsData() ?? []}
             value={selectedClient()}
             onChange={setSelectedClient}
-            label="Client"
-            description="Select a client from the list."
+            label='Client'
+            description='Select a client from the list.'
             required={true}
-            optionValue="id"
-            optionTextValue="title"
+            optionValue='id'
+            optionTextValue='title'
             optionDisabled={(option: ClientRead) => option.is_active === false}
-            triggerLabel="Clients"
-            placeholder="Select a Client"
+            triggerLabel='Clients'
+            placeholder='Select a Client'
             error={selectedClient() === null ? 'This field is required.' : undefined}
           />
           <SelectMultipleInput<ClientRead>
-            name="client-multi"
+            name='client-multi'
             value={selectedMultiClients()}
             options={clientsData() ?? []}
             onChange={setSelectedMultiClients}
-            label="Multiple Clients"
-            description="Select multiple clients from the list."
+            label='Multiple Clients'
+            description='Select multiple clients from the list.'
             required={true}
-            optionValue="id"
-            optionTextValue="title"
+            optionValue='id'
+            optionTextValue='title'
             optionDisabled={(option: ClientRead) => option.is_active === false}
-            triggerLabel="Clients"
-            placeholder="Select a Client"
+            triggerLabel='Clients'
+            placeholder='Select a Client'
             error={
               selectedMultiClients() !== undefined &&
               selectedMultiClients()!.length <= 1
@@ -106,35 +106,35 @@ const FormInputsExample: Component = () => {
             }
           />
           <ComboboxInput<ClientRead>
-            name="combobox-client"
+            name='combobox-client'
             value={comboboxClient()}
             options={clientsData() ?? []}
             onChange={setComboboxClient}
-            label="Combobox Client"
-            description="Select a client from the combobox list."
+            label='Combobox Client'
+            description='Select a client from the combobox list.'
             required={true}
-            optionValue="id"
-            optionTextValue="title"
-            optionLabel="title"
+            optionValue='id'
+            optionTextValue='title'
+            optionLabel='title'
             optionDisabled={(option: ClientRead) => option.is_active === false}
-            triggerLabel="Clients"
-            placeholder="Select a Client"
+            triggerLabel='Clients'
+            placeholder='Select a Client'
             error={comboboxClient() === null ? 'This field is required.' : undefined}
           />
           <ComboboxMultiInput<ClientRead>
-            name="combobox-client-multiple"
+            name='combobox-client-multiple'
             value={comboboxMultiClients()}
             options={clientsData() ?? []}
             onChange={setComboboxMultiClients}
-            label="Combobox Client"
-            description="Select a client from the combobox list."
+            label='Combobox Client'
+            description='Select a client from the combobox list.'
             required={true}
-            optionValue="id"
-            optionTextValue="title"
-            optionLabel="title"
+            optionValue='id'
+            optionTextValue='title'
+            optionLabel='title'
             optionDisabled={(option: ClientRead) => option.is_active === false}
-            triggerLabel="Clients"
-            placeholder="Select Multiple Clients"
+            triggerLabel='Clients'
+            placeholder='Select Multiple Clients'
             error={
               comboboxMultiClients() !== undefined &&
               comboboxMultiClients()!.length <= 1
@@ -145,33 +145,33 @@ const FormInputsExample: Component = () => {
         </div>
       </Show>
       <TextInput
-        type="text"
+        type='text'
         value={textInput()}
         name={'text-input'}
-        label="Text Input"
-        placeholder="Enter a text value."
+        label='Text Input'
+        placeholder='Enter a text value.'
         required={true}
-        description="Enter a text value."
+        description='Enter a text value.'
         error={textInput() === '' ? 'This field is required.' : undefined}
         onChange={setTextInput}
       />
       <TextInput
-        type="textarea"
+        type='textarea'
         value={textareaInput()}
         name={'text-input'}
-        label="Textarea Input"
-        placeholder="Enter a large text value."
+        label='Textarea Input'
+        placeholder='Enter a large text value.'
         required={true}
-        description="Enter a text value."
+        description='Enter a text value.'
         error={textareaInput() === '' ? 'This field is required.' : undefined}
         onChange={setTextareaInput}
       />
       <NumberInput
         value={numberInput()}
         name={'number-input'}
-        label="Number Input"
+        label='Number Input'
         required={true}
-        description="Enter a number value."
+        description='Enter a number value.'
         error={numberError()}
         onChange={setNumberInput}
       />
@@ -183,7 +183,7 @@ const FormInputsExample: Component = () => {
         label={checkboxInput() ? 'TRUE' : 'FALSE'}
         required={true}
         error={checkboxInput() === false ? 'This field is required.' : undefined}
-        description="Check this box."
+        description='Check this box.'
         onChange={setCheckboxInput}
       />
       <CheckboxSwitchInput
@@ -194,39 +194,39 @@ const FormInputsExample: Component = () => {
         label={checkboxSwitchInput() ? 'TRUE' : 'FALSE'}
         required={true}
         error={checkboxSwitchInput() === false ? 'This field is required.' : undefined}
-        description="Toggle this switch."
+        description='Toggle this switch.'
         onChange={setCheckboxSwitchInput}
       />
       <RadioGroupInput
-        name="radio-group"
+        name='radio-group'
         options={['Apples', 'Bananas', 'Oranges']}
         value={radioInput()}
-        defaultValue=""
-        label="Radio Group"
+        defaultValue=''
+        label='Radio Group'
         required={true}
-        description="Select an option."
+        description='Select an option.'
         error={radioInputError()}
         onChange={setRadioInput}
       />
       <NumberRangeInput
-        name="range-input"
+        name='range-input'
         value={rangeInput()}
-        label="Range Input"
+        label='Range Input'
         minValue={0}
         maxValue={100}
         step={1}
         minStepsBetweenThumbs={1}
         getValueLabel={(params: SliderGetValueLabelParams) => `# ${params.values[0]}`}
-        orientation="horizontal"
+        orientation='horizontal'
         required={true}
-        description="Select a value."
+        description='Select a value.'
         error={rangeInputError()}
         onChange={setRangeInput}
       />
       <NumberRangeInput
-        name="range-input-too"
+        name='range-input-too'
         value={rangeInputToo()}
-        label="Range Input Too"
+        label='Range Input Too'
         minValue={0}
         maxValue={100}
         step={1}
@@ -234,9 +234,9 @@ const FormInputsExample: Component = () => {
         getValueLabel={(params: SliderGetValueLabelParams) =>
           `${params.values[0]} - ${params.values[1]}`
         }
-        orientation="horizontal"
+        orientation='horizontal'
         required={true}
-        description="Select a range."
+        description='Select a range.'
         error={rangeInputTooError()}
         onChange={setRangeInputToo}
         onChangeEnd={setRangeInputToo}

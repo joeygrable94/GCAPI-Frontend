@@ -1,6 +1,6 @@
+import { Button } from '@getcommunity/gcui/button';
+import { Popover } from '@getcommunity/gcui/popover';
 import { Component, createEffect, createSignal, onMount } from 'solid-js';
-import { Button } from '~/shared/ui/button';
-import { Popover } from '~/shared/ui/popover';
 
 let btnAnkrDefault: HTMLElement | undefined;
 let btnAnkrInfo: HTMLElement | undefined;
@@ -48,22 +48,22 @@ const PopoversExample: Component = () => {
     console.log('default', openDefault());
   });
   return (
-    <div id="btns" class="flex flex-col gap-4 pb-24 pt-12">
-      <h2 class="text-3xl font-bold">Popovers</h2>
-      <p class="text-lg">This section demonstrates various popover styles.</p>
-      <div class="flex flex-row items-center justify-start gap-2">
+    <div id='btns' class='flex flex-col gap-4 pb-24 pt-12'>
+      <h2 class='text-3xl font-bold'>Popovers</h2>
+      <p class='text-lg'>This section demonstrates various popover styles.</p>
+      <div class='flex flex-row items-center justify-start gap-2'>
         <Button
-          id="popover-trigger-default"
-          styleType="fill"
-          color="light"
+          id='popover-trigger-default'
+          styleType='fill'
+          color='light'
           tabIndex={0}
           onClick={() => setOpenDefault(!openDefault())}
         >
           Default Popover
         </Button>
         <Popover
-          label="default popover"
-          title="Default Popover Title"
+          label='default popover'
+          title='Default Popover Title'
           open={openDefault()}
           onOpenChange={setOpenDefault}
           anchorRef={anchorDefault}
@@ -73,126 +73,126 @@ const PopoversExample: Component = () => {
           perspiciatis soluta ratione sed nostrum molestiae aut minima, quasi quisquam.
         </Popover>
         <Button
-          id="popover-trigger-info"
-          styleType="fill"
-          color="info"
+          id='popover-trigger-info'
+          styleType='fill'
+          color='info'
           tabIndex={0}
           onClick={() => setOpenInfo(!openInfo())}
         >
           Info Popover
         </Button>
         <Popover
-          label="info popover"
-          title="Info Popover Title"
+          label='info popover'
+          title='Info Popover Title'
           open={openInfo()}
           onOpenChange={setOpenInfo}
           anchorRef={anchorInfo}
-          color="info"
+          color='info'
         >
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab voluptas
           doloribus ipsum dolorum iste quia delectus nemo itaque, inventore ducimus
           perspiciatis soluta ratione sed nostrum molestiae aut minima, quasi quisquam.
         </Popover>
         <Button
-          id="popover-trigger-error"
-          styleType="fill"
-          color="error"
+          id='popover-trigger-error'
+          styleType='fill'
+          color='error'
           tabIndex={0}
           onClick={() => setOpenError(!openError())}
         >
           Error Popover
         </Button>
         <Popover
-          label="error popover"
-          title="Error Popover Title"
+          label='error popover'
+          title='Error Popover Title'
           open={openError()}
           onOpenChange={setOpenError}
           anchorRef={anchorError}
-          color="error"
+          color='error'
         >
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab voluptas
           doloribus ipsum dolorum iste quia delectus nemo itaque, inventore ducimus
           perspiciatis soluta ratione sed nostrum molestiae aut minima, quasi quisquam.
         </Popover>
         <Button
-          id="popover-trigger-warning"
-          styleType="fill"
-          color="warning"
+          id='popover-trigger-warning'
+          styleType='fill'
+          color='warning'
           tabIndex={0}
           onClick={() => setOpenWarning(!openWarning())}
         >
           Warning Popover
         </Button>
         <Popover
-          label="warning popover"
-          title="Warning Popover Title"
+          label='warning popover'
+          title='Warning Popover Title'
           open={openWarning()}
           onOpenChange={setOpenWarning}
           anchorRef={anchorWarning}
-          color="warning"
+          color='warning'
         >
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab voluptas
           doloribus ipsum dolorum iste quia delectus nemo itaque, inventore ducimus
           perspiciatis soluta ratione sed nostrum molestiae aut minima, quasi quisquam.
         </Popover>
         <Button
-          id="popover-trigger-success"
-          styleType="fill"
-          color="success"
+          id='popover-trigger-success'
+          styleType='fill'
+          color='success'
           tabIndex={0}
           onClick={() => setOpenSuccess(!openSuccess())}
         >
           Success Popover
         </Button>
         <Popover
-          label="success popover"
-          title="Success Popover Title"
+          label='success popover'
+          title='Success Popover Title'
           open={openSuccess()}
           onOpenChange={setOpenSuccess}
           anchorRef={anchorSuccess}
-          color="success"
+          color='success'
         >
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab voluptas
           doloribus ipsum dolorum iste quia delectus nemo itaque, inventore ducimus
           perspiciatis soluta ratione sed nostrum molestiae aut minima, quasi quisquam.
         </Popover>
         <Button
-          id="popover-trigger-light"
-          styleType="fill"
-          color="light"
+          id='popover-trigger-light'
+          styleType='fill'
+          color='light'
           tabIndex={0}
           onClick={() => setOpenLight(!openLight())}
         >
           Light Popover
         </Button>
         <Popover
-          label="light popover"
-          title="Light Popover Title"
+          label='light popover'
+          title='Light Popover Title'
           open={openLight()}
           onOpenChange={setOpenLight}
           anchorRef={anchorLight}
-          color="light"
+          color='light'
         >
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab voluptas
           doloribus ipsum dolorum iste quia delectus nemo itaque, inventore ducimus
           perspiciatis soluta ratione sed nostrum molestiae aut minima, quasi quisquam.
         </Popover>
         <Button
-          id="popover-trigger-dark"
-          styleType="fill"
-          color="dark"
+          id='popover-trigger-dark'
+          styleType='fill'
+          color='dark'
           tabIndex={0}
           onClick={() => setOpenDark(!openDark())}
         >
           Dark Popover
         </Button>
         <Popover
-          label="dark popover"
-          title="Dark Popover Title"
+          label='dark popover'
+          title='Dark Popover Title'
           open={openDark()}
           onOpenChange={setOpenDark}
           anchorRef={anchorDark}
-          color="dark"
+          color='dark'
         >
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab voluptas
           doloribus ipsum dolorum iste quia delectus nemo itaque, inventore ducimus

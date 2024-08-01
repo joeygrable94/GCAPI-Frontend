@@ -1,10 +1,10 @@
+import { Dialog } from '@getcommunity/gcui/dialog';
+import { DeleteIcon, LoadingIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import { Component, Show, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { WebsiteMapRead, WebsiteSitemapsService } from '~/shared/api';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog } from '~/shared/ui/dialog';
-import { DeleteIcon, LoadingIcon } from '~/shared/ui/icon';
 
 type WebsiteSitemapDeleteFormDialogProps = {
   sitemap: WebsiteMapRead;
@@ -24,7 +24,7 @@ const WebsiteSitemapDeleteFormDialog: Component<WebsiteSitemapDeleteFormDialogPr
   const handleSubmit = () => {
     setPending(true);
     WebsiteSitemapsService.websiteSitemapsDeleteApiV1SitemapsSitemapIdDelete({
-      sitemapId: props.sitemap.id
+      sitemapId: props.sitemap.id,
     })
       .then(() => {
         toast.success(`deleted sitemap: ${props.sitemap.url}`);
@@ -41,8 +41,8 @@ const WebsiteSitemapDeleteFormDialog: Component<WebsiteSitemapDeleteFormDialogPr
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
-      size="sm"
-      triggerType="button"
+      size='sm'
+      triggerType='button'
       triggerElm={<DeleteIcon />}
       open={open}
       setOpen={setOpen}
@@ -51,13 +51,13 @@ const WebsiteSitemapDeleteFormDialog: Component<WebsiteSitemapDeleteFormDialogPr
       title={`Delete Sitemap: ${props.sitemap.url}`}
       description={'Are you sure you want to delete this sitemap?'}
       footerActions={
-        <div class="w-100 d-flex justify-content-between mb-2 flex-row flex-nowrap">
-          <Button class="secondary" onClick={() => handleClose()}>
+        <div class='w-100 d-flex justify-content-between mb-2 flex-row flex-nowrap'>
+          <Button class='secondary' onClick={() => handleClose()}>
             Close
           </Button>
           <Button
-            type="submit"
-            class="danger"
+            type='submit'
+            class='danger'
             disabled={pending() || isSubmitted()}
             onClick={() => handleSubmit()}
           >

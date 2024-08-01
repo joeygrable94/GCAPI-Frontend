@@ -1,37 +1,30 @@
+import { Button } from '@getcommunity/gcui/button';
+import { Dialog, DialogTriggerType } from '@getcommunity/gcui/dialog';
+import {
+  CheckboxInput,
+  CheckboxSwitchInput,
+  SelectInput,
+  TextInput,
+} from '@getcommunity/gcui/form-input';
 import {
   SubmitHandler,
   createForm,
   setValue,
   submit,
   valiField,
-  valiForm
+  valiForm,
 } from '@modular-forms/solid';
 import { createQuery } from '@tanstack/solid-query';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
-import toast from 'solid-toast';
 import { fetchClientsList } from '~/entities/clients';
 import { SCreateWebsite, SchemaCreateWebsite } from '~/entities/websites';
-import {
-  ClientRead,
-  ClientWebsiteCreate,
-  ClientsService,
-  WebsiteRead,
-  WebsitesService
-} from '~/shared/api';
+import { ClientRead } from '~/shared/api';
 import {
   IsValidWebsiteDomain,
   IsValidWebsiteIsActive,
-  IsValidWebsiteIsSecure
+  IsValidWebsiteIsSecure,
 } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Button } from '~/shared/ui/button';
-import { Dialog, DialogTriggerType } from '~/shared/ui/dialog';
-import {
-  CheckboxInput,
-  CheckboxSwitchInput,
-  SelectInput,
-  TextInput
-} from '~/shared/ui/form-input';
 
 type WebsiteCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -41,7 +34,7 @@ type WebsiteCreateFormDialogProps = {
 const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props) => {
   const clientsQuery = createQuery(() => ({
     queryKey: ['clients', 1, 1000],
-    queryFn: fetchClientsList
+    queryFn: fetchClientsList,
   }));
   const [clientsData, setClientsData] = createSignal<ClientRead[]>([]);
   createEffect(() => {
@@ -62,47 +55,13 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
       domain: '',
       is_secure: true,
       is_active: true,
-      clientId: undefined
+      clientId: undefined,
     },
-    validate: valiForm(SchemaCreateWebsite)
+    validate: valiForm(SchemaCreateWebsite),
   });
   const handleSubmit: SubmitHandler<SCreateWebsite> = (values) => {
     console.log('Submitting...', values);
     return;
-    setPending(true);
-    const { domain, is_secure, is_active, clientId } = values;
-    WebsitesService.websitesCreateApiV1WebsitesPost({
-      requestBody: {
-        domain: domain,
-        is_secure: is_secure,
-        is_active: is_active
-      }
-    })
-      .then((website: WebsiteRead) => {
-        toast.success(`created website: ${website.domain}`);
-        ClientsService.clientsAssignWebsiteApiV1ClientsClientIdAssignWebsitePost({
-          clientId: clientId,
-          requestBody: {
-            client_id: clientId,
-            website_id: website.id
-          }
-        })
-          .then((r: ClientWebsiteCreate) => {
-            toast.success(`assigned website to client: ${r.client_id}`);
-            setIsSubmitted(true);
-          })
-          .catch((e) => {
-            toast.error(`error assigning website to client: ${e.message}`);
-            setIsSubmitted(false);
-          });
-      })
-      .catch((e) => {
-        toast.error(`error creating website: ${e.message}`);
-        setIsSubmitted(false);
-      })
-      .finally(() => {
-        setPending(false);
-      });
   };
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
@@ -116,12 +75,12 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
       title={`Create Website`}
       description={'Fill out the form below to create a new website.'}
       footerActions={
-        <div class="mb-2 flex w-full flex-nowrap justify-between">
-          <Button color="light" onClick={() => handleClose()}>
+        <div class='mb-2 flex w-full flex-nowrap justify-between'>
+          <Button color='light' onClick={() => handleClose()}>
             Close
           </Button>
           <Button
-            color="info"
+            color='info'
             disabled={pending() || isSubmitted()}
             onClick={() => submit(createWebsiteForm)}
           >
@@ -131,19 +90,19 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
       }
     >
       <CreateWebsite.Form onSubmit={handleSubmit}>
-        <div class="columns-1">
-          <div class="mb-2 w-full">
+        <div class='columns-1'>
+          <div class='mb-2 w-full'>
             <CreateWebsite.Field
-              name="domain"
+              name='domain'
               validate={[valiField(IsValidWebsiteDomain)]}
             >
               {(field, props) => (
                 <TextInput
-                  type="text"
+                  type='text'
                   value={field.value ?? ''}
-                  defaultValue=""
+                  defaultValue=''
                   name={field.name}
-                  label="Website Domain"
+                  label='Website Domain'
                   required={true}
                   description='Enter a domain name like "example.com" or "subdomain.example.com".'
                   error={field.error}
@@ -155,11 +114,11 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
               )}
             </CreateWebsite.Field>
           </div>
-          <div class="mb-2 w-full">
+          <div class='mb-2 w-full'>
             <CreateWebsite.Field
-              name="is_secure"
+              name='is_secure'
               validate={[valiField(IsValidWebsiteIsSecure)]}
-              type="boolean"
+              type='boolean'
             >
               {(field, props) => (
                 <CheckboxSwitchInput
@@ -169,7 +128,7 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
                   name={field.name}
                   label={field.value ? 'Is Secure' : 'Is Insecure'}
                   required={true}
-                  description="Check this box if the website uses HTTPS."
+                  description='Check this box if the website uses HTTPS.'
                   error={field.error}
                   disabled={pending() || isSubmitted()}
                   onChange={(checked: boolean) =>
@@ -179,11 +138,11 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
               )}
             </CreateWebsite.Field>
           </div>
-          <div class="mb-2 w-full">
+          <div class='mb-2 w-full'>
             <CreateWebsite.Field
-              name="is_active"
+              name='is_active'
               validate={[valiField(IsValidWebsiteIsActive)]}
-              type="boolean"
+              type='boolean'
             >
               {(field, props) => (
                 <CheckboxInput
@@ -193,7 +152,7 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
                   defaultChecked={true}
                   label={field.value ? 'Is Active' : 'Is Inactive'}
                   required={true}
-                  description="Is the website active?"
+                  description='Is the website active?'
                   error={field.error}
                   disabled={pending() || isSubmitted()}
                   onChange={(checked: boolean) =>
@@ -203,20 +162,20 @@ const WebsiteCreateFormDialog: Component<WebsiteCreateFormDialogProps> = (props)
               )}
             </CreateWebsite.Field>
           </div>
-          <div class="mb-2 w-full">
-            <CreateWebsite.Field name="clientId">
+          <div class='mb-2 w-full'>
+            <CreateWebsite.Field name='clientId'>
               {(field) => {
                 return (
                   <SelectInput<ClientRead>
-                    label="Assign Website to Client"
+                    label='Assign Website to Client'
                     name={field.name}
                     value={clientsData().filter((c) => c.id === field.value)[0] ?? null}
                     options={clientsData() ?? []}
-                    optionValue="id"
-                    optionTextValue="title"
+                    optionValue='id'
+                    optionTextValue='title'
                     optionDisabled={(option: ClientRead) => option.is_active === false}
-                    triggerLabel="Clients"
-                    placeholder="Select a Client"
+                    triggerLabel='Clients'
+                    placeholder='Select a Client'
                     error={field.error}
                     disabled={pending() || isSubmitted()}
                     onChange={(value) =>

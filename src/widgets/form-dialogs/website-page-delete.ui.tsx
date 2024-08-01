@@ -1,10 +1,10 @@
+import { Dialog } from '@getcommunity/gcui/dialog';
+import { DeleteIcon, LoadingIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import { Component, Show, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
 import { WebsitePageRead, WebsitePagesService } from '~/shared/api';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog } from '~/shared/ui/dialog';
-import { DeleteIcon, LoadingIcon } from '~/shared/ui/icon';
 
 type WebsitePageDeleteFormDialogProps = {
   websitePage: WebsitePageRead;
@@ -15,8 +15,8 @@ const WebsitePageDeleteFormDialog: Component<WebsitePageDeleteFormDialogProps> =
 ) => {
   const [open, setOpen] = createSignal(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => {
-    queryClient.invalidateQueries({ queryKey: ['websitePages'] });
+  const handleClose = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['websitePages'] });
     setOpen(false);
   };
   const [pending, setPending] = createSignal(false);
@@ -24,7 +24,7 @@ const WebsitePageDeleteFormDialog: Component<WebsitePageDeleteFormDialogProps> =
   const handleSubmit = () => {
     setPending(true);
     WebsitePagesService.websitePagesDeleteApiV1WebpagesPageIdDelete({
-      pageId: props.websitePage.id
+      pageId: props.websitePage.id,
     })
       .then(() => {
         toast.success(`deleted website page: ${props.websitePage.url}`);
@@ -41,8 +41,8 @@ const WebsitePageDeleteFormDialog: Component<WebsitePageDeleteFormDialogProps> =
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
-      size="sm"
-      triggerType="button"
+      size='sm'
+      triggerType='button'
       triggerElm={<DeleteIcon />}
       open={open}
       setOpen={setOpen}
@@ -51,13 +51,13 @@ const WebsitePageDeleteFormDialog: Component<WebsitePageDeleteFormDialogProps> =
       title={`Delete Website Page: ${props.websitePage.url}`}
       description={'Are you sure you want to delete this Website Page?'}
       footerActions={
-        <div class="w-100 d-flex justify-content-between mb-2 flex-row flex-nowrap">
-          <Button class="secondary" onClick={() => handleClose()}>
+        <div class='w-100 d-flex justify-content-between mb-2 flex-row flex-nowrap'>
+          <Button class='secondary' onClick={() => handleClose()}>
             Close
           </Button>
           <Button
-            type="submit"
-            class="danger"
+            type='submit'
+            class='danger'
             disabled={pending() || isSubmitted()}
             onClick={() => handleSubmit()}
           >

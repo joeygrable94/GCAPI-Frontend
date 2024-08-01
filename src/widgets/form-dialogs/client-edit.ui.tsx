@@ -1,10 +1,13 @@
+import { Dialog } from '@getcommunity/gcui/dialog';
+import { CheckboxInput, TextInput } from '@getcommunity/gcui/form-input';
+import { EditIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import {
   SubmitHandler,
   createForm,
   submit,
   valiField,
-  valiForm
+  valiForm,
 } from '@modular-forms/solid';
 import { Component, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
@@ -14,12 +17,9 @@ import {
   IsValidClientId,
   IsValidClientIsActive,
   IsValidDescription,
-  IsValidTitle
+  IsValidTitle,
 } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog } from '~/shared/ui/dialog';
-import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
-import { EditIcon } from '~/shared/ui/icon';
 
 type ClientEditFormDialogProps = {
   client: ClientRead;
@@ -39,9 +39,9 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
       clientId: props.client.id,
       title: props.client.title,
       description: props.client.description ?? undefined,
-      is_active: props.client.is_active ?? undefined
+      is_active: props.client.is_active ?? undefined,
     },
-    validate: valiForm(SchemaEditClient)
+    validate: valiForm(SchemaEditClient),
   });
   const handleSubmit: SubmitHandler<SEditClient> = (values) => {
     setPending(true);
@@ -51,8 +51,8 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
       requestBody: {
         title: title !== props.client.title ? title : null,
         description: description !== props.client.description ? description : null,
-        is_active: is_active !== props.client.is_active ? is_active : null
-      }
+        is_active: is_active !== props.client.is_active ? is_active : null,
+      },
     })
       .then((r: ClientRead) => {
         toast.success(`updated client: ${r.title}`);
@@ -69,7 +69,7 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
-      triggerType="button"
+      triggerType='button'
       triggerElm={<EditIcon />}
       open={open}
       setOpen={setOpen}
@@ -78,12 +78,12 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
       title={`Edit Client: ${props.client.title}`}
       description={'Fill out the form below to and click save to edit this client.'}
       footerActions={
-        <div class="justify-content-between mb-2 flex w-full flex-row flex-nowrap">
-          <Button class="secondary" onClick={() => handleClose()}>
+        <div class='justify-content-between mb-2 flex w-full flex-row flex-nowrap'>
+          <Button class='secondary' onClick={() => handleClose()}>
             Close
           </Button>
           <Button
-            type="submit"
+            type='submit'
             disabled={pending() || isSubmitted()}
             onClick={() => submit(editClientForm)}
           >
@@ -93,59 +93,59 @@ const ClientEditFormDialog: Component<ClientEditFormDialogProps> = (props) => {
       }
     >
       <EditClient.Form onSubmit={handleSubmit}>
-        <div class="columns-1">
-          <EditClient.Field name="clientId" validate={[valiField(IsValidClientId)]}>
+        <div class='columns-1'>
+          <EditClient.Field name='clientId' validate={[valiField(IsValidClientId)]}>
             {(field, props) => (
               <TextInput
                 {...props}
-                type="hidden"
+                type='hidden'
                 value={field.value}
                 error={field.error}
                 required
               />
             )}
           </EditClient.Field>
-          <div class="mb-2 w-full">
-            <EditClient.Field name="title" validate={[valiField(IsValidTitle)]}>
+          <div class='mb-2 w-full'>
+            <EditClient.Field name='title' validate={[valiField(IsValidTitle)]}>
               {(field, props) => (
                 <TextInput
                   {...props}
-                  type="text"
+                  type='text'
                   required
-                  label="Client Name"
+                  label='Client Name'
                   value={field.value}
                   error={field.error}
                 />
               )}
             </EditClient.Field>
           </div>
-          <div class="mb-2 w-full">
+          <div class='mb-2 w-full'>
             <EditClient.Field
-              name="description"
+              name='description'
               validate={[valiField(IsValidDescription)]}
             >
               {(field, props) => (
                 <TextInput
                   {...props}
                   rows={3}
-                  label="Client Description"
+                  label='Client Description'
                   value={field.value}
                   error={field.error}
                 />
               )}
             </EditClient.Field>
           </div>
-          <div class="mb-2 w-full">
-            <label class="mb-1">Client Is Active?</label>
+          <div class='mb-2 w-full'>
+            <label class='mb-1'>Client Is Active?</label>
             <EditClient.Field
-              name="is_active"
+              name='is_active'
               validate={[valiField(IsValidClientIsActive)]}
-              type="boolean"
+              type='boolean'
             >
               {(field, props) => (
                 <CheckboxInput
                   {...props}
-                  type="checkbox"
+                  type='checkbox'
                   required
                   label={field.value ? 'Active' : 'Inactive'}
                   checked={field.value}

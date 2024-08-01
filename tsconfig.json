@@ -14,7 +14,15 @@
     "isolatedModules": true,
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "ScriptHost"]
   },
-  "include": ["./src/**/*", "eslint.config.mjs"]
+  "include": [
+    "./src/**/*",
+    "eslint.config.mjs",
+    "tailwind.config.ts",
+    "app.config.ts",
+    "openapi-ts.config.ts",
+    "postcss.config.js"
+  ]
 }

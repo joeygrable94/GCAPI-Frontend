@@ -1,11 +1,11 @@
-import { ToastPortal } from '~/shared/ui/toast';
-import { ToastExample } from '~/widgets/ui-examples';
+import { clientOnly } from '@solidjs/start';
+
+const ToastExample = clientOnly(() => import('~/widgets/ui-examples/toast.ex'));
 
 export default function ToastComponents() {
   return (
     <>
       <ToastExample />
-      <ToastPortal limit={10} placement="bottom-right" />
     </>
   );
 }

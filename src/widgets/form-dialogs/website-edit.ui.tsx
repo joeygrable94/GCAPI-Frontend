@@ -1,3 +1,6 @@
+import { Dialog } from '@getcommunity/gcui/dialog';
+import { CheckboxInput, TextInput } from '@getcommunity/gcui/form-input';
+import { EditIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import {
   SubmitHandler,
@@ -5,7 +8,7 @@ import {
   setValue,
   submit,
   valiField,
-  valiForm
+  valiForm,
 } from '@modular-forms/solid';
 import { createQuery } from '@tanstack/solid-query';
 import { Component, For, createEffect, createSignal } from 'solid-js';
@@ -18,12 +21,9 @@ import {
   IsValidWebsiteDomain,
   IsValidWebsiteId,
   IsValidWebsiteIsActive,
-  IsValidWebsiteIsSecure
+  IsValidWebsiteIsSecure,
 } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog } from '~/shared/ui/dialog';
-import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
-import { EditIcon } from '~/shared/ui/icon';
 
 type WebsiteEditFormDialogProps = {
   website: WebsiteRead;
@@ -32,7 +32,7 @@ type WebsiteEditFormDialogProps = {
 const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => {
   const clientsQuery = createQuery(() => ({
     queryKey: ['clients', 1, 1000],
-    queryFn: fetchClientsList
+    queryFn: fetchClientsList,
   }));
   const [clientsData, setClientsData] = createSignal<ClientRead[]>([]);
   createEffect(() => {
@@ -54,9 +54,9 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
       domain: props.website.domain,
       is_secure: props.website.is_secure ?? true,
       is_active: props.website.is_active ?? true,
-      clientId: undefined
+      clientId: undefined,
     },
-    validate: valiForm(SchemaEditWebsite)
+    validate: valiForm(SchemaEditWebsite),
   });
   const handleSubmit: SubmitHandler<SEditWebsite> = (values) => {
     setPending(true);
@@ -66,8 +66,8 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
       requestBody: {
         domain: domain !== props.website.domain ? domain : null,
         is_secure: is_secure !== props.website.is_secure ? is_secure : null,
-        is_active: is_active !== props.website.is_active ? is_active : null
-      }
+        is_active: is_active !== props.website.is_active ? is_active : null,
+      },
     })
       .then((r: WebsiteRead) => {
         toast.success(`updated website: ${r.domain}`);
@@ -79,8 +79,8 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
           clientId: clientId,
           requestBody: {
             client_id: clientId,
-            website_id: websiteId
-          }
+            website_id: websiteId,
+          },
         })
           .then((r) => {
             toast.success(`assigned website to client: ${r.client_id}`);
@@ -102,7 +102,7 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
   createEffect(() => (isSubmitted() && !pending() ? handleClose() : null));
   return (
     <Dialog
-      triggerType="button"
+      triggerType='button'
       triggerElm={<EditIcon />}
       open={open}
       setOpen={setOpen}
@@ -111,12 +111,12 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
       title={`Edit Website: ${props.website.domain}`}
       description={'Fill out the form below to and click save to edit this website.'}
       footerActions={
-        <div class="justify-content-between mb-2 flex w-full flex-row flex-nowrap">
-          <Button class="secondary" onClick={() => handleClose()}>
+        <div class='justify-content-between mb-2 flex w-full flex-row flex-nowrap'>
+          <Button class='secondary' onClick={() => handleClose()}>
             Close
           </Button>
           <Button
-            type="submit"
+            type='submit'
             disabled={pending() || isSubmitted()}
             onClick={() => submit(editWebsiteForm)}
           >
@@ -126,47 +126,47 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
       }
     >
       <EditWebsite.Form onSubmit={handleSubmit}>
-        <div class="columns-1">
-          <EditWebsite.Field name="websiteId" validate={[valiField(IsValidWebsiteId)]}>
+        <div class='columns-1'>
+          <EditWebsite.Field name='websiteId' validate={[valiField(IsValidWebsiteId)]}>
             {(field, props) => (
               <TextInput
                 {...props}
-                type="hidden"
+                type='hidden'
                 value={field.value}
                 error={field.error}
                 required
               />
             )}
           </EditWebsite.Field>
-          <div class="mb-2 w-full">
+          <div class='mb-2 w-full'>
             <EditWebsite.Field
-              name="domain"
+              name='domain'
               validate={[valiField(IsValidWebsiteDomain)]}
             >
               {(field, props) => (
                 <TextInput
                   {...props}
-                  type="text"
+                  type='text'
                   required
-                  label="Website Domain"
-                  placeholder="Domain Name"
+                  label='Website Domain'
+                  placeholder='Domain Name'
                   value={field.value}
                   error={field.error}
                 />
               )}
             </EditWebsite.Field>
           </div>
-          <div class="mb-2 w-full">
-            <label class="mb-1">Website Is Secure (HTTPS)?</label>
+          <div class='mb-2 w-full'>
+            <label class='mb-1'>Website Is Secure (HTTPS)?</label>
             <EditWebsite.Field
-              name="is_secure"
+              name='is_secure'
               validate={[valiField(IsValidWebsiteIsSecure)]}
-              type="boolean"
+              type='boolean'
             >
               {(field, props) => (
                 <CheckboxInput
                   {...props}
-                  type="checkbox"
+                  type='checkbox'
                   required
                   label={field.value ? 'Secure' : 'Insecure'}
                   checked={field.value}
@@ -175,17 +175,17 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
               )}
             </EditWebsite.Field>
           </div>
-          <div class="mb-2 w-full">
-            <label class="mb-1">Website Is Active?</label>
+          <div class='mb-2 w-full'>
+            <label class='mb-1'>Website Is Active?</label>
             <EditWebsite.Field
-              name="is_active"
+              name='is_active'
               validate={[valiField(IsValidWebsiteIsActive)]}
-              type="boolean"
+              type='boolean'
             >
               {(field, props) => (
                 <CheckboxInput
                   {...props}
-                  type="checkbox"
+                  type='checkbox'
                   required
                   label={field.value ? 'Active' : 'Inactive'}
                   checked={field.value}
@@ -194,11 +194,11 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
               )}
             </EditWebsite.Field>
           </div>
-          <div class="mb-2 w-full">
-            <EditWebsite.Field name="clientId" validate={[valiField(IsValidClientId)]}>
+          <div class='mb-2 w-full'>
+            <EditWebsite.Field name='clientId' validate={[valiField(IsValidClientId)]}>
               {(field) => (
                 <>
-                  <label class="mb-1">Assign Website to Client</label>
+                  <label class='mb-1'>Assign Website to Client</label>
                   <select
                     id={field.name}
                     name={field.name}
@@ -206,7 +206,7 @@ const WebsiteEditFormDialog: Component<WebsiteEditFormDialogProps> = (props) => 
                     onChange={(e) =>
                       setValue(editWebsiteForm, field.name, e.target.value)
                     }
-                    size="sm"
+                    size='sm'
                   >
                     <For each={clientsData()}>
                       {(client) => (

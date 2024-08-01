@@ -1,10 +1,12 @@
+import { Dialog, DialogTriggerType } from '@getcommunity/gcui/dialog';
+import { CheckboxInput, TextInput } from '@getcommunity/gcui/form-input';
 import { Button } from '@kobalte/core/button';
 import {
   SubmitHandler,
   createForm,
   submit,
   valiField,
-  valiForm
+  valiForm,
 } from '@modular-forms/solid';
 import { Component, JSX, createEffect, createSignal } from 'solid-js';
 import toast from 'solid-toast';
@@ -13,11 +15,9 @@ import { WebsiteMapRead, WebsiteRead, WebsiteSitemapsService } from '~/shared/ap
 import {
   IsValidWebsiteId,
   IsValidWebsiteSitemapIsActive,
-  IsValidWebsiteSitemapUrl
+  IsValidWebsiteSitemapUrl,
 } from '~/shared/db';
 import { queryClient } from '~/shared/tanstack';
-import { Dialog, DialogTriggerType } from '~/shared/ui/dialog';
-import { CheckboxInput, TextInput } from '~/shared/ui/form-input';
 
 type WebsiteSitemapCreateFormDialogProps = {
   triggerType: DialogTriggerType;
@@ -41,14 +41,14 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
       initialValues: {
         url: '',
         is_active: true,
-        website_id: props.website.id
+        website_id: props.website.id,
       },
-      validate: valiForm(SchemaCreateWebsiteSitemap)
+      validate: valiForm(SchemaCreateWebsiteSitemap),
     });
   const handleSubmit: SubmitHandler<SCreateWebsiteSitemap> = (values) => {
     setPending(true);
     WebsiteSitemapsService.websiteSitemapsCreateApiV1SitemapsPost({
-      requestBody: values
+      requestBody: values,
     })
       .then((r: WebsiteMapRead) => {
         toast.success(`created website sitemap: ${r.url}`);
@@ -74,12 +74,12 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
       title={`Create Website Sitemap`}
       description={'Fill out the form below to create a new sitemap.'}
       footerActions={
-        <div class="justify-content-between mb-2 flex w-full flex-row flex-nowrap">
-          <Button class="secondary" onClick={() => handleClose()}>
+        <div class='justify-content-between mb-2 flex w-full flex-row flex-nowrap'>
+          <Button class='secondary' onClick={() => handleClose()}>
             Close
           </Button>
           <Button
-            type="submit"
+            type='submit'
             disabled={pending() || isSubmitted() || createWebsiteSitemapForm.submitting}
             onClick={() => submit(createWebsiteSitemapForm)}
           >
@@ -89,50 +89,50 @@ const WebsiteSitemapCreateFormDialog: Component<WebsiteSitemapCreateFormDialogPr
       }
     >
       <CreateWebsiteSitemap.Form onSubmit={handleSubmit}>
-        <div class="columns-1">
+        <div class='columns-1'>
           <CreateWebsiteSitemap.Field
-            name="website_id"
+            name='website_id'
             validate={[valiField(IsValidWebsiteId)]}
           >
             {(field, props) => (
               <TextInput
                 {...props}
-                type="hidden"
+                type='hidden'
                 value={field.value}
                 error={field.error}
                 required
               />
             )}
           </CreateWebsiteSitemap.Field>
-          <div class="mb-2 w-full">
+          <div class='mb-2 w-full'>
             <CreateWebsiteSitemap.Field
-              name="url"
+              name='url'
               validate={[valiField(IsValidWebsiteSitemapUrl)]}
             >
               {(field, props) => (
                 <TextInput
                   {...props}
-                  type="text"
+                  type='text'
                   required
-                  label="Website Sitemap URL"
-                  placeholder="https://example.com/sitemap.xml"
+                  label='Website Sitemap URL'
+                  placeholder='https://example.com/sitemap.xml'
                   value={field.value}
                   error={field.error}
                 />
               )}
             </CreateWebsiteSitemap.Field>
           </div>
-          <div class="mb-2 w-full">
-            <label class="mb-1">Website Sitemap Is Active?</label>
+          <div class='mb-2 w-full'>
+            <label class='mb-1'>Website Sitemap Is Active?</label>
             <CreateWebsiteSitemap.Field
-              name="is_active"
+              name='is_active'
               validate={[valiField(IsValidWebsiteSitemapIsActive)]}
-              type="boolean"
+              type='boolean'
             >
               {(field, props) => (
                 <CheckboxInput
                   {...props}
-                  type="checkbox"
+                  type='checkbox'
                   required
                   label={field.value ? 'Active' : 'Inactive'}
                   checked={field.value}

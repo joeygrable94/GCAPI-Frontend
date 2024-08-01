@@ -1,3 +1,10 @@
+import {
+  TableBody,
+  TableColumnIsActive,
+  TableContent,
+  TableFooter,
+  TableHeader,
+} from '@getcommunity/gcui/table-data';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -7,23 +14,16 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
 } from '@tanstack/solid-table';
 import { createEffect, createSignal, lazy } from 'solid-js';
 import {
   WEBSITES_PAGE_SIZE,
   WEBSITES_PAGE_START,
-  fetchWebsitesList
+  fetchWebsitesList,
 } from '~/entities/websites';
 import { useTheme } from '~/providers/theme';
 import { Paginated_WebsiteRead_, WebsiteRead } from '~/shared/api';
-import {
-  TableBody,
-  TableColumnIsActive,
-  TableContent,
-  TableFooter,
-  TableHeader
-} from '~/shared/ui/table-data';
 
 const WebsitesTableActions = lazy(
   () => import('~/widgets/data-table-actions/websites-table-actions')
@@ -44,7 +44,7 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
   const query = createQuery(() => ({
     queryKey: ['websites', fetchPage(), fetchSize(), fetchClientId()],
     queryFn: fetchWebsitesList,
-    initialData: props.initialData
+    initialData: props.initialData,
   }));
   createEffect(() => {
     if (query.data !== undefined && query.data !== null) {
@@ -61,19 +61,19 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
         columnHelper.accessor('domain', {
           header: () => 'Title',
           footer: (props) => props.column.id,
-          cell: (info) => info.getValue()
+          cell: (info) => info.getValue(),
         }),
         columnHelper.accessor('is_secure', {
           header: () => 'HTTPS',
           footer: (props) => props.column.id,
-          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />
+          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />,
         }),
         columnHelper.accessor('is_active', {
           header: () => 'Is Active',
           footer: (props) => props.column.id,
-          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />
-        })
-      ]
+          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />,
+        }),
+      ],
     }),
     columnHelper.group({
       header: 'Actions',
@@ -82,10 +82,10 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
           id: 'id',
           header: () => '',
           footer: (props) => props.column.id,
-          cell: (info) => <WebsitesTableActions website={info.row.original} />
-        })
-      ]
-    })
+          cell: (info) => <WebsitesTableActions website={info.row.original} />,
+        }),
+      ],
+    }),
   ];
   const table = createSolidTable({
     get data() {
@@ -95,14 +95,14 @@ const WebsitesDataTable = (props: WebsitesDataTableProps) => {
     state: {
       get sorting() {
         return sorting();
-      }
+      },
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    debugTable: import.meta.env.VITE_APP_ENV === 'development'
+    debugTable: import.meta.env.VITE_APP_ENV === 'development',
   });
   const [isFiltering, setIsFiltering] = createSignal(false);
   const resetFilter = () => {

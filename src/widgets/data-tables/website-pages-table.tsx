@@ -1,3 +1,11 @@
+import {
+  TableBody,
+  TableColumnIsActive,
+  TableContent,
+  TableFooter,
+  TableHeader,
+  columnSortByUrl,
+} from '@getcommunity/gcui/table-data';
 import { createQuery } from '@tanstack/solid-query';
 import {
   ColumnDef,
@@ -7,24 +15,16 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
 } from '@tanstack/solid-table';
 import { createEffect, createSignal, lazy } from 'solid-js';
 import {
   WEBSITEPAGE_PAGE_SIZE,
   WEBSITEPAGE_PAGE_START,
-  fetchWebsitePagesList
+  fetchWebsitePagesList,
 } from '~/entities/website-pages';
 import { useTheme } from '~/providers/theme';
 import { Paginated_WebsitePageRead_, WebsitePageRead } from '~/shared/api';
-import {
-  TableBody,
-  TableColumnIsActive,
-  TableContent,
-  TableFooter,
-  TableHeader,
-  columnSortByUrl
-} from '~/shared/ui/table-data';
 import { formatDateString } from '~/shared/utils';
 
 const WebsitePagesTableActions = lazy(
@@ -53,10 +53,10 @@ const WebsitePagesDataTable = (props: WebsitePagesDataTableProps) => {
       fetchPage(),
       fetchSize(),
       fetchWebsiteId(),
-      fetchSitemapId()
+      fetchSitemapId(),
     ],
     queryFn: fetchWebsitePagesList,
-    initialData: props.initialData
+    initialData: props.initialData,
   }));
   createEffect(() => {
     if (query.data !== undefined && query.data !== null) {
@@ -65,7 +65,7 @@ const WebsitePagesDataTable = (props: WebsitePagesDataTableProps) => {
     }
   });
   const [sorting, setSorting] = createSignal<SortingState>([
-    { id: 'url', desc: false }
+    { id: 'url', desc: false },
   ]);
   const columnHelper = createColumnHelper<WebsitePageRead>();
   const columns: ColumnDef<WebsitePageRead>[] = [
@@ -76,29 +76,29 @@ const WebsitePagesDataTable = (props: WebsitePagesDataTableProps) => {
           header: () => 'URL',
           footer: (props) => props.column.id,
           cell: (info) => info.getValue(),
-          sortingFn: columnSortByUrl
+          sortingFn: columnSortByUrl,
         }),
         columnHelper.accessor('status', {
           header: () => 'Status',
           footer: (props) => props.column.id,
-          cell: (info) => info.getValue()
+          cell: (info) => info.getValue(),
         }),
         columnHelper.accessor('priority', {
           header: () => 'Priority',
           footer: (props) => props.column.id,
-          cell: (info) => info.getValue()
+          cell: (info) => info.getValue(),
         }),
         columnHelper.accessor('last_modified', {
           header: () => 'Last Modified',
           footer: (props) => props.column.id,
-          cell: (info) => formatDateString(new Date(info.getValue()))
+          cell: (info) => formatDateString(new Date(info.getValue())),
         }),
         columnHelper.accessor('is_active', {
           header: () => 'Is Active',
           footer: (props) => props.column.id,
-          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />
-        })
-      ]
+          cell: (info) => <TableColumnIsActive isActive={info.getValue()} />,
+        }),
+      ],
     }),
     columnHelper.group({
       header: 'Actions',
@@ -107,10 +107,10 @@ const WebsitePagesDataTable = (props: WebsitePagesDataTableProps) => {
           id: 'id',
           header: () => '',
           footer: (props) => props.column.id,
-          cell: (info) => <WebsitePagesTableActions websitePage={info.row.original} />
-        })
-      ]
-    })
+          cell: (info) => <WebsitePagesTableActions websitePage={info.row.original} />,
+        }),
+      ],
+    }),
   ];
   const table = createSolidTable({
     get data() {
@@ -120,14 +120,14 @@ const WebsitePagesDataTable = (props: WebsitePagesDataTableProps) => {
     state: {
       get sorting() {
         return sorting();
-      }
+      },
     },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    debugTable: import.meta.env.VITE_APP_ENV === 'development'
+    debugTable: import.meta.env.VITE_APP_ENV === 'development',
   });
   const [isFiltering, setIsFiltering] = createSignal(false);
   const resetFilter = () => {

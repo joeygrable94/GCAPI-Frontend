@@ -1,9 +1,9 @@
+import { ViewIcon } from '@getcommunity/gcui/icon';
 import { Button } from '@kobalte/core/button';
 import { useNavigate } from '@solidjs/router';
 import { Component } from 'solid-js';
 import { useTheme } from '~/providers/theme';
 import { ClientRead } from '~/shared/api';
-import { ViewIcon } from '~/shared/ui/icon';
 import { ClientDeleteFormDialog, ClientEditFormDialog } from '~/widgets/form-dialogs';
 
 interface IClientsTableActionsProps {
@@ -18,7 +18,7 @@ const ClientsTableActions: Component<IClientsTableActionsProps> = (props) => {
     return navigate(`/clients/${props.client.id}`);
   };
   return (
-    <div class="d-flex flex-gap-2 flex-row flex-nowrap">
+    <div class='d-flex flex-gap-2 flex-row flex-nowrap'>
       <Button
         class={theme.darkMode ? 'outline-light' : 'outline-dark'}
         onClick={handleNavClick}
