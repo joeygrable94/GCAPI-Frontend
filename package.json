@@ -47,7 +47,7 @@
     "@tanstack/solid-query": "^5.37.1",
     "@tanstack/solid-query-devtools": "^5.37.1",
     "@tanstack/solid-table": "^8.17.3",
-    "axios": "^1.7.2",
+    "axios": "^1.7.4",
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
     "form-data": "^4.0.0",
